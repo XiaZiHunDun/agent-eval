@@ -1,0 +1,8 @@
+{
+  "seedFiles": [
+    {
+      "path": "deploy.yaml",
+      "content": "replicas: 1\nimage: wfxm/api:latest\n"
+    }
+  ]
+}

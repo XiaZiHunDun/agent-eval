@@ -1,0 +1,30 @@
+{
+  "id": "cap-robustness-missing-file",
+  "title": "请求读取不存在文件",
+  "suite": "capability",
+  "taxonomy": "robustness",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "读 src/missing.mjs 并告诉我它的内容。"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-robustness-missing-file"
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "forbiddenTools": [
+      "write_file"
+    ],
+    "replyPattern": "不存在|找不到|没有|无法"
+  }
+}

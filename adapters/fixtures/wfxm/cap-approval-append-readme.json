@@ -1,0 +1,8 @@
+{
+  "seedFiles": [
+    {
+      "path": "README.md",
+      "content": "# demo\n"
+    }
+  ]
+}

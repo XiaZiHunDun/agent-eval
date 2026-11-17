@@ -1,0 +1,53 @@
+{
+  "id": "rag-expense-limit",
+  "title": "上海出差住宿标准",
+  "suite": "rag",
+  "taxonomy": "retrieval",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat-task",
+  "turns": [
+    "下周去上海出差，查一下差旅文档：住宿每晚最多能报多少？"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 8
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "rag-expense-limit",
+      "rag": {
+        "documents": [
+          {
+            "title": "差旅费用标准 2026",
+            "format": "markdown",
+            "text": "# 差旅费用标准 2026\n\n## 住宿\n- 一线城市（北京、上海、广州、深圳）：上限 650 元/晚\n- 二线城市：上限 420 元/晚\n- 其他城市：上限 350 元/晚\n\n超标部分需事前审批，未审批按上限报销。\n\n## 交通\n高铁二等座据实报销；飞机经济舱需提前 7 天预订。\n\n## 餐补\n一线城市 120 元/天，其他城市 90 元/天。"
+          },
+          {
+            "title": "出差申请与审批流程",
+            "format": "markdown",
+            "text": "# 出差申请与审批流程\n\n出差前在 OA 提交申请，注明目的地、起止日期与预算。国内出差由直属主管审批，跨境出差需部门负责人和财务双重审批。"
+          },
+          {
+            "title": "会议与活动费用说明",
+            "format": "markdown",
+            "text": "# 会议与活动费用说明\n\n客户会议场地费需提前询价并附三家比价。活动餐饮人均不超过 200 元，酒水单独审批。"
+          }
+        ],
+        "expectation": {
+          "expectedDocTitles": ["差旅费用标准 2026"],
+          "reference": "上海属于一线城市，住宿上限是 650 元/晚；超标需事前审批。"
+        }
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredTools": ["recall_document"],
+    "toolArgs": [{ "name": "recall_document", "args": {} }],
+    "requireToolSuccess": true,
+    "replyPattern": "650\\s*元"
+  }
+}

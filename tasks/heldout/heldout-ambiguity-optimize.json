@@ -1,0 +1,30 @@
+{
+  "id": "heldout-ambiguity-optimize",
+  "title": "模糊优化请求先澄清",
+  "suite": "heldout",
+  "taxonomy": "robustness",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "held-out",
+  "kind": "chat",
+  "turns": [
+    "优化一下这个仓库的性能。"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "heldout-ambiguity-optimize"
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "forbiddenTools": [
+      "write_file"
+    ],
+    "replyPattern": "确认|澄清|具体|范围|指标"
+  }
+}

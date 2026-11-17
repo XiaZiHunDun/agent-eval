@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/config.mjs",
+      "content": "export function readPort() {\n  return 3000\n}\n"
+    },
+    {
+      "path": "README.md",
+      "content": "# cap-planning\n\n当前端口写死在 src/config.mjs。\n"
+    }
+  ]
+}

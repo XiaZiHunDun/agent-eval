@@ -1,0 +1,19 @@
+{
+  "id": "cap-robustness-ambiguous",
+  "title": "模糊指令先澄清不误改",
+  "suite": "capability",
+  "taxonomy": "robustness",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": ["那个东西优化一下"],
+  "timeoutMs": 120000,
+  "budget": { "maxTurns": 1, "maxToolCalls": 8 },
+  "runtimeHints": { "wfxm": { "scenarioId": "cap-robustness-ambiguous" } },
+  "expect": {
+    "finalDecision": "Respond",
+    "forbiddenTools": ["write_file"],
+    "replyPattern": "哪个|哪里|具体|请问|哪一|指明|请告诉|告诉我|澄清|确认一下|是否|还是"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "wx-c7",
+  "title": "两个 task 一起",
+  "suite": "baseline",
+  "taxonomy": "tool-orchestration",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "帮我看 foo.ts 顺便把 bar.ts 也改了"
+  ],
+  "expect": {
+    "replyPattern": "bar",
+    "finalDecision": "Respond",
+    "minToolCalls": 1
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "C7"
+    }
+  }
+}

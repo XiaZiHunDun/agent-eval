@@ -1,0 +1,8 @@
+{
+  "seedFiles": [
+    {
+      "path": "README.md",
+      "content": "发布前必须跑 gate。\n\n# 项目约定\n\n- 分支命名：release/YYYY-MM\n- 提交信息用中文\n"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "plan": [
+    {
+      "content": "按我目前观察，v5 production-ready 但有几类未消化项：\n- §18 20 项延后触发（等真实场景撞）\n- 真实 LLM 输出质量未量化（scripted harness 只能验 wiring）\n- WeChat 端 UX 未 owner 实测过（移动端格式 / 长消息）\n- 没有使用率埋点（哪些命令真在用未知）\n\n要展开哪条？",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

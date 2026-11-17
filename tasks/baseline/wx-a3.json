@@ -1,0 +1,22 @@
+{
+  "id": "wx-a3",
+  "title": "跑 pnpm test",
+  "suite": "baseline",
+  "taxonomy": "tool-orchestration",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "跑 pnpm test 看有没有 fail"
+  ],
+  "expect": {
+    "replyPattern": "266|1712|pass",
+    "finalDecision": "Respond",
+    "minToolCalls": 1
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "A3"
+    }
+  }
+}

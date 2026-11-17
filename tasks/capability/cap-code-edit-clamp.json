@@ -1,0 +1,38 @@
+{
+  "id": "cap-code-edit-clamp",
+  "title": "实现 clamp 并跑测试",
+  "suite": "capability",
+  "taxonomy": "code-edit",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "修复 src/math.mjs 的 clamp，让 test/math.test.mjs 通过。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-code-edit-clamp"
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/math.test.mjs",
+      "failToPass": [
+        "clamp 上下界"
+      ]
+    }
+  }
+}

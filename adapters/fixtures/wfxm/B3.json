@@ -1,0 +1,9 @@
+{
+  "plan": [
+    {
+      "content": "v5 = 函数式架构微信编码管家（Effect-TS）。\n核心概念：\n- 6 个 Port + 7 个核心（runtime/persistence/llm）\n- Acceptance 走 runButlerLoop（INTAKE_ENABLED=0）\n- 副作用咽喉 = policy-gate + capability-boundary\n- 3 层记忆 = Transcript / Durable Memory / Project Knowledge\n\n入口：\n- DEV：`pnpm dev`\n- TEST：`pnpm vitest run tests/acceptance --pool=forks`\n- 微信：POST /v1/wechat/inbound\n\n想深入哪块？",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

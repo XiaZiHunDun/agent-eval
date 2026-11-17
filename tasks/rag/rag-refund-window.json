@@ -1,0 +1,53 @@
+{
+  "id": "rag-refund-window",
+  "title": "企业年度合同退款窗口",
+  "suite": "rag",
+  "taxonomy": "retrieval",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat-task",
+  "turns": [
+    "我们是企业年度合同客户，帮我查文档库确认一下：现在申请退款还有多少天的窗口？"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 8
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "rag-refund-window",
+      "rag": {
+        "documents": [
+          {
+            "title": "企业客户退款政策",
+            "format": "markdown",
+            "text": "# 企业客户退款政策\n\n## 适用范围\n签署年度框架合同的企业客户。\n\n## 退款窗口\n- 自首次开通日起 45 个自然日内，可申请全额退款\n- 超过 45 天，按未使用整月折算退款，需客户成功经理审批\n- 已消耗的专业服务工时不予退还\n\n## 流程\n工单类型选择「企业退款」，附合同编号与付款凭证，财务在 10 个工作日内处理。"
+          },
+          {
+            "title": "个人客户退款政策",
+            "format": "markdown",
+            "text": "# 个人客户退款政策\n\n个人订阅支持 7 天无理由退款；超过 7 天按剩余天数折算。活动折扣订单仅退实付金额。"
+          },
+          {
+            "title": "合同变更与续约说明",
+            "format": "markdown",
+            "text": "# 合同变更与续约说明\n\n年度合同到期前 60 天启动续约沟通。降配需提前 30 天提交，升配即时生效。合同主体变更需重新走法务审核。"
+          }
+        ],
+        "expectation": {
+          "expectedDocTitles": ["企业客户退款政策"],
+          "reference": "企业年度合同客户自首次开通日起 45 个自然日内可以申请全额退款，超过后按未使用整月折算。"
+        }
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredTools": ["recall_document"],
+    "toolArgs": [{ "name": "recall_document", "args": {} }],
+    "requireToolSuccess": true,
+    "replyPattern": "45\\s*(个自然日|天)"
+  }
+}

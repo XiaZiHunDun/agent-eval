@@ -1,0 +1,54 @@
+{
+  "id": "repo-005-unique",
+  "suite": "repo",
+  "taxonomy": "debug",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "repo-task",
+  "title": "修复 unique 大小写去重",
+  "turns": [
+    "unique 对大小写重复的元素没有去重，帮我修一下并跑 test/unique.test.mjs。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "repo": {
+    "fixture": "tiny-kit"
+  },
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "repo-unique"
+    }
+  },
+  "expect": {
+    "tests": {
+      "command": "node --test --test-reporter=tap test/unique.test.mjs",
+      "failToPass": [
+        "unique: 大小写不敏感去重"
+      ],
+      "passToPass": [
+        "unique: 保持首次出现顺序"
+      ]
+    },
+    "workspaceState": [
+      {
+        "path": "src/unique.mjs",
+        "contains": "toLowerCase()"
+      }
+    ],
+    "toolArgs": [
+      {
+        "name": "read_file",
+        "args": {
+          "path": "src/unique.mjs"
+        }
+      }
+    ],
+    "requireToolSuccess": true,
+    "finalDecision": "WaitForApproval"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "seedFiles": [
+    {
+      "path": "README.md",
+      "content": "# cap-planning-priority\n\n仓库里有三处已知问题，分别标记在 src 下的 TODO 注释中。\n"
+    },
+    {
+      "path": "src/auth.mjs",
+      "content": "// TODO: 这里硬编码了生产数据库口令，存在泄露风险\nconst DB_PASSWORD = \"prod-secret-123\"\n\nexport function getDbPassword() {\n  return DB_PASSWORD\n}\n"
+    },
+    {
+      "path": "src/range.mjs",
+      "content": "// TODO: range 少返回一个末尾元素，导致分页漏数据\nexport function range(start, end) {\n  const out = []\n  for (let i = start; i < end; i += 1) out.push(i)\n  return out\n}\n"
+    },
+    {
+      "path": "src/search.mjs",
+      "content": "// TODO: 这里用双重循环，数据量大时明显变慢\nexport function containsAny(items, targets) {\n  let hit = false\n  for (const item of items) {\n    for (const target of targets) {\n      if (item === target) hit = true\n    }\n  }\n  return hit\n}\n"
+    }
+  ]
+}

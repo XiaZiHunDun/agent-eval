@@ -1,0 +1,53 @@
+{
+  "id": "rag-deploy-port",
+  "title": "从文档库查 payments-api 端口与健康检查",
+  "suite": "rag",
+  "taxonomy": "retrieval",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat-task",
+  "turns": [
+    "帮我查一下文档库：payments-api 现在部署在哪个端口？健康检查路径是什么？"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 8
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "rag-deploy-port",
+      "rag": {
+        "documents": [
+          {
+            "title": "payments-api 部署手册",
+            "format": "markdown",
+            "text": "# payments-api 部署手册\n\n## 运行时\n- 容器镜像：registry.internal/payments-api:2026.11\n- 监听端口：18080\n- 健康检查：GET /healthz，期望 200，超时 2s\n- 副本数：生产 4，预发 1\n\n## 依赖\n- PostgreSQL 主库 payments_rw\n- Redis 集群 payments-cache\n\n## 发布\n滚动发布，先 1 个副本观察 5 分钟，再全量。"
+          },
+          {
+            "title": "orders-api 部署手册",
+            "format": "markdown",
+            "text": "# orders-api 部署手册\n\n- 监听端口：18081\n- 健康检查：GET /health\n- 副本数：生产 3\n- 依赖：orders_rw、Kafka\n\n发布策略为蓝绿切换，切流前必须完成 smoke 用例。"
+          },
+          {
+            "title": "网关路由配置说明",
+            "format": "markdown",
+            "text": "# 网关路由配置说明\n\n网关按 host 前缀转发：\n- /pay/* → payments-api upstream\n- /order/* → orders-api upstream\n\nupstream 端口以各服务部署手册为准，网关不硬编码。健康检查失败连续 3 次摘除节点。"
+          }
+        ],
+        "expectation": {
+          "expectedDocTitles": ["payments-api 部署手册"],
+          "reference": "payments-api 监听 18080 端口，健康检查路径是 /healthz。"
+        }
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredTools": ["recall_document"],
+    "toolArgs": [{ "name": "recall_document", "args": {} }],
+    "requireToolSuccess": true,
+    "replyPattern": "18080[\\s\\S]*healthz|healthz[\\s\\S]*18080"
+  }
+}

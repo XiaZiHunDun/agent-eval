@@ -1,0 +1,54 @@
+{
+  "id": "repo-004-query",
+  "suite": "repo",
+  "taxonomy": "debug",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "repo-task",
+  "title": "修复 parseQuery 未解码",
+  "turns": [
+    "parseQuery 没有解码 %20 和 +，帮我修一下并跑 test/query.test.mjs。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "repo": {
+    "fixture": "tiny-kit"
+  },
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "repo-query"
+    }
+  },
+  "expect": {
+    "tests": {
+      "command": "node --test --test-reporter=tap test/query.test.mjs",
+      "failToPass": [
+        "parseQuery: 解码百分号与加号"
+      ],
+      "passToPass": [
+        "parseQuery: 忽略空片段"
+      ]
+    },
+    "workspaceState": [
+      {
+        "path": "src/query.mjs",
+        "contains": "decodeURIComponent"
+      }
+    ],
+    "toolArgs": [
+      {
+        "name": "read_file",
+        "args": {
+          "path": "src/query.mjs"
+        }
+      }
+    ],
+    "requireToolSuccess": true,
+    "finalDecision": "WaitForApproval"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "plan": [
+    {
+      "content": "按你刚扫完代码卫生 + 验收基建 + hook sync 闭环的状态，建议：\n1. 跑 realistic scenarios 找真痛点（这批）\n2. 看 owner 实测 1 周后输出 owner 视角笔记\n3. 加延迟 + 失败可观测埋点\n\n短期 ROI 排第 1。",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

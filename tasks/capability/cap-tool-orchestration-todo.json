@@ -1,0 +1,44 @@
+{
+  "id": "cap-tool-orchestration-todo",
+  "title": "grep、读文件、跑测试三步串联",
+  "suite": "capability",
+  "taxonomy": "tool-orchestration",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "先用 rg 找出 src 下所有带 TODO 的文件，然后读 src/a.mjs，最后运行 node --test test/a.test.mjs，告诉我测试结果。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-tool-orchestration-todo"
+    }
+  },
+  "expect": {
+    "requiredTools": [
+      "read_file",
+      "run_command"
+    ],
+    "forbiddenTools": [
+      "write_file"
+    ],
+    "toolArgs": [
+      {
+        "name": "read_file",
+        "args": {
+          "path": "src/a.mjs"
+        }
+      }
+    ],
+    "followUpPatterns": [
+      "pass 1|ok 1|通过"
+    ]
+  }
+}

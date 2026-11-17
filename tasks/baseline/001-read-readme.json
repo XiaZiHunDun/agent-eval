@@ -1,0 +1,45 @@
+{
+  "id": "wx-a1-read-readme",
+  "title": "读 README 并给出摘要",
+  "suite": "baseline",
+  "taxonomy": "retrieval",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "帮我读 /ws/README.md"
+  ],
+  "expect": {
+    "finalDecision": "Respond",
+    "replyPattern": "README",
+    "minToolCalls": 1,
+    "maxToolCalls": 3,
+    "requiredTools": [
+      "read_file"
+    ],
+    "forbiddenTools": [
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "read_file",
+        "args": {
+          "path": "README.md"
+        }
+      }
+    ],
+    "workspaceState": [
+      {
+        "path": "README.md",
+        "exists": true,
+        "contains": "# butler-v5"
+      }
+    ]
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "A1"
+    }
+  }
+}

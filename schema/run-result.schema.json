@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wfxm.local/schema/run-result.v0.json",
+  "title": "RunResult v0",
+  "description": "一次任务执行的结果。失败必须给出 failures，不允许空的 passed=false。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["taskId", "runtime", "passed", "score", "steps", "durationMs", "failures", "tracePath"],
+  "properties": {
+    "taskId": { "type": "string" },
+    "runtime": { "enum": ["wfxm", "dsh-wfxm"] },
+    "taxonomy": { "type": "string" },
+    "difficulty": { "enum": ["easy", "medium", "hard"] },
+    "source": { "enum": ["handwritten", "regression", "online-replay", "public-benchmark"] },
+    "split": { "enum": ["dev", "test", "held-out"] },
+    "passed": { "type": "boolean" },
+    "score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "steps": { "type": "integer", "minimum": 0 },
+    "costUsd": { "type": "number", "minimum": 0 },
+    "durationMs": { "type": "integer", "minimum": 0 },
+    "repeats": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "同题重复执行次数（pass^k 的 k）"
+    },
+    "ci95": {
+      "type": "array",
+      "description": "重复执行通过率的 Wilson 95% 置信区间 [lower, upper]",
+      "items": { "type": "number", "minimum": 0, "maximum": 1 },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "turns": { "type": "integer", "minimum": 0 },
+    "tests": {
+      "type": "object",
+      "description": "repo-task 的 oracle 执行结果（由 adapter 返回）"
+    },
+    "reply": { "type": "string" },
+    "replies": { "type": "array", "items": { "type": "string" } },
+    "finalDecision": { "type": "string" },
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["check", "detail"],
+        "properties": {
+          "check": { "type": "string" },
+          "detail": { "type": "string" }
+        }
+      }
+    },
+    "tracePath": { "type": "string" },
+    "humanReview": { "enum": ["not_required", "pending", "reviewed"] },
+    "artifacts": { "type": "array", "items": { "type": "string" } }
+  }
+}

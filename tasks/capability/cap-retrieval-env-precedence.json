@@ -1,0 +1,37 @@
+{
+  "id": "cap-retrieval-env-precedence",
+  "title": "追踪端口环境变量优先级",
+  "suite": "capability",
+  "taxonomy": "retrieval",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "端口最终由什么控制？默认值多少？只回答变量名和默认值。"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-retrieval-env-precedence"
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredAnyTools": [
+      "read_file",
+      "run_command"
+    ],
+    "forbiddenTools": [
+      "write_file"
+    ],
+    "containsAll": [
+      "PORT",
+      "3000"
+    ]
+  }
+}

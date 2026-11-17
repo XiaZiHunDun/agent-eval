@@ -1,0 +1,9 @@
+{
+  "plan": [
+    {
+      "content": "撤销哪个操作？请说具体文件名。",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

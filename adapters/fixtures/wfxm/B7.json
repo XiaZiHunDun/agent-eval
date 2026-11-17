@@ -1,0 +1,9 @@
+{
+  "plan": [
+    {
+      "content": "v5 核心原则：\n- Effect-TS 严格边界：纯函数 + 端口注入\n- 显式承认 vs 修复：D-series 30+ 承认项（arch guard 防再犯）\n- 触发条件式设计：§18 trigger 制度，20 延后项等真撞\n- 文档先行：DESIGN.md 21 段 + audit guard 锁\n- 不造第二实现：Memory/Channel Port 走 trigger-conditioned，不硬物化",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

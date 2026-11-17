@@ -1,0 +1,38 @@
+{
+  "id": "cap-debug-loop-bound",
+  "title": "修复循环上界并跑测试",
+  "suite": "capability",
+  "taxonomy": "debug",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "sumTo 的结果少了最后一项，定位并修复后跑 test/sum.test.mjs。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-debug-loop-bound"
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/sum.test.mjs",
+      "failToPass": [
+        "sum 包含上界"
+      ]
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "id": "cap-tool-orchestration-two-tests",
+  "title": "分别运行两个测试并汇报",
+  "suite": "capability",
+  "taxonomy": "tool-orchestration",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "分别运行 test/a.test.mjs 和 test/b.test.mjs，汇报各自是否通过。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-tool-orchestration-two-tests"
+    }
+  },
+  "expect": {
+    "requiredTools": [
+      "run_command"
+    ],
+    "forbiddenTools": [
+      "write_file"
+    ],
+    "minToolCalls": 2
+  }
+}

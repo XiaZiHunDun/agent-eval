@@ -1,0 +1,43 @@
+{
+  "id": "cap-tool-orchestration-fix-test",
+  "title": "跑测试、修 bug、复跑（逐动作审批）",
+  "suite": "capability",
+  "taxonomy": "tool-orchestration",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "先运行 node --test --test-reporter=tap test/calc.test.mjs 看失败，暂时不要改文件。",
+    "确认",
+    "只调用 write_file 一次：把 src/calc.mjs 的内容改成 `export function add(a, b) { return a + b }`。不要调用 run_command 或其他工具。",
+    "确认",
+    "复跑 node --test --test-reporter=tap test/calc.test.mjs 确认通过。",
+    "确认"
+  ],
+  "timeoutMs": 300000,
+  "budget": {
+    "maxTurns": 6,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-tool-orchestration-fix-test"
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file",
+      "run_command"
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/calc.test.mjs",
+      "failToPass": [
+        "add 求和"
+      ]
+    }
+  }
+}

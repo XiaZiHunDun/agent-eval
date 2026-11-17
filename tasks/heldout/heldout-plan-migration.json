@@ -1,0 +1,37 @@
+{
+  "id": "heldout-plan-migration",
+  "title": "规划迁移顺序",
+  "suite": "heldout",
+  "taxonomy": "planning",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "held-out",
+  "kind": "chat",
+  "turns": [
+    "按 docs/migrate.md 给出迁移步骤顺序和回滚点；只读。"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "heldout-plan-migration"
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredTools": [
+      "read_file"
+    ],
+    "forbiddenTools": [
+      "write_file"
+    ],
+    "containsAll": [
+      "双写",
+      "切读",
+      "回滚"
+    ]
+  }
+}

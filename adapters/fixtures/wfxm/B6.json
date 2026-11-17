@@ -1,0 +1,9 @@
+{
+  "plan": [
+    {
+      "content": "近期已知 issue：\n- ① healthzUp 集成测试 skipIf 在异步 beforeAll 求值 → 4 双向网络守卫从未真跑（已修）\n- ② runButlerLoop 异常丢消息（已修：catch 降级 reply）\n- ③ pre-commit hook 源/安装副本漂移（已闭环 install+postinstall+CI drift）\n- ④ D42 follow-up placeholder 日期（已清）\n- ⑤ acceptance 用例 default conversationId 稳定撞 ActiveMainRunConflict（已每用例独立）",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

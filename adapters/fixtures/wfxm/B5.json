@@ -1,0 +1,9 @@
+{
+  "plan": [
+    {
+      "content": "按 DESIGN §13 + §20 现状：\n- 高 risk：Core 不反向依赖 adapters（已锁）；Effect TS 边界（6 LLM callsite timeout 已加）\n- 中 risk：MCP token-passthrough 走 manifest oauthAudience fail-closed；approval runtime hardening 已闭环\n- 低 risk：文档 hygiene（最近扫过）\n\n真实 risk：\n- LLM 真实输出质量未量化（scripted fixture 测不出）\n- 20 §18 延后项未撞（不是 bug，是产品 gap）",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

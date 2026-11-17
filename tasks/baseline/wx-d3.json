@@ -1,0 +1,20 @@
+{
+  "id": "wx-d3",
+  "title": "先 read 现在改",
+  "suite": "baseline",
+  "taxonomy": "tool-orchestration",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "把 user.ts 的 password validator 换成 zod schema"
+  ],
+  "expect": {
+    "finalDecision": "WaitForApproval"
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "D3"
+    }
+  }
+}

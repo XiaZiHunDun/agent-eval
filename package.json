@@ -1,0 +1,21 @@
+{
+  "name": "agent-eval",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "WFXM / dsh-wfxm 共用的 agent 评估与反馈闭环组件",
+  "scripts": {
+    "eval": "node src/cli.mjs",
+    "eval:wfxm": "node src/cli.mjs run --suite baseline --runtime wfxm",
+    "eval:repo": "node src/cli.mjs run --suite repo --runtime wfxm",
+    "eval:capability": "node src/cli.mjs run --suite capability --runtime wfxm --real",
+    "eval:heldout": "node src/cli.mjs run --suite heldout --runtime wfxm --real",
+    "eval:rag": "node src/cli.mjs run --suite rag --runtime wfxm --real",
+    "eval:gate": "node src/cli.mjs gate",
+    "eval:gate:rag": "node src/cli.mjs gate --with-rag --real --repeats 2",
+    "test": "node --test src/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "wx-c9",
+  "title": "撤销刚才",
+  "suite": "baseline",
+  "taxonomy": "multi-turn",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "撤销刚才"
+  ],
+  "expect": {
+    "replyPattern": "已还原|置空|没有可撤销|哪个|具体",
+    "finalDecision": "Respond"
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "C9"
+    }
+  }
+}

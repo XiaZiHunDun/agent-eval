@@ -1,0 +1,22 @@
+{
+  "id": "wx-a7",
+  "title": "git log -5",
+  "suite": "baseline",
+  "taxonomy": "retrieval",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "git log -5 给我看"
+  ],
+  "expect": {
+    "replyPattern": "commit",
+    "finalDecision": "Respond",
+    "minToolCalls": 1
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "A7"
+    }
+  }
+}

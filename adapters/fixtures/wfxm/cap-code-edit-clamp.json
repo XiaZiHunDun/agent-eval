@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/math.mjs",
+      "content": "export function clamp(value, min, max) {\n  return value\n}\n"
+    },
+    {
+      "path": "test/math.test.mjs",
+      "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { clamp } from \"../src/math.mjs\"\n\ntest(\"clamp 上下界\", () => {\n  assert.equal(clamp(5, 0, 3), 3)\n  assert.equal(clamp(-1, 0, 3), 0)\n  assert.equal(clamp(2, 0, 3), 2)\n})\n"
+    }
+  ]
+}

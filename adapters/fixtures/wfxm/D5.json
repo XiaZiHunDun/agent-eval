@@ -1,0 +1,18 @@
+{
+  "plan": [
+    {
+      "content": "",
+      "toolCalls": [
+        {
+          "id": "tc-1",
+          "name": "write_file",
+          "args": {
+            "path": "apps/api/src/wechat-inbound-commands.ts",
+            "content": "// new /debug command\n..."
+          }
+        }
+      ],
+      "stopReason": "tool_use"
+    }
+  ]
+}

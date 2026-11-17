@@ -1,0 +1,21 @@
+{
+  "id": "wx-a4",
+  "title": "昨天我们改了什么",
+  "suite": "baseline",
+  "taxonomy": "retrieval",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "昨天我们改了什么"
+  ],
+  "expect": {
+    "replyPattern": "commit|昨天",
+    "finalDecision": "Respond"
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "A4"
+    }
+  }
+}

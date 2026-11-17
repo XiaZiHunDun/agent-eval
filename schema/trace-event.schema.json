@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wfxm.local/schema/trace-event.v0.json",
+  "title": "TraceEvent v0",
+  "description": "append-only 轨迹事件。一行一事件，同一 traceId 内 seq 单调递增；run.start / run.end 必须成对。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "traceId", "runId", "runtime", "seq", "ts", "type", "actor", "payload"],
+  "properties": {
+    "schema": { "const": "wfxm.trace/0" },
+    "traceId": { "type": "string", "minLength": 1 },
+    "runId": { "type": "string", "minLength": 1 },
+    "runtime": { "enum": ["wfxm", "dsh-wfxm"] },
+    "seq": { "type": "integer", "minimum": 0 },
+    "ts": { "type": "string", "format": "date-time" },
+    "type": {
+      "enum": [
+        "run.start",
+        "turn.start",
+        "model.request",
+        "model.response",
+        "tool.call",
+        "tool.result",
+        "approval.request",
+        "approval.decision",
+        "test.run",
+        "turn.end",
+        "error",
+        "run.end"
+      ]
+    },
+    "spanId": { "type": "string" },
+    "parentSpanId": { "type": ["string", "null"] },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "id"],
+      "properties": {
+        "kind": { "enum": ["owner", "agent", "system"] },
+        "id": { "type": "string" }
+      }
+    },
+    "payload": { "type": "object" },
+    "usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "inputTokens": { "type": "number", "minimum": 0 },
+        "outputTokens": { "type": "number", "minimum": 0 },
+        "costUsd": { "type": "number", "minimum": 0 }
+      }
+    },
+    "redaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "applied": { "type": "boolean" },
+        "fields": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

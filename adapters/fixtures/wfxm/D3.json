@@ -1,0 +1,31 @@
+{
+  "plan": [
+    {
+      "content": "",
+      "toolCalls": [
+        {
+          "id": "tc-1",
+          "name": "read_file",
+          "args": {
+            "path": "apps/api/src/user.ts"
+          }
+        }
+      ],
+      "stopReason": "tool_use"
+    },
+    {
+      "content": "",
+      "toolCalls": [
+        {
+          "id": "tc-1",
+          "name": "write_file",
+          "args": {
+            "path": "apps/api/src/user.ts",
+            "content": "import { z } from 'zod'\nexport const passwordSchema = z.string().min(8)"
+          }
+        }
+      ],
+      "stopReason": "tool_use"
+    }
+  ]
+}

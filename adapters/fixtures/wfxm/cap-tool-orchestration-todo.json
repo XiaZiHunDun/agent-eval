@@ -1,0 +1,20 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/a.mjs",
+      "content": "// TODO: 补充参数校验\nexport function a(value) {\n  return value\n}\n"
+    },
+    {
+      "path": "src/b.mjs",
+      "content": "// TODO: 补充日志\nexport function b() {\n  return 2\n}\n"
+    },
+    {
+      "path": "src/c.mjs",
+      "content": "export function c() {\n  return 3\n}\n"
+    },
+    {
+      "path": "test/a.test.mjs",
+      "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { a } from \"../src/a.mjs\"\n\ntest(\"a 原样返回\", () => {\n  assert.equal(a(1), 1)\n})\n"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "wx-b6",
+  "title": "我撞过哪些坑",
+  "suite": "baseline",
+  "taxonomy": "retrieval",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "我撞过哪些坑？"
+  ],
+  "expect": {
+    "replyPattern": "issue|修|坑",
+    "finalDecision": "Respond"
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "B6"
+    }
+  }
+}

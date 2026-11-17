@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "README.md",
+      "content": "# demo\n\n仓库只有 README 和 src/app.mjs。\n"
+    },
+    {
+      "path": "src/app.mjs",
+      "content": "export const app = true\n"
+    }
+  ]
+}

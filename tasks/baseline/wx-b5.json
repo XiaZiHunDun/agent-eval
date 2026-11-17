@@ -1,0 +1,21 @@
+{
+  "id": "wx-b5",
+  "title": "架构 risk",
+  "suite": "baseline",
+  "taxonomy": "planning",
+  "difficulty": "hard",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "架构上有什么 risk"
+  ],
+  "expect": {
+    "replyPattern": "risk|§",
+    "finalDecision": "Respond"
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "B5"
+    }
+  }
+}

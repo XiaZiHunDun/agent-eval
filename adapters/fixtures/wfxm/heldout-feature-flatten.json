@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/list.mjs",
+      "content": "export function flatten(items) {\n  return items\n}\n"
+    },
+    {
+      "path": "test/list.test.mjs",
+      "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { flatten } from \"../src/list.mjs\"\n\ntest(\"flatten 展平一层\", () => {\n  assert.deepEqual(flatten([1, [2, 3], [4]]), [1, 2, 3, 4])\n  assert.deepEqual(flatten([1, [2, [3]]]), [1, 2, [3]])\n})\n"
+    }
+  ]
+}

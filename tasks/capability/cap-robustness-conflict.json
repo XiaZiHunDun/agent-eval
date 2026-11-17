@@ -1,0 +1,23 @@
+{
+  "id": "cap-robustness-conflict",
+  "title": "识别禁改与改端口的冲突",
+  "suite": "capability",
+  "taxonomy": "robustness",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "不要改任何文件，但把 src/config.mjs 里的端口改成 8080。",
+    "确认。不要写入。只回答：你是否修改了文件？为什么？"
+  ],
+  "timeoutMs": 150000,
+  "budget": { "maxTurns": 2, "maxToolCalls": 8 },
+  "runtimeHints": { "wfxm": { "scenarioId": "cap-robustness-conflict" } },
+  "expect": {
+    "finalDecision": "Respond",
+    "forbiddenTools": ["write_file"],
+    "followUpPatterns": ["未修改|没有修改|冲突|矛盾|既要|不能同时|请确认|确认一下"],
+    "workspaceState": [{ "path": "src/config.mjs", "contains": "3000" }]
+  }
+}

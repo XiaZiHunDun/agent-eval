@@ -1,0 +1,54 @@
+{
+  "id": "repo-002-chunk",
+  "suite": "repo",
+  "taxonomy": "debug",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "repo-task",
+  "title": "修复 chunk 最后一块丢失余数",
+  "turns": [
+    "chunk([1,2,3,4,5], 2) 返回的块不对，帮我修一下并跑 test/chunk.test.mjs。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "repo": {
+    "fixture": "tiny-kit"
+  },
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "repo-chunk"
+    }
+  },
+  "expect": {
+    "tests": {
+      "command": "node --test --test-reporter=tap test/chunk.test.mjs",
+      "failToPass": [
+        "chunk: 最后一块保留余数"
+      ],
+      "passToPass": [
+        "chunk: 空数组返回空"
+      ]
+    },
+    "workspaceState": [
+      {
+        "path": "src/chunk.mjs",
+        "contains": "slice(i, i + size)"
+      }
+    ],
+    "toolArgs": [
+      {
+        "name": "read_file",
+        "args": {
+          "path": "src/chunk.mjs"
+        }
+      }
+    ],
+    "requireToolSuccess": true,
+    "finalDecision": "WaitForApproval"
+  }
+}

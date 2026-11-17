@@ -1,0 +1,41 @@
+{
+  "id": "cap-tool-orchestration-test",
+  "title": "读脚本并运行测试后汇报",
+  "suite": "capability",
+  "taxonomy": "tool-orchestration",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "先读 package.json，告诉我 test 脚本是什么；然后用 pnpm test 运行它，最后告诉我测试有没有通过。"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 10
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-tool-orchestration-test"
+    }
+  },
+  "expect": {
+    "requiredTools": [
+      "read_file",
+      "run_command"
+    ],
+    "forbiddenTools": [
+      "write_file"
+    ],
+    "replyPattern": "通过|pass|ok|成功",
+    "toolArgs": [
+      {
+        "name": "read_file",
+        "args": {
+          "path": "package.json"
+        }
+      }
+    ]
+  }
+}

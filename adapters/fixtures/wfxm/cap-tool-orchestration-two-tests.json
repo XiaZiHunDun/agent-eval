@@ -1,0 +1,20 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/a.mjs",
+      "content": "export const a = 1\n"
+    },
+    {
+      "path": "src/b.mjs",
+      "content": "export const b = 2\n"
+    },
+    {
+      "path": "test/a.test.mjs",
+      "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { a } from \"../src/a.mjs\"\n\ntest(\"a 等于 1\", () => {\n  assert.equal(a, 1)\n})\n"
+    },
+    {
+      "path": "test/b.test.mjs",
+      "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { b } from \"../src/b.mjs\"\n\ntest(\"b 等于 2\", () => {\n  assert.equal(b, 2)\n})\n"
+    }
+  ]
+}

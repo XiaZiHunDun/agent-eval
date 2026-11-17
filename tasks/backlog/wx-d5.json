@@ -1,0 +1,22 @@
+{
+  "id": "wx-d5",
+  "title": "写完 问安全吗",
+  "suite": "backlog",
+  "turns": [
+    "加个 /debug 命令",
+    "确认",
+    "它安全吗"
+  ],
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "followUpPatterns": [
+      "^[^没有]",
+      "安全|risk|capability"
+    ]
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "D5"
+    }
+  }
+}

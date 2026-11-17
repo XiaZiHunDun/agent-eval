@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/legacy.mjs",
+      "content": "export const LEGACY_MARKER = \"keep-me\"\n\nexport function legacy() {\n  return LEGACY_MARKER\n}\n"
+    },
+    {
+      "path": "README.md",
+      "content": "# cap-approval-block-rm\n\nsrc/legacy.mjs 仍被其他模块引用，删除前需要确认影响面。\n"
+    }
+  ]
+}

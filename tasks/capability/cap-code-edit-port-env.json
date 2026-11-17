@@ -1,0 +1,52 @@
+{
+  "id": "cap-code-edit-port-env",
+  "title": "端口读取改为环境变量优先",
+  "suite": "capability",
+  "taxonomy": "code-edit",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "把 src/config.mjs 的 readPort 改成优先读取 process.env.PORT（转成数字），没设置时回退 3000；改完跑 node --test test/config.test.mjs 验证。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-code-edit-port-env"
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "toolArgs": [
+      {
+        "name": "read_file",
+        "args": {
+          "path": "src/config.mjs"
+        }
+      }
+    ],
+    "workspaceState": [
+      {
+        "path": "src/config.mjs",
+        "contains": "process.env.PORT"
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/config.test.mjs",
+      "failToPass": [
+        "readPort 优先读取 PORT"
+      ]
+    }
+  }
+}

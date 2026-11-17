@@ -1,0 +1,22 @@
+{
+  "id": "wx-d1",
+  "title": "写 + 跑 test + 失败 + 修 + 再跑",
+  "suite": "backlog",
+  "turns": [
+    "加个 helper 跑下测试",
+    "确认",
+    "跑 test"
+  ],
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "followUpPatterns": [
+      "^[^没有]",
+      "pass|fail|test"
+    ]
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "D1"
+    }
+  }
+}

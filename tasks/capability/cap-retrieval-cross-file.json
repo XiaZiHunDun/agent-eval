@@ -1,0 +1,23 @@
+{
+  "id": "cap-retrieval-cross-file",
+  "title": "跨文件追踪超时配置",
+  "suite": "capability",
+  "taxonomy": "retrieval",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "这个仓库的 HTTP 请求超时最终由哪个环境变量控制？回退默认值是多少？只回答变量名和默认值，不要改代码。"
+  ],
+  "timeoutMs": 120000,
+  "budget": { "maxTurns": 1, "maxToolCalls": 10 },
+  "runtimeHints": { "wfxm": { "scenarioId": "cap-retrieval-cross-file" } },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredAnyTools": ["read_file", "run_command"],
+    "forbiddenTools": ["write_file"],
+    "containsAll": ["HTTP_TIMEOUT_MS", "5000"],
+    "replyPattern": "HTTP_TIMEOUT_MS"
+  }
+}

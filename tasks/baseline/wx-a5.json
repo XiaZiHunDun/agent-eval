@@ -1,0 +1,22 @@
+{
+  "id": "wx-a5",
+  "title": "删 dead import",
+  "suite": "baseline",
+  "taxonomy": "code-edit",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "把 packages/domain/src/foo.ts 里没人用的 import 删掉"
+  ],
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "minToolCalls": 2
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "A5"
+    }
+  }
+}

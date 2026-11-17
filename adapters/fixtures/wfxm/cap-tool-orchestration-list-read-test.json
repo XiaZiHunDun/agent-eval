@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/a.mjs",
+      "content": "export const a = 1\n"
+    },
+    {
+      "path": "test/a.test.mjs",
+      "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { a } from \"../src/a.mjs\"\n\ntest(\"a 等于 1\", () => {\n  assert.equal(a, 1)\n})\n"
+    }
+  ]
+}

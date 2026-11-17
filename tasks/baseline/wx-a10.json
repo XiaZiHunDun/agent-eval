@@ -1,0 +1,22 @@
+{
+  "id": "wx-a10",
+  "title": "加 unit test",
+  "suite": "baseline",
+  "taxonomy": "code-edit",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "给 packages/runtime/src/run-engine.ts 加个 unit test 覆盖 conflict 路径"
+  ],
+  "expect": {
+    "replyPattern": "建议|conflict",
+    "finalDecision": "Respond",
+    "minToolCalls": 1
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "A10"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "plan": [
+    {
+      "content": "优化什么？范围很大。常见的方向：\n- 代码质量（lint / typecheck / deadcode）\n- 性能（profile + 找热点）\n- UX（reply 格式 / 延迟）\n- 架构（§18 延后项 / 端口物化）\n\n请告诉我要优化哪条。",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

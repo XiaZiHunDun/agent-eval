@@ -1,0 +1,38 @@
+{
+  "id": "cap-debug-null-guard",
+  "title": "补空 profile 兜底并跑测试",
+  "suite": "capability",
+  "taxonomy": "debug",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "displayName 在缺少 profile 时会抛错，修复成返回匿名，并跑测试。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-debug-null-guard"
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/user.test.mjs",
+      "failToPass": [
+        "缺少 profile 返回匿名"
+      ]
+    }
+  }
+}

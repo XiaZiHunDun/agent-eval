@@ -1,0 +1,9 @@
+{
+  "plan": [
+    {
+      "content": "demo turn 1: 在的。",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

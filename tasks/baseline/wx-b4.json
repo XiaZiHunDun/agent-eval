@@ -1,0 +1,21 @@
+{
+  "id": "wx-b4",
+  "title": "最近 3 天做了什么",
+  "suite": "baseline",
+  "taxonomy": "retrieval",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "最近 3 天你帮我做了什么"
+  ],
+  "expect": {
+    "replyPattern": "commit|会话",
+    "finalDecision": "Respond"
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "B4"
+    }
+  }
+}

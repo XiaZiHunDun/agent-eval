@@ -1,0 +1,21 @@
+{
+  "id": "wx-c5",
+  "title": "模糊 优化",
+  "suite": "baseline",
+  "taxonomy": "robustness",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "优化一下"
+  ],
+  "expect": {
+    "replyPattern": "哪条|方向",
+    "finalDecision": "Respond"
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "C5"
+    }
+  }
+}

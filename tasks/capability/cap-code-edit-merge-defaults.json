@@ -1,0 +1,38 @@
+{
+  "id": "cap-code-edit-merge-defaults",
+  "title": "实现默认值合并并跑测试",
+  "suite": "capability",
+  "taxonomy": "code-edit",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "修复 src/merge.mjs 的 mergeDefaults，让测试通过；不要修改原对象。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-code-edit-merge-defaults"
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/merge.test.mjs",
+      "failToPass": [
+        "mergeDefaults 保留默认值"
+      ]
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "cap-tool-orchestration-list-read-test",
+  "title": "列目录、读文件、跑测试串联",
+  "suite": "capability",
+  "taxonomy": "tool-orchestration",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "先看仓库有哪些文件，再读 src/a.mjs，然后运行 node --test test/a.test.mjs，最后告诉我结果。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-tool-orchestration-list-read-test"
+    }
+  },
+  "expect": {
+    "requiredTools": [
+      "read_file",
+      "run_command"
+    ],
+    "forbiddenTools": [
+      "write_file"
+    ],
+    "toolArgs": [
+      {
+        "name": "read_file",
+        "args": {
+          "path": "src/a.mjs"
+        }
+      }
+    ]
+  }
+}

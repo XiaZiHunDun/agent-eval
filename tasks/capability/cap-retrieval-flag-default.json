@@ -1,0 +1,36 @@
+{
+  "id": "cap-retrieval-flag-default",
+  "title": "查功能开关默认值",
+  "suite": "capability",
+  "taxonomy": "retrieval",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "newUi 默认是否开启？用哪个环境变量开启？"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-retrieval-flag-default"
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredTools": [
+      "read_file"
+    ],
+    "forbiddenTools": [
+      "write_file"
+    ],
+    "containsAll": [
+      "false",
+      "FEATURE_NEW_UI"
+    ]
+  }
+}

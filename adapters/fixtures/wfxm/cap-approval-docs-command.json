@@ -1,0 +1,8 @@
+{
+  "seedFiles": [
+    {
+      "path": "docs/deploy.md",
+      "content": "# 部署\n\n运行 `pnpm dev` 启动。\n"
+    }
+  ]
+}

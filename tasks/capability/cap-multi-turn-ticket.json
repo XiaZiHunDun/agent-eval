@@ -1,0 +1,32 @@
+{
+  "id": "cap-multi-turn-ticket",
+  "title": "跨轮记住工单号",
+  "suite": "capability",
+  "taxonomy": "multi-turn",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "记住工单号 WX-2026-114，不要写文件。",
+    "工单号是多少？只回编号。"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 4
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-multi-turn-ticket"
+    }
+  },
+  "expect": {
+    "followUpPatterns": [
+      "WX-2026-114"
+    ],
+    "forbiddenTools": [
+      "write_file"
+    ]
+  }
+}

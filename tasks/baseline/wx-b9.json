@@ -1,0 +1,21 @@
+{
+  "id": "wx-b9",
+  "title": "owner 应该关心什么",
+  "suite": "baseline",
+  "taxonomy": "planning",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "作为 owner 我应该关心什么"
+  ],
+  "expect": {
+    "replyPattern": "关心|频率",
+    "finalDecision": "Respond"
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "B9"
+    }
+  }
+}

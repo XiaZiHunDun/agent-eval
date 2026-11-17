@@ -1,0 +1,8 @@
+{
+  "seedFiles": [
+    {
+      "path": "docs/migrate.md",
+      "content": "# 迁移\n\n- 建新表\n- 双写校验\n- 切读流量\n- 停止双写\n- 删除旧表\n\n要求：任一步失败都能回滚到上一步。\n"
+    }
+  ]
+}

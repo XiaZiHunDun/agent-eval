@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/config.mjs",
+      "content": "export function readPort() {\n  return 3000\n}\n"
+    },
+    {
+      "path": "test/config.test.mjs",
+      "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { readPort } from \"../src/config.mjs\"\n\ntest(\"readPort 优先读取 PORT\", () => {\n  process.env.PORT = \"8080\"\n  assert.equal(readPort(), 8080)\n  delete process.env.PORT\n  assert.equal(readPort(), 3000)\n})\n"
+    }
+  ]
+}

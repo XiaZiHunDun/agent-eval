@@ -1,0 +1,22 @@
+{
+  "id": "wx-a8",
+  "title": "生成 PR 描述",
+  "suite": "baseline",
+  "taxonomy": "tool-orchestration",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "帮我写个 PR 描述，把最近 7 个 commit 整理出来"
+  ],
+  "expect": {
+    "replyPattern": "PR|摘要",
+    "finalDecision": "Respond",
+    "minToolCalls": 1
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "A8"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "seedFiles": [
+    {
+      "path": "README.md",
+      "content": "# demo 仓库\n\n包含以下模块：\n\n- src/config.mjs — 端口与常量\n- src/server.mjs — HTTP 入口\n- docs/deploy.md — 部署说明\n\n没有依赖，不需要安装或运行命令。\n"
+    },
+    {
+      "path": "src/config.mjs",
+      "content": "export const port = 3000\n"
+    },
+    {
+      "path": "src/server.mjs",
+      "content": "import { port } from \"./config.mjs\"\n\nconsole.log(`listen on ${port}`)\n"
+    }
+  ]
+}

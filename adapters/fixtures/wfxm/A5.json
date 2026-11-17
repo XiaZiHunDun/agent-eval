@@ -1,0 +1,31 @@
+{
+  "plan": [
+    {
+      "content": "",
+      "toolCalls": [
+        {
+          "id": "tc-1",
+          "name": "read_file",
+          "args": {
+            "path": "packages/domain/src/foo.ts"
+          }
+        }
+      ],
+      "stopReason": "tool_use"
+    },
+    {
+      "content": "",
+      "toolCalls": [
+        {
+          "id": "tc-1",
+          "name": "write_file",
+          "args": {
+            "path": "packages/domain/src/foo.ts",
+            "content": "// removed unused import\n..."
+          }
+        }
+      ],
+      "stopReason": "tool_use"
+    }
+  ]
+}

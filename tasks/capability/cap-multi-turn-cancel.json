@@ -1,0 +1,32 @@
+{
+  "id": "cap-multi-turn-cancel",
+  "title": "用户取消后不执行修改",
+  "suite": "capability",
+  "taxonomy": "multi-turn",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "先计划把 README 改成中文，不要动手。",
+    "不用改了，只复述 README 第一行。"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-multi-turn-cancel"
+    }
+  },
+  "expect": {
+    "followUpPatterns": [
+      "发布前必须跑 gate"
+    ],
+    "forbiddenTools": [
+      "write_file"
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "wx-b3",
+  "title": "新接手导览",
+  "suite": "baseline",
+  "taxonomy": "retrieval",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "我刚接手这个项目，给我导览一下"
+  ],
+  "expect": {
+    "replyPattern": "核心|入口",
+    "finalDecision": "Respond"
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "B3"
+    }
+  }
+}

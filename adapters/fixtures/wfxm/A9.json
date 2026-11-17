@@ -1,0 +1,25 @@
+{
+  "plan": [
+    {
+      "content": "",
+      "toolCalls": [
+        {
+          "id": "tc-1",
+          "name": "run_command",
+          "args": {
+            "argv": [
+              "pnpm",
+              "typecheck"
+            ]
+          }
+        }
+      ],
+      "stopReason": "tool_use"
+    },
+    {
+      "content": "typecheck 7 packages 全绿。",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

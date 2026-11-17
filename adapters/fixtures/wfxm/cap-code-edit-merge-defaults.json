@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/merge.mjs",
+      "content": "export function mergeDefaults(defaults, overrides) {\n  return overrides\n}\n"
+    },
+    {
+      "path": "test/merge.test.mjs",
+      "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { mergeDefaults } from \"../src/merge.mjs\"\n\ntest(\"mergeDefaults 保留默认值\", () => {\n  assert.deepEqual(mergeDefaults({ a: 1, b: 2 }, { b: 3 }), { a: 1, b: 3 })\n  assert.deepEqual(mergeDefaults({ a: 1 }, { c: 4 }), { a: 1, c: 4 })\n})\n"
+    }
+  ]
+}

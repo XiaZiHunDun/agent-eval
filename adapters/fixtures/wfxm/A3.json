@@ -1,0 +1,25 @@
+{
+  "plan": [
+    {
+      "content": "",
+      "toolCalls": [
+        {
+          "id": "tc-1",
+          "name": "run_command",
+          "args": {
+            "argv": [
+              "pnpm",
+              "test"
+            ]
+          }
+        }
+      ],
+      "stopReason": "tool_use"
+    },
+    {
+      "content": "已跑完。266 files / 1712 passed / 1 skipped，0 fail。",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

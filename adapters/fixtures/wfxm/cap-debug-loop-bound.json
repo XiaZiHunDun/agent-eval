@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/sum.mjs",
+      "content": "export function sumTo(n) {\n  let total = 0\n  for (let i = 1; i < n; i += 1) total += i\n  return total\n}\n"
+    },
+    {
+      "path": "test/sum.test.mjs",
+      "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { sumTo } from \"../src/sum.mjs\"\n\ntest(\"sum 包含上界\", () => {\n  assert.equal(sumTo(3), 6)\n  assert.equal(sumTo(1), 1)\n})\n"
+    }
+  ]
+}

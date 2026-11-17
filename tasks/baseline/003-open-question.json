@@ -1,0 +1,29 @@
+{
+  "id": "wx-b1-open-question",
+  "title": "开放问题不调用工具直接作答",
+  "suite": "baseline",
+  "taxonomy": "planning",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "v5 现在有什么问题？"
+  ],
+  "expect": {
+    "finalDecision": "Respond",
+    "replyPattern": "未|延后|缺口",
+    "maxToolCalls": 0,
+    "forbiddenTools": [
+      "read_file",
+      "write_file",
+      "run_command",
+      "shell"
+    ],
+    "requireToolSuccess": true
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "B1"
+    }
+  }
+}

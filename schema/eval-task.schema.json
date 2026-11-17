@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wfxm.local/schema/eval-task.v0.json",
+  "title": "EvalTask v0",
+  "description": "任务只描述「用户会怎么说 + 什么算做到」，不描述实现。runtimeHints 封装单个 runtime 的私有装配信息，评估核心不读取。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "suite", "turns", "expect"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "title": { "type": "string", "minLength": 1 },
+    "suite": { "type": "string", "minLength": 1 },
+    "taxonomy": {
+      "type": "string",
+      "minLength": 1,
+      "description": "能力维度，用于分层统计。建议值：code-edit / debug / retrieval / planning / multi-turn / approval-safety / tool-orchestration / robustness"
+    },
+    "difficulty": {
+      "enum": ["easy", "medium", "hard"],
+      "description": "难度分级，用于分层报告"
+    },
+    "source": {
+      "enum": ["handwritten", "regression", "online-replay", "public-benchmark"],
+      "description": "任务来源：手写 / 回归沉淀 / 线上脱敏回放 / 公开基准改写"
+    },
+    "split": {
+      "enum": ["dev", "test", "held-out"],
+      "description": "数据集划分；held-out 不参与调参与提示词迭代"
+    },
+    "kind": {
+      "enum": ["chat-task", "repo-task"],
+      "default": "chat-task",
+      "description": "chat-task 面向对话/工具行为；repo-task 面向仓库级开发任务，以测试结果为准"
+    },
+    "turns": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "timeoutMs": { "type": "integer", "minimum": 1000 },
+    "repo": {
+      "type": "object",
+      "description": "repo-task 的仓库来源；由 runtime adapter 解析为本地夹具",
+      "additionalProperties": false,
+      "required": ["fixture"],
+      "properties": {
+        "fixture": { "type": "string", "minLength": 1 }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "description": "开放式任务的预算上限；maxCostUsd 仅在 runtime 提供成本时生效",
+      "additionalProperties": false,
+      "properties": {
+        "maxTurns": { "type": "integer", "minimum": 1 },
+        "maxToolCalls": { "type": "integer", "minimum": 0 },
+        "maxCostUsd": { "type": "number", "minimum": 0 }
+      }
+    },
+    "weights": {
+      "type": "object",
+      "description": "评分权重；缺省由评估器给出",
+      "additionalProperties": false,
+      "properties": {
+        "task": { "type": "number", "minimum": 0, "maximum": 1 },
+        "trace": { "type": "number", "minimum": 0, "maximum": 1 },
+        "cost": { "type": "number", "minimum": 0, "maximum": 1 },
+        "latency": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "expect": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "replyPattern": { "type": "string" },
+        "containsAll": { "type": "array", "items": { "type": "string" } },
+        "containsNone": { "type": "array", "items": { "type": "string" } },
+        "followUpPatterns": { "type": "array", "items": { "type": "string" } },
+        "finalDecision": { "type": "string" },
+        "requireApproval": { "type": "boolean" },
+        "minToolCalls": { "type": "integer", "minimum": 0 },
+        "maxToolCalls": { "type": "integer", "minimum": 0 },
+        "requiredTools": { "type": "array", "items": { "type": "string" } },
+        "forbiddenTools": { "type": "array", "items": { "type": "string" } },
+        "requireToolSuccess": {
+          "type": "boolean",
+          "description": "为 true 时：若同时声明 toolArgs，则每个期望调用中至少要有一条参数匹配且 ok=true；未声明 toolArgs 时，要求全部工具执行 ok=true。只读结果，不解析轨迹事件本身"
+        },
+        "toolArgs": {
+          "type": "array",
+          "description": "每次断言要求存在一次工具调用，名一致且参数是期望对象的递归子集",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "args"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "args": { "type": "object" }
+            }
+          }
+        },
+        "workspaceState": {
+          "type": "array",
+          "description": "执行结束后回读工作区文件（相对工作区根目录）；exists=false 断言文件不存在，其余字段断言内容",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path"],
+            "properties": {
+              "path": { "type": "string", "minLength": 1 },
+              "exists": { "type": "boolean" },
+              "equals": { "type": "string" },
+              "contains": { "type": "string" },
+              "matches": { "type": "string" }
+            }
+          }
+        },
+        "tests": {
+          "type": "object",
+          "description": "仓库任务以测试为 oracle：先跑基线，再跑执行后的测试。failToPass 必须基线失败、终态通过；passToPass 必须两次都通过。",
+          "additionalProperties": false,
+          "required": ["command"],
+          "properties": {
+            "command": { "type": "string", "minLength": 1 },
+            "failToPass": { "type": "array", "items": { "type": "string" } },
+            "passToPass": { "type": "array", "items": { "type": "string" } },
+            "timeoutMs": { "type": "integer", "minimum": 1000 }
+          }
+        }
+      }
+    },
+    "runtimeHints": {
+      "type": "object",
+      "additionalProperties": { "type": "object" }
+    }
+  }
+}

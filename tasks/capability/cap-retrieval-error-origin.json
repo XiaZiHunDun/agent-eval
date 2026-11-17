@@ -1,0 +1,36 @@
+{
+  "id": "cap-retrieval-error-origin",
+  "title": "定位错误码抛出文件",
+  "suite": "capability",
+  "taxonomy": "retrieval",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "哪个文件会抛 E_TIMEOUT？只回文件名。"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-retrieval-error-origin"
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredAnyTools": [
+      "read_file",
+      "run_command"
+    ],
+    "forbiddenTools": [
+      "write_file"
+    ],
+    "containsAll": [
+      "b.mjs"
+    ]
+  }
+}

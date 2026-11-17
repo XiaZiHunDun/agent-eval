@@ -1,0 +1,40 @@
+{
+  "id": "heldout-debug-cache-tenant",
+  "title": "修复缓存键漏租户",
+  "suite": "heldout",
+  "taxonomy": "debug",
+  "difficulty": "hard",
+  "source": "handwritten",
+  "split": "held-out",
+  "kind": "chat",
+  "turns": [
+    "测试显示不同租户读到同一缓存。先读代码定位并修复 src/cache.mjs，暂时不要跑测试。",
+    "确认",
+    "修复后请跑 node --test --test-reporter=tap test/cache.test.mjs 验证。",
+    "确认"
+  ],
+  "timeoutMs": 300000,
+  "budget": {
+    "maxTurns": 4,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "heldout-debug-cache-tenant"
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/cache.test.mjs",
+      "failToPass": [
+        "缓存按租户隔离"
+      ]
+    }
+  }
+}

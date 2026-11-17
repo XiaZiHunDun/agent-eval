@@ -1,0 +1,20 @@
+{
+  "plan": [
+    {
+      "content": "",
+      "toolCalls": [{ "id": "tc-1", "name": "read_file", "args": { "path": "README.md" } }],
+      "stopReason": "tool_use"
+    },
+    {
+      "content": "已读 README.md：项目是 butler-v5 — 函数式架构微信编码管家。主要功能：编码、会话记忆、微信入站。\n\n想深入看哪部分？",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ],
+  "seedFiles": [
+    {
+      "path": "README.md",
+      "content": "# butler-v5\n\n微信编码管家。包含：编码能力、会话记忆、微信入站。\n"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "cap-retrieval-port-source",
+  "title": "定位端口配置来源",
+  "suite": "capability",
+  "taxonomy": "retrieval",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "这个仓库的服务端口最终从哪个环境变量读取？只告诉我文件路径和变量名，不要改代码。"
+  ],
+  "timeoutMs": 120000,
+  "budget": { "maxTurns": 1, "maxToolCalls": 10 },
+  "runtimeHints": { "wfxm": { "scenarioId": "cap-retrieval-port-source" } },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredAnyTools": ["read_file", "run_command"],
+    "forbiddenTools": ["write_file"],
+    "containsAll": ["APP_PORT"],
+    "replyPattern": "APP_PORT"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": "repo-003-bytes",
+  "suite": "repo",
+  "taxonomy": "debug",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "repo-task",
+  "title": "修复 formatBytes 的 KB 精度",
+  "turns": [
+    "formatBytes(1536) 期望是 1.5 KB，现在不对，帮我修一下并跑 test/bytes.test.mjs。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "repo": {
+    "fixture": "tiny-kit"
+  },
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "repo-bytes"
+    }
+  },
+  "expect": {
+    "tests": {
+      "command": "node --test --test-reporter=tap test/bytes.test.mjs",
+      "failToPass": [
+        "formatBytes: KB 保留一位小数"
+      ],
+      "passToPass": [
+        "formatBytes: 小文件用字节"
+      ]
+    },
+    "workspaceState": [
+      {
+        "path": "src/bytes.mjs",
+        "contains": "unit === 0 ? 0 : 1"
+      }
+    ],
+    "toolArgs": [
+      {
+        "name": "read_file",
+        "args": {
+          "path": "src/bytes.mjs"
+        }
+      }
+    ],
+    "requireToolSuccess": true,
+    "finalDecision": "WaitForApproval"
+  }
+}

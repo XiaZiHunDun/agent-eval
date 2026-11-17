@@ -1,0 +1,20 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/defaults.mjs",
+      "content": "export const DEFAULT_TIMEOUT_MS = 5000\n"
+    },
+    {
+      "path": "src/config.mjs",
+      "content": "import { DEFAULT_TIMEOUT_MS } from \"./defaults.mjs\"\n\nexport function requestTimeoutMs() {\n  return Number(process.env.HTTP_TIMEOUT_MS ?? DEFAULT_TIMEOUT_MS)\n}\n"
+    },
+    {
+      "path": "docs/timeout.md",
+      "content": "# 超时说明（历史文档）\n\n超时时间由 src/defaults.mjs 的 DEFAULT_TIMEOUT_MS 决定，默认 5000ms。\n\n> 注意：该文档未同步环境变量覆盖逻辑，以代码为准。\n"
+    },
+    {
+      "path": "README.md",
+      "content": "# cap-retrieval-cross-file\n\nHTTP 超时相关说明见 docs/timeout.md 与 src/config.mjs。\n"
+    }
+  ]
+}

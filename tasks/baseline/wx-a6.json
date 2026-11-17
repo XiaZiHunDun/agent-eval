@@ -1,0 +1,22 @@
+{
+  "id": "wx-a6",
+  "title": "timeout 可配",
+  "suite": "baseline",
+  "taxonomy": "code-edit",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "把 utils.ts 的 timeout 改成可配的"
+  ],
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "minToolCalls": 2
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "A6"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "content": "",
+      "toolCalls": [
+        {
+          "id": "tc-1",
+          "name": "read_file",
+          "args": {
+            "path": "packages/runtime/src/run-engine.test.ts"
+          }
+        }
+      ],
+      "stopReason": "tool_use"
+    },
+    {
+      "content": "看了 run-engine.test.ts，已经有 ActiveMainRunConflict 测试（line 271 + 448）。如要补充，建议加：\n- 并发 2 个 inbound 到同 convId 验证第二个抛\n- resumeRun 错误状态（已 terminal）抛错\n\n要加哪个？",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

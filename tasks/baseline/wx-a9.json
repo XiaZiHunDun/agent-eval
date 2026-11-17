@@ -1,0 +1,22 @@
+{
+  "id": "wx-a9",
+  "title": "跑 typecheck",
+  "suite": "baseline",
+  "taxonomy": "tool-orchestration",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "跑下 typecheck"
+  ],
+  "expect": {
+    "replyPattern": "typecheck|绿",
+    "finalDecision": "Respond",
+    "minToolCalls": 1
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "A9"
+    }
+  }
+}

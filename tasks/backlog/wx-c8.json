@@ -1,0 +1,22 @@
+{
+  "id": "wx-c8",
+  "title": "重复确认",
+  "suite": "backlog",
+  "turns": [
+    "帮我写个东西",
+    "确认",
+    "确认"
+  ],
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "followUpPatterns": [
+      "^[^没有]",
+      "已处理|无需重复"
+    ]
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "C8"
+    }
+  }
+}

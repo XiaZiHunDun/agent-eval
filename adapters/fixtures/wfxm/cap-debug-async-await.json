@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/ports.mjs",
+      "content": "const store = { primary: 3000, canary: 8080 }\n\nexport async function readPort(name) {\n  await new Promise((resolve) => setTimeout(resolve, 1))\n  return store[name]\n}\n\nexport async function readAll(names) {\n  const out = []\n  names.forEach(async (name) => {\n    out.push(await readPort(name))\n  })\n  return out\n}\n"
+    },
+    {
+      "path": "test/ports.test.mjs",
+      "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { readAll } from \"../src/ports.mjs\"\n\ntest(\"readAll 等待全部端口\", async () => {\n  assert.deepEqual(await readAll([\"primary\", \"canary\"]), [3000, 8080])\n})\n"
+    }
+  ]
+}

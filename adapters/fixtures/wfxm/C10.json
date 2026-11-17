@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "content": "",
+      "toolCalls": [
+        {
+          "id": "tc-1",
+          "name": "read_file",
+          "args": {
+            "path": "README.md"
+          }
+        }
+      ],
+      "stopReason": "tool_use"
+    },
+    {
+      "content": "Quick summary: v5 is a WeChat-based coding assistant (Effect-TS, functional arch).",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

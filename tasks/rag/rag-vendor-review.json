@@ -1,0 +1,53 @@
+{
+  "id": "rag-vendor-review",
+  "title": "供应商安全评审有效期",
+  "suite": "rag",
+  "taxonomy": "retrieval",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat-task",
+  "turns": [
+    "采购要引入一家普通供应商，帮我查安全文档：安全评审结果的有效期是多久？"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 8
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "rag-vendor-review",
+      "rag": {
+        "documents": [
+          {
+            "title": "供应商安全评审流程",
+            "format": "markdown",
+            "text": "# 供应商安全评审流程\n\n## 分级\n- 常规供应商：不接触客户数据\n- 高风险供应商：处理客户数据或接入生产网络\n\n## 有效期\n- 常规供应商评审结果有效期 12 个月\n- 高风险供应商每 6 个月复评一次\n\n## 材料\n安全问卷、等保/ISO 证书、渗透测试报告（如有）。评审结论分通过、有条件通过、不通过。\n\n## 复审\n到期前 30 天由采购发起复审。"
+          },
+          {
+            "title": "采购准入清单",
+            "format": "markdown",
+            "text": "# 采购准入清单\n\n新供应商需提供营业执照、开户许可证、报价单与安全评审结论。合同金额超过 50 万需招标。准入结论由采购委员会确认。"
+          },
+          {
+            "title": "数据出境评估指引",
+            "format": "markdown",
+            "text": "# 数据出境评估指引\n\n涉及数据出境的供应商需额外完成安全评估与合同条款审查，评估周期约 30 个工作日。未通过评估不得传输数据。"
+          }
+        ],
+        "expectation": {
+          "expectedDocTitles": ["供应商安全评审流程"],
+          "reference": "常规供应商的安全评审有效期是 12 个月；高风险供应商需要每 6 个月复评。"
+        }
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredTools": ["recall_document"],
+    "toolArgs": [{ "name": "recall_document", "args": {} }],
+    "requireToolSuccess": true,
+    "replyPattern": "12\\s*个月"
+  }
+}

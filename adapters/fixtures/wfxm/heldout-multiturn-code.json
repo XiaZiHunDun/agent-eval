@@ -1,0 +1,8 @@
+{
+  "seedFiles": [
+    {
+      "path": "README.md",
+      "content": "# 对话仓库\n\n无需读写文件或运行命令。\n"
+    }
+  ]
+}

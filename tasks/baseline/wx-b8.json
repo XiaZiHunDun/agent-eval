@@ -1,0 +1,21 @@
+{
+  "id": "wx-b8",
+  "title": "我没用过的功能",
+  "suite": "baseline",
+  "taxonomy": "retrieval",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "哪些功能是我没用过的"
+  ],
+  "expect": {
+    "replyPattern": "埋点|没用",
+    "finalDecision": "Respond"
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "B8"
+    }
+  }
+}

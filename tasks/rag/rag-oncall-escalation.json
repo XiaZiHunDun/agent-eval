@@ -1,0 +1,53 @@
+{
+  "id": "rag-oncall-escalation",
+  "title": "P1 故障升级时限与联系人",
+  "suite": "rag",
+  "taxonomy": "retrieval",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat-task",
+  "turns": [
+    "查一下文档库里的值班流程：线上 P1 故障需要在多久内升级？应该找谁？"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 8
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "rag-oncall-escalation",
+      "rag": {
+        "documents": [
+          {
+            "title": "线上故障值班与升级流程",
+            "format": "markdown",
+            "text": "# 线上故障值班与升级流程\n\n## 分级\n- P1：核心交易不可用或大面积错误\n- P2：单一功能降级\n- P3：体验问题\n\n## 升级时限\n- P1：发现后 15 分钟内升级到值班经理，同时拉 incident 群\n- P2：1 小时内升级到模块 owner\n- P3：次工作日处理\n\n## 联系人\nP1 值班经理：张衡（企业微信 @zhangheng），备岗：李岑。\n\n升级时必须附：影响面、开始时间、已尝试的止血动作。"
+          },
+          {
+            "title": "变更管理规范",
+            "format": "markdown",
+            "text": "# 变更管理规范\n\n变更失败时 10 分钟内回滚；回滚后再评估是否重新发布。变更窗口默认工作日 10:00-17:00。P1 期间冻结非必要变更。"
+          },
+          {
+            "title": "监控告警接入说明",
+            "format": "markdown",
+            "text": "# 监控告警接入说明\n\n告警分三级：critical 电话 + 企业微信，warning 仅企业微信，info 进日报。值班同学需要在 5 分钟内认领 critical 告警。"
+          }
+        ],
+        "expectation": {
+          "expectedDocTitles": ["线上故障值班与升级流程"],
+          "reference": "P1 故障需要在发现后 15 分钟内升级到值班经理张衡（备岗李岑）。"
+        }
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredTools": ["recall_document"],
+    "toolArgs": [{ "name": "recall_document", "args": {} }],
+    "requireToolSuccess": true,
+    "replyPattern": "15\\s*分钟[\\s\\S]*张衡|张衡[\\s\\S]*15\\s*分钟"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/text.mjs",
+      "content": "export function slugify(input) {\n  return input\n}\n"
+    },
+    {
+      "path": "test/text.test.mjs",
+      "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { slugify } from \"../src/text.mjs\"\n\ntest(\"slugify 生成短横线\", () => {\n  assert.equal(slugify(\"Hello World\"), \"hello-world\")\n  assert.equal(slugify(\" Agent  Eval \"), \"agent-eval\")\n})\n"
+    }
+  ]
+}

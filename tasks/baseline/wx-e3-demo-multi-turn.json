@@ -1,0 +1,21 @@
+{
+  "id": "wx-e3-demo-multi-turn",
+  "title": "demo 多轮：同 convId 跨 2 turn 不掉线",
+  "suite": "baseline",
+  "taxonomy": "multi-turn",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "你好",
+    "在吗"
+  ],
+  "expect": {
+    "finalDecision": "Respond"
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "E3-demo-multi-turn"
+    }
+  }
+}

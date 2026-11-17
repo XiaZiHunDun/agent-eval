@@ -1,0 +1,37 @@
+{
+  "id": "cap-planning-hotfix-order",
+  "title": "按影响面排序故障修复",
+  "suite": "capability",
+  "taxonomy": "planning",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "给出 docs/incident.md 中三个故障的修复顺序和理由；不要改文件。"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-planning-hotfix-order"
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredTools": [
+      "read_file"
+    ],
+    "forbiddenTools": [
+      "write_file"
+    ],
+    "containsAll": [
+      "502",
+      "报表",
+      "日志"
+    ]
+  }
+}

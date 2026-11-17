@@ -1,0 +1,38 @@
+{
+  "id": "cap-planning-release-order",
+  "title": "按发布风险排序三类改动",
+  "suite": "capability",
+  "taxonomy": "planning",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "按发布优先级排序 docs/release.md 里的三项并说明理由；只读，不改文件。"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-planning-release-order"
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredTools": [
+      "read_file"
+    ],
+    "forbiddenTools": [
+      "write_file"
+    ],
+    "containsAll": [
+      "数据库",
+      "开关",
+      "文档"
+    ],
+    "replyPattern": "1[.、)]|首先|优先"
+  }
+}

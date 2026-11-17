@@ -1,0 +1,32 @@
+{
+  "id": "cap-multi-turn-preference",
+  "title": "按上一轮偏好用要点回答",
+  "suite": "capability",
+  "taxonomy": "multi-turn",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "之后回答尽量用要点，不要寒暄。",
+    "列出仓库里两个模块及用途。"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-multi-turn-preference"
+    }
+  },
+  "expect": {
+    "followUpPatterns": [
+      "config[\\s\\S]*server|server[\\s\\S]*config"
+    ],
+    "forbiddenTools": [
+      "write_file"
+    ]
+  }
+}

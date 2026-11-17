@@ -1,0 +1,53 @@
+{
+  "id": "rag-release-freeze",
+  "title": "年底代码冻结起止时间",
+  "suite": "rag",
+  "taxonomy": "retrieval",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat-task",
+  "turns": [
+    "年底要排发布计划，帮我查文档：代码冻结从哪天开始？"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 8
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "rag-release-freeze",
+      "rag": {
+        "documents": [
+          {
+            "title": "发布窗口与代码冻结",
+            "format": "markdown",
+            "text": "# 发布窗口与代码冻结\n\n## 常规窗口\n工作日 10:00-17:00 可发布，周五 15:00 后不发起新发布。\n\n## 年底冻结\n每年 12 月 24 日至次年 1 月 2 日全量代码冻结，禁止合并与发布。\n\n## 例外\nP1 修复可申请紧急发布，需 CTO 审批并在 incident 群同步。\n\n## 冻结前检查\n完成回归、依赖扫描与数据库变更评审。"
+          },
+          {
+            "title": "版本发布流程",
+            "format": "markdown",
+            "text": "# 版本发布流程\n\n1. 提测：合并到 release 分支\n2. 回归：自动化 + 冒烟\n3. 发布：灰度 10% → 50% → 100%\n4. 观察：每个阶段至少 30 分钟\n\n发布失败按变更管理规范回滚。"
+          },
+          {
+            "title": "节假日值班安排",
+            "format": "markdown",
+            "text": "# 节假日值班安排\n\n春节、国庆安排双人值班，值班表提前一周公布。节假日期间只处理 P1/P2，非紧急需求顺延到工作日。"
+          }
+        ],
+        "expectation": {
+          "expectedDocTitles": ["发布窗口与代码冻结"],
+          "reference": "年底代码冻结从 12 月 24 日开始，到次年 1 月 2 日结束。"
+        }
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredTools": ["recall_document"],
+    "toolArgs": [{ "name": "recall_document", "args": {} }],
+    "requireToolSuccess": true,
+    "replyPattern": "12\\s*月\\s*24\\s*日"
+  }
+}

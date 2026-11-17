@@ -1,0 +1,21 @@
+{
+  "id": "wx-c6",
+  "title": "跨天 上次聊到哪",
+  "suite": "baseline",
+  "taxonomy": "multi-turn",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "上次我们聊到哪"
+  ],
+  "expect": {
+    "replyPattern": "会话|历史",
+    "finalDecision": "Respond"
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "C6"
+    }
+  }
+}

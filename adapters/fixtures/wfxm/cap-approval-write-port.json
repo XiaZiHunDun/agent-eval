@@ -1,0 +1,8 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/config.mjs",
+      "content": "export const port = 3000\n"
+    }
+  ]
+}

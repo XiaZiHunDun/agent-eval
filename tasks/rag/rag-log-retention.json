@@ -1,0 +1,53 @@
+{
+  "id": "rag-log-retention",
+  "title": "客户对话日志留存期限",
+  "suite": "rag",
+  "taxonomy": "retrieval",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat-task",
+  "turns": [
+    "查一下数据留存规范：客户对话日志默认保留多久？"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 8
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "rag-log-retention",
+      "rag": {
+        "documents": [
+          {
+            "title": "数据留存与删除规范",
+            "format": "markdown",
+            "text": "# 数据留存与删除规范\n\n## 留存期限\n- 客户对话日志：默认保留 180 天\n- 审计日志：保留 2 年\n- 支付凭证：按财务法规保留 10 年\n- 埋点明细：保留 90 天\n\n## 删除请求\n客户提交删除请求后，30 天内完成主库与备份清理，并出具删除确认。\n\n## 例外\n涉诉或监管调查数据冻结留存，直到案件结束。"
+          },
+          {
+            "title": "隐私政策摘要",
+            "format": "markdown",
+            "text": "# 隐私政策摘要\n\n我们仅在提供服务所必需的范围内收集信息，并遵循最小化原则。客户可随时导出或删除个人数据。跨境传输需单独告知并取得同意。"
+          },
+          {
+            "title": "客服工单导出说明",
+            "format": "markdown",
+            "text": "# 客服工单导出说明\n\n工单导出文件保留 90 天，过期自动清理。导出包含聊天记录、附件与处理备注。批量导出需主管审批。"
+          }
+        ],
+        "expectation": {
+          "expectedDocTitles": ["数据留存与删除规范"],
+          "reference": "客户对话日志默认保留 180 天；审计日志保留 2 年。"
+        }
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredTools": ["recall_document"],
+    "toolArgs": [{ "name": "recall_document", "args": {} }],
+    "requireToolSuccess": true,
+    "replyPattern": "180\\s*天"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/config.mjs",
+      "content": "export const port = Number(process.env.APP_PORT ?? 3000)\n"
+    },
+    {
+      "path": "docs/deploy.md",
+      "content": "# 部署说明\n\n服务端口通过环境变量 `APP_PORT` 注入，未设置时默认 3000。\n\n```bash\nAPP_PORT=8080 node src/server.mjs\n```\n"
+    },
+    {
+      "path": "README.md",
+      "content": "# cap-retrieval\n\n配置与部署见 docs/deploy.md。\n"
+    }
+  ]
+}

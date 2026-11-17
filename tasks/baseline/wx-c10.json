@@ -1,0 +1,22 @@
+{
+  "id": "wx-c10",
+  "title": "多语言混合",
+  "suite": "baseline",
+  "taxonomy": "retrieval",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "Read the 🐛 README 📖 pls，给我摘要 in English"
+  ],
+  "expect": {
+    "replyPattern": "summary|assistant|WeChat",
+    "finalDecision": "Respond",
+    "minToolCalls": 1
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "C10"
+    }
+  }
+}

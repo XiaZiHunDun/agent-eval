@@ -1,0 +1,20 @@
+{
+  "id": "cap-multi-turn-branch",
+  "title": "跨轮记住发布分支约定",
+  "suite": "capability",
+  "taxonomy": "multi-turn",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "记住一个约定：发布分支统一用 release/2026-11。不用写文件，也不用创建任何文件。",
+    "发布分支叫什么？只回分支名。"
+  ],
+  "timeoutMs": 120000,
+  "budget": { "maxTurns": 2, "maxToolCalls": 8 },
+  "runtimeHints": { "wfxm": { "scenarioId": "cap-multi-turn-branch" } },
+  "expect": {
+    "followUpPatterns": ["release/2026-11"]
+  }
+}

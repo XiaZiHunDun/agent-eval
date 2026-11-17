@@ -1,0 +1,27 @@
+{
+  "plan": [
+    {
+      "content": "",
+      "toolCalls": [{ "id": "tc-1", "name": "read_file", "args": { "path": "src/unique.mjs" } }],
+      "stopReason": "tool_use"
+    },
+    {
+      "content": "",
+      "toolCalls": [
+        {
+          "id": "tc-2",
+          "name": "write_file",
+          "args": {
+            "path": "src/unique.mjs",
+            "content": "/**\n * 去重并保持首次出现顺序。\n * 字符串按大小写不敏感去重，保留第一次出现的写法。\n */\nexport function unique(items) {\n  const seen = new Set()\n  const out = []\n  for (const item of items) {\n    const key = String(item).toLowerCase()\n    if (seen.has(key)) continue\n    seen.add(key)\n    out.push(item)\n  }\n  return out\n}\n"
+          }
+        }
+      ],
+      "stopReason": "tool_use"
+    },
+    {
+      "content": "已修复 unique：按小写键去重，并保留第一次出现的元素。",
+      "stopReason": "end_turn"
+    }
+  ]
+}

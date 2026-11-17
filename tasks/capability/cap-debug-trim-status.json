@@ -1,0 +1,38 @@
+{
+  "id": "cap-debug-trim-status",
+  "title": "修复状态比较空白字符",
+  "suite": "capability",
+  "taxonomy": "debug",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "isDone 对 'done' 返回 false，修复并跑 test/status.test.mjs。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-debug-trim-status"
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/status.test.mjs",
+      "failToPass": [
+        "状态比较忽略空白"
+      ]
+    }
+  }
+}

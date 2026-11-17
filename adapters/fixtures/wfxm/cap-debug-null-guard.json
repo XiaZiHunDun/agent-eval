@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/user.mjs",
+      "content": "export function displayName(user) {\n  return user.profile.name\n}\n"
+    },
+    {
+      "path": "test/user.test.mjs",
+      "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { displayName } from \"../src/user.mjs\"\n\ntest(\"缺少 profile 返回匿名\", () => {\n  assert.equal(displayName({ profile: { name: \"Ada\" } }), \"Ada\")\n  assert.equal(displayName({}), \"匿名\")\n})\n"
+    }
+  ]
+}

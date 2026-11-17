@@ -1,0 +1,23 @@
+{
+  "plan": [
+    {
+      "content": "",
+      "toolCalls": [
+        {
+          "id": "tc-1",
+          "name": "write_file",
+          "args": {
+            "path": "demo-hello.txt",
+            "content": "hello"
+          }
+        }
+      ],
+      "stopReason": "tool_use"
+    },
+    {
+      "content": "✅ demo: demo-hello.txt 已写入。",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

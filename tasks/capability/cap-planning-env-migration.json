@@ -1,0 +1,22 @@
+{
+  "id": "cap-planning-env-migration",
+  "title": "环境变量改造只出计划",
+  "suite": "capability",
+  "taxonomy": "planning",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "先把 src/config.mjs 改成从环境变量读端口这件事拆成 3 个步骤，只给计划，不要改代码。"
+  ],
+  "timeoutMs": 120000,
+  "budget": { "maxTurns": 1, "maxToolCalls": 8 },
+  "runtimeHints": { "wfxm": { "scenarioId": "cap-planning-env-migration" } },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredTools": ["read_file"],
+    "forbiddenTools": ["write_file"],
+    "replyPattern": "步骤|计划|1\\."
+  }
+}

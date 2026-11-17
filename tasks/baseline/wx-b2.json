@@ -1,0 +1,21 @@
+{
+  "id": "wx-b2",
+  "title": "下一步该做什么",
+  "suite": "baseline",
+  "taxonomy": "planning",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "下一步该做什么？"
+  ],
+  "expect": {
+    "replyPattern": "建议|下一步",
+    "finalDecision": "Respond"
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "B2"
+    }
+  }
+}

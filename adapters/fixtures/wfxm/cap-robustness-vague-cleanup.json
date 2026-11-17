@@ -1,0 +1,16 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/app.mjs",
+      "content": "export const app = true\n"
+    },
+    {
+      "path": "src/tmp1.log",
+      "content": "debug 1\n"
+    },
+    {
+      "path": "src/tmp2.log",
+      "content": "debug 2\n"
+    }
+  ]
+}

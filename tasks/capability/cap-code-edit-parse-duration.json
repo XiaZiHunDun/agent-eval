@@ -1,0 +1,38 @@
+{
+  "id": "cap-code-edit-parse-duration",
+  "title": "实现时长解析并跑测试",
+  "suite": "capability",
+  "taxonomy": "code-edit",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "实现 src/time.mjs 的 parseDuration，支持 h/m/s 组合，让测试通过。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-code-edit-parse-duration"
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/time.test.mjs",
+      "failToPass": [
+        "parseDuration 支持小时和秒"
+      ]
+    }
+  }
+}

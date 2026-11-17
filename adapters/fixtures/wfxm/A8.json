@@ -1,0 +1,27 @@
+{
+  "plan": [
+    {
+      "content": "",
+      "toolCalls": [
+        {
+          "id": "tc-1",
+          "name": "run_command",
+          "args": {
+            "argv": [
+              "git",
+              "log",
+              "--oneline",
+              "-7"
+            ]
+          }
+        }
+      ],
+      "stopReason": "tool_use"
+    },
+    {
+      "content": "PR 描述草稿：\n## 摘要\n- 新增微信端到端模拟验收 harness（4 acceptance 文件 / 11 用例）\n- 修复 doc 链接 + 清理 spec placeholder\n- CI 纳入 acceptance + pre-commit hook 同步闭环\n\n## 测试\n- 全量回归 266/1712/1skip pass\n- typecheck/lint 0 警",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "plan": [
+    {
+      "content": "",
+      "toolCalls": [
+        {
+          "id": "tc-1",
+          "name": "write_file",
+          "args": {
+            "path": "foo.txt",
+            "content": "x"
+          }
+        }
+      ],
+      "stopReason": "tool_use"
+    }
+  ]
+}

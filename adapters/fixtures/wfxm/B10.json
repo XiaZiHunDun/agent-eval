@@ -1,0 +1,9 @@
+{
+  "plan": [
+    {
+      "content": "建议本周 focus 顺序：\n1. 跑完 realistic scenarios 35 个，写分析\n2. 选 1-2 个最痛的格式 / 延迟 / approval 边界问题修\n3. 加 LLM 真实质量记录（fixture-recording）\n4. owner 视角实测 1 周（你手动）\n5. 视情况重启某条延后项",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

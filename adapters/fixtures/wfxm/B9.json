@@ -1,0 +1,9 @@
+{
+  "plan": [
+    {
+      "content": "你该关心的（按频率/影响）：\n- 每天：bot reply 是否真帮上忙（最直接）\n- 每周：哪些命令在用、哪些 dead；哪类请求 bot 答得不对\n- 每月：架构 §18 20 项是否撞到；MCP / approval / memory 是否有边界 case\n- 季度：v5 vs 其他工具的 UX gap；新需求能否低门槛实现",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

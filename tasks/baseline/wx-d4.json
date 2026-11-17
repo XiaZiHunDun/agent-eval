@@ -1,0 +1,25 @@
+{
+  "id": "wx-d4",
+  "title": "被打断 resume",
+  "suite": "baseline",
+  "taxonomy": "multi-turn",
+  "difficulty": "hard",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "开始重构 butler-v5/packages/runtime",
+    "列出 plan 给我看"
+  ],
+  "expect": {
+    "finalDecision": "Respond",
+    "minToolCalls": 1,
+    "followUpPatterns": [
+      "plan|重构"
+    ]
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "D4"
+    }
+  }
+}

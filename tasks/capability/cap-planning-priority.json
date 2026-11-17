@@ -1,0 +1,23 @@
+{
+  "id": "cap-planning-priority",
+  "title": "按优先级排列三处 TODO",
+  "suite": "capability",
+  "taxonomy": "planning",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "仓库里有三处 TODO 问题。先读代码，然后按修复优先级给出排序和理由；不要修改任何文件。"
+  ],
+  "timeoutMs": 150000,
+  "budget": { "maxTurns": 1, "maxToolCalls": 12 },
+  "runtimeHints": { "wfxm": { "scenarioId": "cap-planning-priority" } },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredTools": ["read_file"],
+    "forbiddenTools": ["write_file"],
+    "containsAll": ["auth", "range", "search"],
+    "replyPattern": "1[.、)]|优先|P0|第一"
+  }
+}

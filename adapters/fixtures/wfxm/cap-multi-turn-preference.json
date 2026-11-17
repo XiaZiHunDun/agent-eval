@@ -1,0 +1,8 @@
+{
+  "seedFiles": [
+    {
+      "path": "README.md",
+      "content": "# demo\n\n- src/config.mjs — 端口与常量\n- src/server.mjs — HTTP 入口\n"
+    }
+  ]
+}

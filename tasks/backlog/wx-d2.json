@@ -1,0 +1,21 @@
+{
+  "id": "wx-d2",
+  "title": "看看 后续追问",
+  "suite": "backlog",
+  "turns": [
+    "看看 apps/api/src/owner-routes.ts",
+    "owner-routes/memories.ts"
+  ],
+  "expect": {
+    "finalDecision": "Respond",
+    "minToolCalls": 1,
+    "followUpPatterns": [
+      "memories"
+    ]
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "D2"
+    }
+  }
+}

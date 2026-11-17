@@ -1,0 +1,21 @@
+{
+  "id": "cap-multi-turn-revise",
+  "title": "第二轮改掉上一轮约定",
+  "suite": "capability",
+  "taxonomy": "multi-turn",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "记住：发布分支统一用 release/2026-11。不用写文件，也不用运行命令。",
+    "改了：发布分支改为 release/2026-12。只回新的分支名。"
+  ],
+  "timeoutMs": 120000,
+  "budget": { "maxTurns": 2, "maxToolCalls": 6 },
+  "runtimeHints": { "wfxm": { "scenarioId": "cap-multi-turn-revise" } },
+  "expect": {
+    "forbiddenTools": ["write_file"],
+    "followUpPatterns": ["release/2026-12"]
+  }
+}

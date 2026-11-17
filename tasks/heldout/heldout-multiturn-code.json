@@ -1,0 +1,32 @@
+{
+  "id": "heldout-multiturn-code",
+  "title": "跨轮记住验证码",
+  "suite": "heldout",
+  "taxonomy": "multi-turn",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "held-out",
+  "kind": "chat",
+  "turns": [
+    "记住验证码 HELDOUT-42，不要写文件。",
+    "验证码是什么？只回验证码。"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 4
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "heldout-multiturn-code"
+    }
+  },
+  "expect": {
+    "followUpPatterns": [
+      "HELDOUT-42"
+    ],
+    "forbiddenTools": [
+      "write_file"
+    ]
+  }
+}

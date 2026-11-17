@@ -1,0 +1,16 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/a.mjs",
+      "content": "export function ping() {\n  return \"ok\"\n}\n"
+    },
+    {
+      "path": "src/b.mjs",
+      "content": "export function fetchUser() {\n  throw new Error(\"E_TIMEOUT\")\n}\n"
+    },
+    {
+      "path": "README.md",
+      "content": "# demo\n\n错误码 E_TIMEOUT 由请求层抛出。\n"
+    }
+  ]
+}

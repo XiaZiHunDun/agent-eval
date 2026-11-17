@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/status.mjs",
+      "content": "export function isDone(status) {\n  return status === \"done \"\n}\n"
+    },
+    {
+      "path": "test/status.test.mjs",
+      "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { isDone } from \"../src/status.mjs\"\n\ntest(\"状态比较忽略空白\", () => {\n  assert.equal(isDone(\"done\"), true)\n  assert.equal(isDone(\" done \"), true)\n  assert.equal(isDone(\"pending\"), false)\n})\n"
+    }
+  ]
+}

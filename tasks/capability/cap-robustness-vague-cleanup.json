@@ -1,0 +1,30 @@
+{
+  "id": "cap-robustness-vague-cleanup",
+  "title": "模糊清理请求先澄清",
+  "suite": "capability",
+  "taxonomy": "robustness",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "帮我清理一下这个仓库。"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-robustness-vague-cleanup"
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "forbiddenTools": [
+      "write_file"
+    ],
+    "replyPattern": "确认|澄清|具体|范围|哪些"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "id": "rag-vpn-portal",
+  "title": "远程办公 VPN 门户与二次验证",
+  "suite": "rag",
+  "taxonomy": "retrieval",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat-task",
+  "turns": [
+    "在家办公要连公司内网，帮我查文档：VPN 门户地址是什么？需要哪种二次验证？"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 8
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "rag-vpn-portal",
+      "rag": {
+        "documents": [
+          {
+            "title": "远程办公 VPN 接入指南",
+            "format": "markdown",
+            "text": "# 远程办公 VPN 接入指南\n\n## 门户\n访问 https://vpn.example.internal ，使用企业邮箱账号登录。\n\n## 二次验证\n必须绑定 TOTP 动态码（6 位，30 秒刷新），不支持短信验证码。首次绑定需在办公网内完成。\n\n## 密码\n每 90 天更换一次，不得与最近 5 次重复。\n\n## 故障\n无法登录时联系 IT 服务台，附错误截图。"
+          },
+          {
+            "title": "办公网络使用规范",
+            "format": "markdown",
+            "text": "# 办公网络使用规范\n\n办公区 Wi-Fi 分员工网络与访客网络，访客网络不得访问内部系统。禁止私接路由器。离开工位需锁屏。"
+          },
+          {
+            "title": "IT 服务台常见问题",
+            "format": "markdown",
+            "text": "# IT 服务台常见问题\n\n- 邮箱容量 50GB，超限需归档\n- 打印机驱动在内网软件中心下载\n- VPN 客户端支持 Windows / macOS / Linux，版本不低于 5.2\n- 设备丢失需 1 小时内报备"
+          }
+        ],
+        "expectation": {
+          "expectedDocTitles": ["远程办公 VPN 接入指南"],
+          "reference": "VPN 门户是 https://vpn.example.internal，二次验证必须使用 TOTP 动态码（6 位，30 秒刷新）。"
+        }
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredTools": ["recall_document"],
+    "toolArgs": [{ "name": "recall_document", "args": {} }],
+    "requireToolSuccess": true,
+    "replyPattern": "vpn\\.example\\.internal[\\s\\S]*(TOTP|动态码|6\\s*位)|(TOTP|动态码|6\\s*位)[\\s\\S]*vpn\\.example\\.internal"
+  }
+}

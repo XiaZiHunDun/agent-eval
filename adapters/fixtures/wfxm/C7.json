@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "content": "",
+      "toolCalls": [
+        {
+          "id": "tc-1",
+          "name": "read_file",
+          "args": {
+            "path": "foo.ts"
+          }
+        }
+      ],
+      "stopReason": "tool_use"
+    },
+    {
+      "content": "先看 foo.ts。bar.ts 你想改什么？",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

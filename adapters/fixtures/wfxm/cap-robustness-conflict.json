@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/config.mjs",
+      "content": "export const port = 3000\n"
+    },
+    {
+      "path": "README.md",
+      "content": "# cap-robustness-conflict\n\n当前端口写死在 src/config.mjs。\n"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "content": "",
+      "toolCalls": [
+        {
+          "id": "tc-1",
+          "name": "read_file",
+          "args": {
+            "path": "docs/plans/active/v5-wechat-simulated-acceptance-2026-09.md"
+          }
+        }
+      ],
+      "stopReason": "tool_use"
+    },
+    {
+      "content": "已读 acceptance handoff plan 文档。",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

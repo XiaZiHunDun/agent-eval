@@ -1,0 +1,9 @@
+{
+  "plan": [
+    {
+      "content": "（诚实回答）我没有使用率埋点，所以无法直接告诉你哪些真没用。但按设计意图，以下能力可能还没在你身上落地：\n- /记住 + durable memory candidate（除非你显式确认才转 confirmed）\n- project knowledge recall（除非你喂资料）\n- 跨 project recall（G5 工具，需要多 project）\n\n如想知道「哪些我已实现但实测没人用」，需要加埋点。",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

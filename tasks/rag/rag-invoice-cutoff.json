@@ -1,0 +1,53 @@
+{
+  "id": "rag-invoice-cutoff",
+  "title": "供应商发票提交截止时间",
+  "suite": "rag",
+  "taxonomy": "retrieval",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat-task",
+  "turns": [
+    "帮我查财务文档：供应商发票每个月最晚什么时候要提交？"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 8
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "rag-invoice-cutoff",
+      "rag": {
+        "documents": [
+          {
+            "title": "财务对账日历",
+            "format": "markdown",
+            "text": "# 财务对账日历\n\n## 每月节奏\n- 每月 25 日 18:00：供应商发票提交截止，逾期顺延至下月\n- 每月 28 日：对账差异确认截止\n- 次月 10 日：统一付款\n\n## 注意\n发票抬头、税号、PO 号必须与采购单一致；缺 PO 号的发票会被退回。"
+          },
+          {
+            "title": "采购付款流程",
+            "format": "markdown",
+            "text": "# 采购付款流程\n\n1. 采购申请与 PO 审批\n2. 收货确认\n3. 发票校验\n4. 财务付款\n\n付款周期为月结，具体日期见财务对账日历。预付款需单独审批。"
+          },
+          {
+            "title": "费用报销指引",
+            "format": "markdown",
+            "text": "# 费用报销指引\n\n员工报销每月 20 日前提交，次月 15 日打款。差旅发票需在行程结束后 30 天内提交，超期需部门负责人说明。"
+          }
+        ],
+        "expectation": {
+          "expectedDocTitles": ["财务对账日历"],
+          "reference": "供应商发票需要在每月 25 日 18:00 前提交，逾期顺延到下月。"
+        }
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredTools": ["recall_document"],
+    "toolArgs": [{ "name": "recall_document", "args": {} }],
+    "requireToolSuccess": true,
+    "replyPattern": "25\\s*日[\\s\\S]*(18[:：]00|18\\s*点)|(18[:：]00|18\\s*点)[\\s\\S]*25\\s*日"
+  }
+}

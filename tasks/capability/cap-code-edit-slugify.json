@@ -1,0 +1,52 @@
+{
+  "id": "cap-code-edit-slugify",
+  "title": "实现 slugify 并跑测试",
+  "suite": "capability",
+  "taxonomy": "code-edit",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "把 src/text.mjs 的 slugify 实现成：转小写、空格转短横线、去掉首尾多余短横线；改完跑 node --test test/text.test.mjs 验证。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-code-edit-slugify"
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "toolArgs": [
+      {
+        "name": "read_file",
+        "args": {
+          "path": "src/text.mjs"
+        }
+      }
+    ],
+    "workspaceState": [
+      {
+        "path": "src/text.mjs",
+        "contains": "toLowerCase"
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/text.test.mjs",
+      "failToPass": [
+        "slugify 生成短横线"
+      ]
+    }
+  }
+}

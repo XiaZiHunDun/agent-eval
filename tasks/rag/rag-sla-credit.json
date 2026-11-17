@@ -1,0 +1,53 @@
+{
+  "id": "rag-sla-credit",
+  "title": "SLA 未达标的补偿比例",
+  "suite": "rag",
+  "taxonomy": "retrieval",
+  "difficulty": "hard",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat-task",
+  "turns": [
+    "客户问：如果这个月可用性没达到 99.9%，我们按合同要给多少补偿？查一下 SLA 文档。"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 1,
+    "maxToolCalls": 8
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "rag-sla-credit",
+      "rag": {
+        "documents": [
+          {
+            "title": "企业 SLA 协议摘要",
+            "format": "markdown",
+            "text": "# 企业 SLA 协议摘要\n\n## 可用性目标\n月度可用性不低于 99.9%。\n\n## 补偿标准\n- 低于 99.9% 但不低于 99.0%：按当月服务费的 10% 抵扣\n- 低于 99.0%：按当月服务费的 25% 抵扣\n- 低于 95.0%：按当月服务费的 50% 抵扣\n\n## 申请\n客户需在次月 15 日前提交工单，附监控截图。补偿以服务抵扣券形式发放，不现金退款。"
+          },
+          {
+            "title": "服务状态页说明",
+            "format": "markdown",
+            "text": "# 服务状态页说明\n\n状态页展示各区域实时可用性与历史事件。计划内维护提前 48 小时公告，维护窗口不计入不可用时长。"
+          },
+          {
+            "title": "客户成功季度回顾模板",
+            "format": "markdown",
+            "text": "# 客户成功季度回顾模板\n\n回顾包含：使用率、工单趋势、SLA 达成、下季度计划。SLA 章节需引用状态页数据并说明改进项。"
+          }
+        ],
+        "expectation": {
+          "expectedDocTitles": ["企业 SLA 协议摘要"],
+          "reference": "月度可用性低于 99.9% 但不低于 99.0% 时，按当月服务费的 10% 抵扣；低于 99.0% 则为 25%。"
+        }
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "requiredTools": ["recall_document"],
+    "toolArgs": [{ "name": "recall_document", "args": {} }],
+    "requireToolSuccess": true,
+    "replyPattern": "10\\s*%"
+  }
+}

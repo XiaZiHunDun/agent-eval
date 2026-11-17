@@ -1,0 +1,9 @@
+{
+  "plan": [
+    {
+      "content": "demo cold start 已收到。这是脚本化 LLM 应答。",
+      "toolCalls": [],
+      "stopReason": "end_turn"
+    }
+  ]
+}

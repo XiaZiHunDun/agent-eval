@@ -1,0 +1,54 @@
+{
+  "id": "repo-001-slugify",
+  "suite": "repo",
+  "taxonomy": "debug",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "repo-task",
+  "title": "修复 slugify 的空白与连字符折叠",
+  "turns": [
+    "slugify 处理连续空白和连字符不对，帮我修一下，并跑 test/slugify.test.mjs 验证。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "repo": {
+    "fixture": "tiny-kit"
+  },
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "repo-slugify"
+    }
+  },
+  "expect": {
+    "tests": {
+      "command": "node --test --test-reporter=tap test/slugify.test.mjs",
+      "failToPass": [
+        "slugify: 折叠空白与连字符"
+      ],
+      "passToPass": [
+        "slugify: 保留中文"
+      ]
+    },
+    "workspaceState": [
+      {
+        "path": "src/slugify.mjs",
+        "contains": "replace(/[\\s_-]+/g"
+      }
+    ],
+    "toolArgs": [
+      {
+        "name": "read_file",
+        "args": {
+          "path": "src/slugify.mjs"
+        }
+      }
+    ],
+    "requireToolSuccess": true,
+    "finalDecision": "WaitForApproval"
+  }
+}

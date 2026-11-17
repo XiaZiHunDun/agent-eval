@@ -1,0 +1,21 @@
+{
+  "id": "wx-e1-demo-cold-start",
+  "title": "demo 冷启动：fresh convId → Respond",
+  "suite": "baseline",
+  "taxonomy": "multi-turn",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "你好"
+  ],
+  "expect": {
+    "replyPattern": "demo|已收到",
+    "finalDecision": "Respond"
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "E1-demo-cold-start"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/cache.mjs",
+      "content": "const store = new Map()\n\nexport function cacheKey(userId) {\n  return userId\n}\n\nexport function put(userId, value) {\n  store.set(cacheKey(userId), value)\n}\n\nexport function get(userId) {\n  return store.get(cacheKey(userId))\n}\n"
+    },
+    {
+      "path": "test/cache.test.mjs",
+      "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { put, get } from \"../src/cache.mjs\"\n\ntest(\"缓存按租户隔离\", () => {\n  put({ tenant: \"a\", id: 1 }, \"A\")\n  put({ tenant: \"b\", id: 1 }, \"B\")\n  assert.equal(get({ tenant: \"a\", id: 1 }), \"A\")\n  assert.equal(get({ tenant: \"b\", id: 1 }), \"B\")\n})\n"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "wx-b10",
+  "title": "1 周 focus",
+  "suite": "baseline",
+  "taxonomy": "planning",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "接下来 1 周我该 focus 什么"
+  ],
+  "expect": {
+    "replyPattern": "建议|focus",
+    "finalDecision": "Respond"
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "B10"
+    }
+  }
+}

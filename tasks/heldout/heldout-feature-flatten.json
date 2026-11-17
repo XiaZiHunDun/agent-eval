@@ -1,0 +1,38 @@
+{
+  "id": "heldout-feature-flatten",
+  "title": "实现数组展平并通过测试",
+  "suite": "heldout",
+  "taxonomy": "code-edit",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "held-out",
+  "kind": "chat",
+  "turns": [
+    "实现 src/list.mjs 的 flatten（只展平一层），让 test/list.test.mjs 通过。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "heldout-feature-flatten"
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/list.test.mjs",
+      "failToPass": [
+        "flatten 展平一层"
+      ]
+    }
+  }
+}

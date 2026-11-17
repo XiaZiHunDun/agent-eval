@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/flags.mjs",
+      "content": "export const flags = { newUi: false }\n\nexport function flagEnabled(name, env = process.env) {\n  if (name === \"newUi\") return env.FEATURE_NEW_UI === \"1\" || flags.newUi\n  return false\n}\n"
+    },
+    {
+      "path": "docs/flags.md",
+      "content": "# 开关\n\nnewUi 默认关闭，设置 FEATURE_NEW_UI=1 开启。\n"
+    }
+  ]
+}

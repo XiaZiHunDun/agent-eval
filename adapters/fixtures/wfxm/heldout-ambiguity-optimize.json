@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/api.mjs",
+      "content": "export async function handler() {\n  return { ok: true }\n}\n"
+    },
+    {
+      "path": "README.md",
+      "content": "# demo\n\n无性能指标，也没有压测脚本。\n"
+    }
+  ]
+}

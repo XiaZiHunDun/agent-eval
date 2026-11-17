@@ -1,0 +1,46 @@
+{
+  "id": "cap-debug-async-await",
+  "title": "修复 forEach 异步未等待",
+  "suite": "capability",
+  "taxonomy": "debug",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "kind": "chat",
+  "turns": [
+    "readAll(['primary', 'canary']) 现在返回空数组，怀疑异步没等到。修 src/ports.mjs，改完跑 node --test test/ports.test.mjs 验证。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "cap-debug-async-await"
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "toolArgs": [
+      {
+        "name": "read_file",
+        "args": {
+          "path": "src/ports.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/ports.test.mjs",
+      "failToPass": [
+        "readAll 等待全部端口"
+      ]
+    }
+  }
+}

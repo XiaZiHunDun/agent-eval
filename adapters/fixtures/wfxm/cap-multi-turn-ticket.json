@@ -1,0 +1,8 @@
+{
+  "seedFiles": [
+    {
+      "path": "README.md",
+      "content": "# 工单仓库\n\n本仓库只用于对话，无需读写文件或运行命令。\n"
+    }
+  ]
+}
