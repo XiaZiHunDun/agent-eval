@@ -1,0 +1,23 @@
+{
+  "suite": "heldout",
+  "recordedAt": "2026-11-19T11:19:46.310Z",
+  "observedRate": 0.833,
+  "note": "2026-11-19 用 MiniMax-M3.1-Flash 实跑 6 条 ×2：5/6 任务全过、平均任务通过率 83.3%（heldout-ambiguity-optimize 0/2）。判定阈值取 0.75，容忍一次尝试抖动；taskRates 仅用于诊断。",
+  "tasks": [
+    "heldout-ambiguity-optimize",
+    "heldout-approval-deploy-replicas",
+    "heldout-debug-cache-tenant",
+    "heldout-feature-flatten",
+    "heldout-multiturn-code",
+    "heldout-plan-migration"
+  ],
+  "overallRate": 0.75,
+  "taskRates": {
+    "heldout-ambiguity-optimize": 0,
+    "heldout-approval-deploy-replicas": 1,
+    "heldout-debug-cache-tenant": 1,
+    "heldout-feature-flatten": 1,
+    "heldout-multiturn-code": 1,
+    "heldout-plan-migration": 1
+  }
+}

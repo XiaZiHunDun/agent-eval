@@ -8,31 +8,36 @@
  */
 
 function round(value) {
-  return Math.round(value * 1000) / 1000
+  return Math.round(value * 1000) / 1000;
 }
 
 function rate(hit, total) {
-  return total === 0 ? null : round(hit / total)
+  return total === 0 ? null : round(hit / total);
 }
 
 function stableJson(value) {
-  if (value === null || typeof value !== "object") return JSON.stringify(value)
-  if (Array.isArray(value)) return `[${value.map(stableJson).join(",")}]`
-  const keys = Object.keys(value).sort()
-  return `{${keys.map((key) => `${JSON.stringify(key)}:${stableJson(value[key])}`).join(",")}}`
+  if (value === null || typeof value !== "object") return JSON.stringify(value);
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(",")}]`;
+  const keys = Object.keys(value).sort();
+  return `{${keys.map((key) => `${JSON.stringify(key)}:${stableJson(value[key])}`).join(",")}}`;
 }
 
 /** 期望参数是实际参数的子集即视为命中（与 verify.toolArgs 语义一致）。 */
 function matchesSubset(actual, expected) {
-  if (expected === null || typeof expected !== "object") return actual === expected
+  if (expected === null || typeof expected !== "object")
+    return actual === expected;
   if (Array.isArray(expected)) {
-    if (!Array.isArray(actual) || actual.length !== expected.length) return false
-    return expected.every((value, index) => matchesSubset(actual[index], value))
+    if (!Array.isArray(actual) || actual.length !== expected.length)
+      return false;
+    return expected.every((value, index) =>
+      matchesSubset(actual[index], value),
+    );
   }
-  if (actual === null || typeof actual !== "object" || Array.isArray(actual)) return false
+  if (actual === null || typeof actual !== "object" || Array.isArray(actual))
+    return false;
   return Object.entries(expected).every(
     ([key, value]) => key in actual && matchesSubset(actual[key], value),
-  )
+  );
 }
 
 /**
@@ -40,47 +45,60 @@ function matchesSubset(actual, expected) {
  * @param {readonly object[]} results
  */
 export function computeProcessMetrics(tasks, results) {
-  const taskById = new Map(tasks.map((task) => [task.id, task]))
-  let expectedTools = 0
-  let recalledTools = 0
-  let calls = 0
-  let uniqueCalls = 0
-  let paramSpecs = 0
-  let paramHits = 0
+  const taskById = new Map(tasks.map((task) => [task.id, task]));
+  let expectedTools = 0;
+  let recalledTools = 0;
+  let calls = 0;
+  let uniqueCalls = 0;
+  let paramSpecs = 0;
+  let paramHits = 0;
 
+  // 多次重复时按每次尝试统计：召回/参数应覆盖每次真实调用，而不是只看聚合结果。
+  const samples = [];
   for (const result of results) {
-    const task = taskById.get(result.taskId)
-    const toolNames = result.toolNames ?? []
-    const toolCalls = result.toolCalls ?? []
+    if (Array.isArray(result.attempts) && result.attempts.length > 0) {
+      for (const attempt of result.attempts)
+        samples.push({ taskId: result.taskId, obs: attempt });
+    } else {
+      samples.push({ taskId: result.taskId, obs: result });
+    }
+  }
+
+  for (const { taskId, obs } of samples) {
+    const task = taskById.get(taskId);
+    const toolNames = obs.toolNames ?? [];
+    const toolCalls = obs.toolCalls ?? [];
 
     for (const name of task?.expect?.requiredTools ?? []) {
-      expectedTools += 1
-      if (toolNames.includes(name)) recalledTools += 1
+      expectedTools += 1;
+      if (toolNames.includes(name)) recalledTools += 1;
     }
 
-    calls += toolCalls.length
-    const seen = new Set()
+    calls += toolCalls.length;
+    const seen = new Set();
     for (const call of toolCalls) {
-      const key = `${call.name}:${stableJson(call.args ?? {})}`
+      const key = `${call.name}:${stableJson(call.args ?? {})}`;
       if (!seen.has(key)) {
-        seen.add(key)
-        uniqueCalls += 1
+        seen.add(key);
+        uniqueCalls += 1;
       }
     }
 
     for (const spec of task?.expect?.toolArgs ?? []) {
-      paramSpecs += 1
+      paramSpecs += 1;
       const hit = toolCalls.some(
-        (call) => call.name === spec.name && matchesSubset(call.args ?? {}, spec.args ?? {}),
-      )
-      if (hit) paramHits += 1
+        (call) =>
+          call.name === spec.name &&
+          matchesSubset(call.args ?? {}, spec.args ?? {}),
+      );
+      if (hit) paramHits += 1;
     }
   }
 
-  const failureCategories = {}
+  const failureCategories = {};
   for (const result of results) {
     for (const category of result.failureCategories ?? []) {
-      failureCategories[category] = (failureCategories[category] ?? 0) + 1
+      failureCategories[category] = (failureCategories[category] ?? 0) + 1;
     }
   }
 
@@ -101,5 +119,5 @@ export function computeProcessMetrics(tasks, results) {
       rate: rate(paramHits, paramSpecs),
     },
     failureCategories,
-  }
+  };
 }

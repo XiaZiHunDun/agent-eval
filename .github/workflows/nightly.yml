@@ -86,6 +86,23 @@ jobs:
             --out .eval-runs/capability-real \
             --baseline baselines/capability-real.json
 
+      # 真实模型 heldout 子集：6 条更难任务。capability 子集已饱和（两臂均 100%），
+      # 这里用于观察模型区分度；基线阈值 0.75（实测 83.3%）。
+      - name: Real-model heldout subset (6 harder tasks)
+        env:
+          WFXM_ROOT: ${{ github.workspace }}/wfxm
+          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
+          MINIMAX_MODEL: MiniMax-M3.1-Flash
+          DEEPSEEK_MODEL: deepseek-flash
+        run: |
+          if [ -z "${MINIMAX_API_KEY:-}" ]; then
+            echo "::warning::MINIMAX_API_KEY 未配置，跳过 heldout 子集"
+            exit 0
+          fi
+          node src/cli.mjs run --suite heldout --runtime wfxm --real --repeats 2 \
+            --out .eval-runs/heldout-real \
+            --baseline baselines/heldout-real.json
+
       - name: Upload eval runs
         if: always()
         uses: actions/upload-artifact@v4
