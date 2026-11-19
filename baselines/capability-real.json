@@ -1,8 +1,8 @@
 {
   "suite": "capability",
-  "recordedAt": "2026-11-19T08:03:49.912Z",
-  "observedRate": 0.95,
-  "note": "2026-11-19 用 DeepSeek flash 实跑 10 条 ×2：9/10 任务全过，平均任务通过率 95%（cap-planning-env-migration 1/2）。阈值取 0.90 留一次抖动余量；taskRates 仅用于诊断，不参与判定。",
+  "recordedAt": "2026-11-19T08:15:09.448Z",
+  "observedRate": 1,
+  "note": "2026-11-19 用 MiniMax-M3 实跑 10 条 ×2：10/10 任务全过、平均任务通过率 100%。判定阈值取 0.95 留一次抖动余量；taskRates 仅用于诊断，不参与判定。",
   "tasks": [
     "cap-code-edit-clamp",
     "cap-code-edit-parse-duration",
@@ -15,7 +15,7 @@
     "cap-planning-env-migration",
     "cap-planning-release-order"
   ],
-  "overallRate": 0.9,
+  "overallRate": 0.95,
   "taskRates": {
     "cap-code-edit-clamp": 1,
     "cap-code-edit-parse-duration": 1,
@@ -25,7 +25,7 @@
     "cap-debug-loop-bound": 1,
     "cap-debug-null-guard": 1,
     "cap-debug-range-end": 1,
-    "cap-planning-env-migration": 0.5,
+    "cap-planning-env-migration": 1,
     "cap-planning-release-order": 1
   }
 }
