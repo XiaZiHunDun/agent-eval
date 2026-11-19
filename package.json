@@ -11,11 +11,15 @@
     "eval:capability": "node src/cli.mjs run --suite capability --runtime wfxm --real",
     "eval:heldout": "node src/cli.mjs run --suite heldout --runtime wfxm --real",
     "eval:rag": "node src/cli.mjs run --suite rag --runtime wfxm --real",
+    "eval:butler": "node src/cli.mjs run --suite butler --runtime wfxm-butler",
+    "eval:trajectory": "node src/cli.mjs run --suite trajectory --runtime wfxm",
+    "eval:butler-open": "node src/cli.mjs run --suite butler-open --runtime wfxm --real",
     "eval:gate": "node src/cli.mjs gate",
     "eval:gate:rag": "node src/cli.mjs gate --with-rag --real --repeats 2",
     "test": "node --test src/*.test.mjs"
   },
   "engines": {
     "node": ">=20"
-  }
+  },
+  "packageManager": "pnpm@8.15.9+sha512.499434c9d8fdd1a2794ebf4552b3b25c0a633abcee5bb15e7b5de90f32f47b513aca98cd5cfd001c31f0db454bc3804edccd578501e4ca293a6816166bbd9f81"
 }

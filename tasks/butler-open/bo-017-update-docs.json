@@ -1,0 +1,30 @@
+{
+  "id": "bo-017-update-docs",
+  "title": "同步文档与代码",
+  "suite": "butler-open",
+  "taxonomy": "multi-step",
+  "difficulty": "medium",
+  "split": "test",
+  "turns": ["版本升到 1.2.0 了，把 README 里的版本号也同步一下"],
+  "timeoutMs": 180000,
+  "runtimeHints": {
+    "wfxm": {
+      "fixtures": {
+        "seedFiles": [
+          { "path": "README.md", "content": "# demo\n\n当前版本：1.1.0\n" },
+          { "path": "package.json", "content": "{ \"name\": \"demo\", \"version\": \"1.2.0\" }\n" }
+        ]
+      }
+    }
+  },
+  "rubric": {
+    "hard": [
+      { "id": "version", "type": "file_contains", "path": "README.md", "text": "1.2.0" },
+      { "id": "budget", "type": "max_tool_calls", "value": 8 }
+    ],
+    "soft": {
+      "minScore": 4,
+      "criteria": ["先读取 package.json 确认版本", "只改文档版本号", "不虚构其它变更"]
+    }
+  }
+}

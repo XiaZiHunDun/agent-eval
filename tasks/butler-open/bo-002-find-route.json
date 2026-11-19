@@ -1,0 +1,29 @@
+{
+  "id": "bo-002-find-route",
+  "title": "定位路由处理位置",
+  "suite": "butler-open",
+  "taxonomy": "code-understanding",
+  "difficulty": "easy",
+  "split": "test",
+  "turns": ["/login 路由在哪个文件里处理？"],
+  "timeoutMs": 180000,
+  "runtimeHints": {
+    "wfxm": {
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/routes.mjs",
+            "content": "export const routes = {\n  \"/login\": \"handleLogin\",\n  \"/logout\": \"handleLogout\",\n}\n"
+          }
+        ]
+      }
+    }
+  },
+  "rubric": {
+    "hard": [{ "id": "budget", "type": "max_tool_calls", "value": 5 }],
+    "soft": {
+      "minScore": 4,
+      "criteria": ["指出 src/routes.mjs", "提到 handleLogin", "不编造不存在的文件"]
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "butler-b11-no-recall-noise",
+  "title": "无关轮次不注入记忆且不触发改写",
+  "suite": "butler",
+  "taxonomy": "memory",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "turns": ["今天北京天气怎么样", "帮我看看登录页面的样式问题"],
+  "expect": {
+    "butler": {
+      "route": "agent",
+      "result": { "modelCalls": 2, "memoryRecallTurns": 0, "rewrites": 0 }
+    },
+    "finalReplyPattern": "布局容器"
+  },
+  "runtimeHints": { "wfxm": { "scenarioId": "B11" } }
+}

@@ -4,6 +4,7 @@ import { dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { collectRunConfig } from "./config.mjs"
 import { loadTasks, runSuite } from "./runner.mjs"
+import { loadTrajectoryTasks } from "./trajectory.mjs"
 import { renderReport } from "./report.mjs"
 import {
   DEFAULT_MIN_RAG_HIT_AT3,
@@ -25,11 +26,12 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..")
 
 const ADAPTERS = {
   wfxm: () => import("../adapters/wfxm.mjs"),
+  "wfxm-butler": () => import("../adapters/wfxm-butler.mjs"),
 }
 
 const USAGE = [
   "用法：",
-  "  node src/cli.mjs run --suite <baseline|repo|capability|heldout|rag> [--runtime wfxm] [--task <id>] [--out <dir>] [--repeats N] [--real]",
+  "  node src/cli.mjs run --suite <baseline|repo|capability|heldout|rag|butler|butler-open|trajectory> [--runtime wfxm|wfxm-butler] [--task <id>] [--out <dir>] [--repeats N] [--real]",
   "  node src/cli.mjs gate [--with-capability --with-rag --real] [--repeats N] [--min-capability 0.8] [--min-rag 0.9] [--max-flaky 0.2] [--out <dir>]",
   "环境变量：AGENT_EVAL_LANGFUSE=1 导出 Langfuse batch（无凭证时写 langfuse.json dry-run）",
 ].join("\n")
@@ -112,6 +114,7 @@ function parseArgs(argv) {
     withRag: false,
     minCapability: 0.8,
     minRag: 0.9,
+    minButler: 0.9,
     maxFlaky: 0.2,
     repeats: 1,
   }
@@ -126,6 +129,7 @@ function parseArgs(argv) {
     else if (arg === "--with-rag") opts.withRag = true
     else if (arg === "--min-capability") opts.minCapability = parseRate(rest[++i])
     else if (arg === "--min-rag") opts.minRag = parseRate(rest[++i])
+    else if (arg === "--min-butler") opts.minButler = parseRate(rest[++i])
     else if (arg === "--max-flaky") opts.maxFlaky = parseRate(rest[++i])
     else if (arg === "--repeats") opts.repeats = parseRepeats(rest[++i])
     else throw new Error(`未知参数：${arg}`)
@@ -178,7 +182,9 @@ async function executeSuite({
   else delete process.env.AGENT_EVAL_REAL_MODEL
 
   const tasksDir = join(ROOT, "tasks", suiteName)
-  let tasks = await loadTasks(tasksDir)
+  // 轨迹数据在 WFXM 仓库（tests/trajectories），执行与判定留在 agent-eval。
+  let tasks =
+    suiteName === "trajectory" ? await loadTrajectoryTasks() : await loadTasks(tasksDir)
   if (task) tasks = tasks.filter((t) => t.id === task)
   if (tasks.length === 0) throw new Error(`没有匹配的任务：suite=${suiteName} task=${task ?? "*"}`)
 
@@ -270,6 +276,19 @@ async function gateCommand(opts) {
     real: false,
   })
 
+  let butler
+  {
+    // Butler 轨是确定性的 fixture 套件，不消耗模型额度，所以每次 gate 都跑。
+    console.log("▶ gate butler（fixture）")
+    butler = await executeSuite({
+      suiteName: "butler",
+      runtime: "wfxm-butler",
+      runDir: join(gateDir, "butler"),
+      runId: `${gateId}-butler`,
+      real: false,
+    })
+  }
+
   let capability
   if (opts.withCapability) {
     console.log(`▶ gate capability（真实模型，每任务 ${opts.repeats} 次）`)
@@ -313,6 +332,8 @@ async function gateCommand(opts) {
 
   const verdict = evaluateGate({
     baseline: { passed: baseline.passed, total: baseline.total },
+    butler: { passed: butler.passed, total: butler.total },
+    minButler: opts.minButler,
     ...(capability
       ? {
           capability: {
@@ -347,6 +368,7 @@ async function gateCommand(opts) {
     thresholds: {
       baseline: 1,
       flakyRate: opts.maxFlaky,
+      butler: opts.minButler,
       ...(capability ? { capability: opts.minCapability } : {}),
       ...(rag
         ? {
@@ -365,6 +387,14 @@ async function gateCommand(opts) {
       rate: verdict.baselineRate,
       config: baseline.config,
       report: join(gateDir, "baseline", "report.md"),
+    },
+    butler: {
+      runId: `${gateId}-butler`,
+      passed: butler.passed,
+      total: butler.total,
+      rate: verdict.butlerRate,
+      config: butler.config,
+      report: join(gateDir, "butler", "report.md"),
     },
     ...(capability
       ? {

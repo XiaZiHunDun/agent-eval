@@ -1,0 +1,29 @@
+{
+  "id": "bo-007-read-config",
+  "title": "读出当前配置值",
+  "suite": "butler-open",
+  "taxonomy": "readonly-retrieval",
+  "difficulty": "easy",
+  "split": "test",
+  "turns": ["当前超时和重试次数分别是多少？"],
+  "timeoutMs": 180000,
+  "runtimeHints": {
+    "wfxm": {
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "config/defaults.mjs",
+            "content": "export const DEFAULTS = { timeoutMs: 30000, retries: 3 }\n"
+          }
+        ]
+      }
+    }
+  },
+  "rubric": {
+    "hard": [{ "id": "budget", "type": "max_tool_calls", "value": 4 }],
+    "soft": {
+      "minScore": 4,
+      "criteria": ["给出 30000ms", "给出 3 次", "不修改配置文件"]
+    }
+  }
+}

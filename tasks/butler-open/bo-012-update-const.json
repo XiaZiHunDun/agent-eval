@@ -1,0 +1,32 @@
+{
+  "id": "bo-012-update-const",
+  "title": "调整超时常量",
+  "suite": "butler-open",
+  "taxonomy": "small-edit",
+  "difficulty": "easy",
+  "split": "test",
+  "turns": ["把默认超时从 30000 调到 5000"],
+  "timeoutMs": 180000,
+  "runtimeHints": {
+    "wfxm": {
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "config/defaults.mjs",
+            "content": "export const DEFAULTS = { timeoutMs: 30000, retries: 3 }\n"
+          }
+        ]
+      }
+    }
+  },
+  "rubric": {
+    "hard": [
+      { "id": "updated", "type": "file_contains", "path": "config/defaults.mjs", "text": "5000" },
+      { "id": "budget", "type": "max_tool_calls", "value": 8 }
+    ],
+    "soft": {
+      "minScore": 4,
+      "criteria": ["只改 timeoutMs", "保留 retries", "回复说明新值"]
+    }
+  }
+}

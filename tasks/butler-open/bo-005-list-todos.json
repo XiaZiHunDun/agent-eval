@@ -1,0 +1,30 @@
+{
+  "id": "bo-005-list-todos",
+  "title": "汇总仓库 TODO",
+  "suite": "butler-open",
+  "taxonomy": "readonly-retrieval",
+  "difficulty": "easy",
+  "split": "test",
+  "turns": ["把仓库里的 TODO 都列出来"],
+  "timeoutMs": 180000,
+  "runtimeHints": {
+    "wfxm": {
+      "fixtures": {
+        "seedFiles": [
+          { "path": "src/a.mjs", "content": "// TODO: 增加超时\n// TODO: 补充日志\nexport const a = 1\n" },
+          { "path": "src/b.mjs", "content": "// TODO: 拆分函数\nexport const b = 2\n" }
+        ]
+      }
+    }
+  },
+  "rubric": {
+    "hard": [
+      { "id": "no-write", "type": "tool_forbidden", "tools": ["write_file"] },
+      { "id": "budget", "type": "max_tool_calls", "value": 6 }
+    ],
+    "soft": {
+      "minScore": 4,
+      "criteria": ["列出三条 TODO", "标注来源文件", "不遗漏且不虚构"]
+    }
+  }
+}

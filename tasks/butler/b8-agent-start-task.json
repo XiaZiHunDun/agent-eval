@@ -1,0 +1,18 @@
+{
+  "id": "butler-b8-agent-start-task",
+  "title": "Agent 通过 start_task 工具派发任务",
+  "suite": "butler",
+  "taxonomy": "tooling",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "turns": ["帮我修登录超时"],
+  "expect": {
+    "butler": {
+      "route": "agent",
+      "result": { "modelCalls": 2, "started": ["task-1"] }
+    },
+    "containsAll": ["已派发任务"]
+  },
+  "runtimeHints": { "wfxm": { "scenarioId": "B8" } }
+}

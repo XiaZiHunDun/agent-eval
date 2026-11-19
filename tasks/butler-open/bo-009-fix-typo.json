@@ -1,0 +1,27 @@
+{
+  "id": "bo-009-fix-typo",
+  "title": "修复文案拼写错误",
+  "suite": "butler-open",
+  "taxonomy": "small-edit",
+  "difficulty": "easy",
+  "split": "test",
+  "turns": ["README 里的 recieve 拼错了，改成 receive"],
+  "timeoutMs": 180000,
+  "runtimeHints": {
+    "wfxm": {
+      "fixtures": {
+        "seedFiles": [{ "path": "README.md", "content": "# demo\n\n请 recieve 通知。\n" }]
+      }
+    }
+  },
+  "rubric": {
+    "hard": [
+      { "id": "typo-fixed", "type": "file_contains", "path": "README.md", "text": "receive" },
+      { "id": "budget", "type": "max_tool_calls", "value": 8 }
+    ],
+    "soft": {
+      "minScore": 4,
+      "criteria": ["只改拼写", "保留原句含义", "回复说明改动"]
+    }
+  }
+}

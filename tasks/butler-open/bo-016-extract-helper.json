@@ -1,0 +1,32 @@
+{
+  "id": "bo-016-extract-helper",
+  "title": "抽取重复逻辑",
+  "suite": "butler-open",
+  "taxonomy": "multi-step",
+  "difficulty": "medium",
+  "split": "test",
+  "turns": ["src/users.mjs 里两处都做了 trim + toLowerCase，抽成一个 helper"],
+  "timeoutMs": 180000,
+  "runtimeHints": {
+    "wfxm": {
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/users.mjs",
+            "content": "export function byName(name) {\n  return { name: name.trim().toLowerCase() }\n}\n\nexport function byEmail(email) {\n  return { email: email.trim().toLowerCase() }\n}\n"
+          }
+        ]
+      }
+    }
+  },
+  "rubric": {
+    "hard": [
+      { "id": "helper", "type": "file_contains", "path": "src/users.mjs", "text": "function normalize" },
+      { "id": "budget", "type": "max_tool_calls", "value": 10 }
+    ],
+    "soft": {
+      "minScore": 4,
+      "criteria": ["新增单一 helper", "两处调用都复用", "对外行为不变"]
+    }
+  }
+}

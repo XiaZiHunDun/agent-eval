@@ -41,6 +41,22 @@ test("gate: capability 低于阈值不通过，达到阈值通过", () => {
   assert.equal(boundary.ok, true)
 })
 
+test("gate: butler 低于阈值不通过", () => {
+  const pass = evaluateGate({
+    baseline: { passed: 34, total: 34 },
+    butler: { passed: 9, total: 10 },
+  })
+  assert.equal(pass.ok, true)
+  assert.equal(pass.butlerRate, 0.9)
+
+  const fail = evaluateGate({
+    baseline: { passed: 34, total: 34 },
+    butler: { passed: 8, total: 10 },
+  })
+  assert.equal(fail.ok, false)
+  assert.ok(fail.checks.some((check) => check.name === "butler.passRate" && !check.ok))
+})
+
 test("gate: 空任务集视为 0 通过率", () => {
   const verdict = evaluateGate({ baseline: { passed: 0, total: 0 } })
   assert.equal(verdict.ok, false)
@@ -162,4 +178,20 @@ test("gate: 无 flaky 时显式标注", () => {
   })
   assert.equal(verdict.ok, true)
   assert.match(verdict.checks[1].detail, /无 flaky/)
+})
+
+test("gate: butler-open 低于阈值不通过，达到阈值通过", () => {
+  const below = evaluateGate({
+    baseline: { passed: 34, total: 34 },
+    butlerOpen: { passed: 16, total: 20 },
+  })
+  assert.equal(below.ok, false)
+  assert.equal(below.butlerOpenRate, 0.8)
+
+  const above = evaluateGate({
+    baseline: { passed: 34, total: 34 },
+    butlerOpen: { passed: 17, total: 20 },
+  })
+  assert.equal(above.ok, true)
+  assert.equal(above.butlerOpenRate, 0.85)
 })

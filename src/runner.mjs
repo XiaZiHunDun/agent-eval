@@ -3,6 +3,7 @@ import { join } from "node:path"
 import { validateTrace, writeTraceJsonl } from "./trace.mjs"
 import { failureCategories } from "./failures.mjs"
 import { verify } from "./verify.mjs"
+import { evaluateOpenTask } from "./judge.mjs"
 
 /** 读取目录下所有 *.json 任务，按 id 排序。 */
 export async function loadTasks(dir) {
@@ -11,8 +12,11 @@ export async function loadTasks(dir) {
   for (const name of names) {
     const raw = await readFile(join(dir, name), "utf8")
     const task = JSON.parse(raw)
-    for (const key of ["id", "title", "suite", "turns", "expect"]) {
+    for (const key of ["id", "title", "suite", "turns"]) {
       if (!(key in task)) throw new Error(`${name} 缺少字段 ${key}`)
+    }
+    if (!("expect" in task) && !("rubric" in task)) {
+      throw new Error(`${name} 缺少字段 expect 或 rubric`)
     }
     tasks.push(task)
   }
@@ -225,7 +229,9 @@ export async function runSuite({ adapter, tasks, runDir, runId, repeats = 1, log
       const trace = obs?.trace ?? []
       const traceProblems = obs ? validateTrace(trace) : []
       const verdict = obs
-        ? verify(task, obs)
+        ? task.suite === "butler-open"
+          ? await evaluateOpenTask(task, obs)
+          : verify(task, obs)
         : { passed: false, score: 0, checks: [], failures: [{ check: "adapter.run", detail: crash ?? "unknown" }] }
 
       const tracePath = obs ? join(attemptDir, "trace.jsonl") : ""

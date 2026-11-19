@@ -5,14 +5,19 @@ import { fileURLToPath } from "node:url"
 
 const ADAPTER_DIR = dirname(fileURLToPath(import.meta.url))
 const WFXM_ROOT = process.env.WFXM_ROOT ?? "/home/ailearn/projects/WFXM"
-const BUTLER_DIR = join(WFXM_ROOT, "butler-v5")
-const DRIVER = join(BUTLER_DIR, "scripts/eval/run-task.ts")
+const BUTLER_DIR = WFXM_ROOT
+const DRIVER =
+  process.env.WFXM_EVAL_DRIVER === "pi"
+    ? join(BUTLER_DIR, "scripts/eval/run-pi-task.mts")
+    : join(BUTLER_DIR, "scripts/eval/run-task.ts")
 const RESULT_PREFIX = "__EVAL_RESULT__"
 
 /** WFXM 侧的脚本化 LLM fixture 属于 adapter 私有装配，不进入任务契约。 */
 async function loadFixtures(task) {
-  const scenarioId = task.runtimeHints?.wfxm?.scenarioId
-  if (!scenarioId) throw new Error(`任务 ${task.id} 缺少 runtimeHints.wfxm.scenarioId`)
+  const scenarioId = task.runtimeHints?.wfxm?.scenarioId ?? task.id
+  // 轨迹/开放任务把 fixture 直接内联在任务里（数据在 WFXM，执行在 agent-eval）。
+  const inline = task.runtimeHints?.wfxm?.fixtures
+  if (inline) return { scenarioId, fixtures: inline }
   const file = join(ADAPTER_DIR, "fixtures", "wfxm", `${scenarioId}.json`)
   try {
     return { scenarioId, fixtures: JSON.parse(await readFile(file, "utf8")) }
@@ -83,8 +88,7 @@ export default {
   id: "wfxm",
   async run(task, { timeoutMs }) {
     const realModel = process.env.AGENT_EVAL_REAL_MODEL === "1"
-    const scenarioId = task.runtimeHints?.wfxm?.scenarioId
-    if (!scenarioId) throw new Error(`任务 ${task.id} 缺少 runtimeHints.wfxm.scenarioId`)
+    const scenarioId = task.runtimeHints?.wfxm?.scenarioId ?? task.id
     // 真实模型模式不回放 LLM fixture，但仍注入 seedFiles 搭建任务工作区；
     // 没有 fixture 的任务（如 RAG）允许缺失。RAG 额外透传入库文档与检索真值。
     const loaded = realModel
@@ -96,20 +100,33 @@ export default {
         : undefined
       : loaded.fixtures
     const rag = task.runtimeHints?.wfxm?.rag
-    const workspacePaths = (task.expect?.workspaceState ?? []).map((s) => s.path)
+    // 开放任务的产物断言写在 rubric.hard 里，同样需要回读工作区。
+    const rubricPaths = (task.rubric?.hard ?? [])
+      .filter((rule) => typeof rule.path === "string")
+      .map((rule) => rule.path)
+    const workspacePaths = [
+      ...new Set([
+        ...(task.expect?.workspaceState ?? []).map((s) => s.path),
+        ...(task.workspacePaths ?? []),
+        ...rubricPaths,
+      ]),
+    ]
     const repoFixture = task.repo?.fixture
       ? resolve(ADAPTER_DIR, "fixtures", "repos", task.repo.fixture)
       : undefined
-    const tests = task.expect?.tests
+    const testsRule = (task.rubric?.hard ?? []).find((rule) => rule.type === "tests_passed")
+    const testsSpec = task.expect?.tests ?? testsRule
+    const tests = testsSpec?.command
       ? {
-          command: task.expect.tests.command,
-          ...(task.expect.tests.timeoutMs ? { timeoutMs: task.expect.tests.timeoutMs } : {}),
+          command: testsSpec.command,
+          ...(testsSpec.timeoutMs ? { timeoutMs: testsSpec.timeoutMs } : {}),
         }
       : undefined
     return runDriver(
       {
         id: task.id,
         turns: task.turns,
+        ...(task.messageIds ? { messageIds: task.messageIds } : {}),
         ...(task.budget ? { budget: task.budget } : {}),
         ...(workspacePaths.length > 0 ? { workspacePaths } : {}),
         ...(repoFixture ? { repoFixture } : {}),

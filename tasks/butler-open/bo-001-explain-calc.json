@@ -1,0 +1,29 @@
+{
+  "id": "bo-001-explain-calc",
+  "title": "解释模块职责",
+  "suite": "butler-open",
+  "taxonomy": "code-understanding",
+  "difficulty": "easy",
+  "split": "test",
+  "turns": ["src/calc.mjs 是做什么的？有哪些导出？"],
+  "timeoutMs": 180000,
+  "runtimeHints": {
+    "wfxm": {
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/calc.mjs",
+            "content": "export function add(a, b) {\n  return a + b\n}\n\nexport function sub(a, b) {\n  return a - b\n}\n"
+          }
+        ]
+      }
+    }
+  },
+  "rubric": {
+    "hard": [{ "id": "budget", "type": "max_tool_calls", "value": 4 }],
+    "soft": {
+      "minScore": 4,
+      "criteria": ["说明模块是基础算术工具", "提到 add 与 sub 两个导出", "不虚构仓库中不存在的能力"]
+    }
+  }
+}

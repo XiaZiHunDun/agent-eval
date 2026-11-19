@@ -1,0 +1,26 @@
+{
+  "id": "bo-013-add-export",
+  "title": "导出已有函数",
+  "suite": "butler-open",
+  "taxonomy": "small-edit",
+  "difficulty": "easy",
+  "split": "test",
+  "turns": ["src/util.mjs 里的 trimAll 没导出，帮我导出它"],
+  "timeoutMs": 180000,
+  "runtimeHints": {
+    "wfxm": {
+      "fixtures": {
+        "seedFiles": [
+          { "path": "src/util.mjs", "content": "function trimAll(items) {\n  return items.map((item) => item.trim())\n}\n" }
+        ]
+      }
+    }
+  },
+  "rubric": {
+    "hard": [
+      { "id": "exported", "type": "file_contains", "path": "src/util.mjs", "text": "export function trimAll" },
+      { "id": "budget", "type": "max_tool_calls", "value": 8 }
+    ],
+    "soft": { "minScore": 4, "criteria": ["导出方式正确", "实现不变", "回复简洁"] }
+  }
+}

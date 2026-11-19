@@ -1,0 +1,33 @@
+{
+  "id": "bo-008-count-tests",
+  "title": "统计测试数量",
+  "suite": "butler-open",
+  "taxonomy": "readonly-retrieval",
+  "difficulty": "easy",
+  "split": "test",
+  "turns": ["test/ 下有多少个 test 用例？"],
+  "timeoutMs": 180000,
+  "runtimeHints": {
+    "wfxm": {
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "test/a.test.mjs",
+            "content": "import test from \"node:test\"\ntest(\"a1\", () => {})\ntest(\"a2\", () => {})\n"
+          },
+          { "path": "test/b.test.mjs", "content": "import test from \"node:test\"\ntest(\"b1\", () => {})\n" }
+        ]
+      }
+    }
+  },
+  "rubric": {
+    "hard": [
+      { "id": "no-write", "type": "tool_forbidden", "tools": ["write_file"] },
+      { "id": "budget", "type": "max_tool_calls", "value": 5 }
+    ],
+    "soft": {
+      "minScore": 4,
+      "criteria": ["给出总数 3", "区分两个测试文件", "不修改测试"]
+    }
+  }
+}

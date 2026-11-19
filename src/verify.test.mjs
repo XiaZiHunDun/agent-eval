@@ -336,6 +336,50 @@ test("verify: budget 断言轮次 / 工具调用 / 成本", () => {
   assert.equal(verify(budgeted, { reply: "好的", turns: 1, steps: 1 }).passed, true)
 })
 
+test("butler: 路由与规则命中判定", () => {
+  const butlerTask = {
+    id: "b1",
+    title: "管家路由",
+    suite: "butler",
+    turns: ["/help"],
+    expect: {
+      butler: { route: "rule", rule: "help", result: { modelCalls: 0 } },
+    },
+  }
+  const ok = verify(butlerTask, {
+    reply: "/help",
+    butler: { route: "rule", rule: "help", modelCalls: 0 },
+  })
+  assert.equal(ok.passed, true)
+
+  const mismatch = verify(butlerTask, {
+    reply: "好的",
+    butler: { route: "agent", modelCalls: 1 },
+  })
+  assert.equal(mismatch.passed, false)
+  assert.ok(mismatch.failures.some((f) => f.check === "butler.route"))
+  assert.ok(mismatch.failures.some((f) => f.check === "butler.rule"))
+  assert.ok(mismatch.failures.some((f) => f.check === "butler.result"))
+})
+
+test("butler: 多轮用例用 finalReplyPattern 校验末轮", () => {
+  const task = {
+    id: "b9",
+    title: "指代追问",
+    suite: "butler",
+    turns: ["登录限流怎么做的？", "这个怎么扩展？"],
+    expect: { finalReplyPattern: "白名单" },
+  }
+  assert.equal(
+    verify(task, {
+      reply: "可以在限流器里加白名单。",
+      replies: ["登录接口用令牌桶限流。", "可以在限流器里加白名单。"],
+    }).passed,
+    true,
+  )
+  assert.equal(verify(task, { reply: "好的" }).passed, false)
+})
+
 test("trace: 合法 trace 通过不变量校验", () => {
   const t = createTrace({ runtime: "wfxm", runId: "r1" })
   t.emit("run.start", { taskId: "t1" })
@@ -351,4 +395,41 @@ test("trace: seq 不连续 / 缺少 run.end 会被发现", () => {
   const problems = validateTrace(t.events)
   assert.ok(problems.some((p) => p.includes("seq")))
   assert.ok(problems.some((p) => p.includes("run.end")))
+})
+
+test("verify: userMessage 结构断言", () => {
+  const t = {
+    id: "u1",
+    title: "消息质量",
+    suite: "butler",
+    turns: ["状态"],
+    expect: {
+      userMessage: {
+        mustMention: ["等待确认", "修改文件"],
+        mustNotMatch: ["待执行：write"],
+        maxLength: 60,
+      },
+    },
+  }
+
+  assert.equal(verify(t, { replies: ["任务 t1（等待确认）：待执行：修改文件"] }).passed, true)
+
+  const bad = verify(t, { replies: ["任务 t1（paused）：待执行：write"] })
+  assert.equal(bad.passed, false)
+  assert.deepEqual(bad.failures.map((f) => f.check).sort(), [
+    "userMessage.excludes:待执行：write",
+    "userMessage.mentions:修改文件",
+    "userMessage.mentions:等待确认",
+    "userMessage.noRawTool",
+  ])
+})
+
+test("verify: butler 套件默认消息不变量", () => {
+  const t = { id: "u2", title: "默认", suite: "butler", turns: ["x"], expect: {} }
+
+  assert.equal(verify(t, { replies: ["收到，正在处理。"] }).passed, true)
+
+  const bad = verify(t, { replies: ["```ts\nconst a = 1\n```"] })
+  assert.equal(bad.passed, false)
+  assert.deepEqual(bad.failures.map((f) => f.check), ["userMessage.noMarkdown"])
 })

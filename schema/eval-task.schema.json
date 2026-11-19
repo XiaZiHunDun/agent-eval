@@ -81,6 +81,11 @@
         "minToolCalls": { "type": "integer", "minimum": 0 },
         "maxToolCalls": { "type": "integer", "minimum": 0 },
         "requiredTools": { "type": "array", "items": { "type": "string" } },
+        "requiredAnyTools": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "等价工具任一即可；与 requiredTools（全部必需）并存，用于 read_file / run_command 这类等价读文件场景"
+        },
         "forbiddenTools": { "type": "array", "items": { "type": "string" } },
         "requireToolSuccess": {
           "type": "boolean",

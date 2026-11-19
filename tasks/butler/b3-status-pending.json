@@ -1,0 +1,41 @@
+{
+  "id": "butler-b3-status-pending",
+  "title": "状态查询带出待审批步骤",
+  "suite": "butler",
+  "taxonomy": "approval",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "状态"
+  ],
+  "expect": {
+    "butler": {
+      "route": "rule",
+      "rule": "status",
+      "result": {
+        "modelCalls": 0
+      }
+    },
+    "containsAll": [
+      "任务 t1",
+      "等待确认",
+      "待执行：修改文件"
+    ],
+    "userMessage": {
+      "mustMention": [
+        "等待确认",
+        "修改文件"
+      ],
+      "mustNotMatch": [
+        "待执行：write"
+      ],
+      "maxLength": 300
+    }
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "B3"
+    }
+  }
+}

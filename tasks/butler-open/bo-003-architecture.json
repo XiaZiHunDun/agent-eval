@@ -1,0 +1,30 @@
+{
+  "id": "bo-003-architecture",
+  "title": "总结仓库结构",
+  "suite": "butler-open",
+  "taxonomy": "code-understanding",
+  "difficulty": "medium",
+  "split": "test",
+  "turns": ["用三句话说明这个 mini 项目的结构"],
+  "timeoutMs": 180000,
+  "runtimeHints": {
+    "wfxm": {
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "README.md",
+            "content": "# mini\n\n- src/ 业务代码\n- test/ 测试\n- scripts/ 运维脚本\n"
+          },
+          { "path": "src/app.mjs", "content": "export const app = { name: \"mini\" }\n" }
+        ]
+      }
+    }
+  },
+  "rubric": {
+    "hard": [{ "id": "budget", "type": "max_tool_calls", "value": 6 }],
+    "soft": {
+      "minScore": 4,
+      "criteria": ["覆盖代码、测试、脚本三类目录", "结论与 README 一致", "表述简洁"]
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "butler-b10-constraint-across-turns",
+  "title": "长期约束在后续轮次持续注入",
+  "suite": "butler",
+  "taxonomy": "memory",
+  "difficulty": "hard",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "记住：不要引入新依赖",
+    "给登录加个缓存",
+    "缓存放哪合适？",
+    "再确认一下约束"
+  ],
+  "expect": {
+    "butler": {
+      "route": "agent",
+      "result": { "modelCalls": 4, "memoryRecallTurns": 4, "memoryRecalled": true }
+    },
+    "finalReplyPattern": "不引入新依赖"
+  },
+  "runtimeHints": { "wfxm": { "scenarioId": "B10" } }
+}

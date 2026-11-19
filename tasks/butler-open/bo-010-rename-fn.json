@@ -1,0 +1,29 @@
+{
+  "id": "bo-010-rename-fn",
+  "title": "重命名函数",
+  "suite": "butler-open",
+  "taxonomy": "small-edit",
+  "difficulty": "easy",
+  "split": "test",
+  "turns": ["把 src/a.mjs 里的 norm 改成 normalizeName"],
+  "timeoutMs": 180000,
+  "runtimeHints": {
+    "wfxm": {
+      "fixtures": {
+        "seedFiles": [
+          { "path": "src/a.mjs", "content": "export function norm(name) {\n  return name.trim()\n}\n" }
+        ]
+      }
+    }
+  },
+  "rubric": {
+    "hard": [
+      { "id": "renamed", "type": "file_contains", "path": "src/a.mjs", "text": "normalizeName" },
+      { "id": "budget", "type": "max_tool_calls", "value": 8 }
+    ],
+    "soft": {
+      "minScore": 4,
+      "criteria": ["函数名与调用点一致", "保留原有行为", "不引入无关改动"]
+    }
+  }
+}

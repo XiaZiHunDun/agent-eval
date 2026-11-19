@@ -1,0 +1,33 @@
+{
+  "id": "bo-006-grep-error",
+  "title": "查错误码出现位置",
+  "suite": "butler-open",
+  "taxonomy": "readonly-retrieval",
+  "difficulty": "easy",
+  "split": "test",
+  "turns": ["E_CONFLICT 这个错误码在哪里产生、哪里处理？"],
+  "timeoutMs": 180000,
+  "runtimeHints": {
+    "wfxm": {
+      "fixtures": {
+        "seedFiles": [
+          { "path": "src/errors.mjs", "content": "export const E_CONFLICT = \"E_CONFLICT\"\n" },
+          {
+            "path": "src/engine.mjs",
+            "content": "import { E_CONFLICT } from \"./errors.mjs\"\nexport function run() {\n  throw new Error(E_CONFLICT)\n}\n"
+          }
+        ]
+      }
+    }
+  },
+  "rubric": {
+    "hard": [
+      { "id": "no-write", "type": "tool_forbidden", "tools": ["write_file"] },
+      { "id": "budget", "type": "max_tool_calls", "value": 6 }
+    ],
+    "soft": {
+      "minScore": 4,
+      "criteria": ["指出定义在 src/errors.mjs", "指出 src/engine.mjs 抛出", "不编造处理分支"]
+    }
+  }
+}

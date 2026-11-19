@@ -1,0 +1,66 @@
+name: Eval nightly
+
+on:
+  schedule:
+    # 02:00 Asia/Shanghai（18:00 UTC），每天一次
+    - cron: "0 18 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: eval-nightly
+  cancel-in-progress: false
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout agent-eval
+        uses: actions/checkout@v4
+
+      - name: Checkout WFXM (product under test)
+        uses: actions/checkout@v4
+        with:
+          repository: XiaZiHunDun/WFXM
+          path: wfxm
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - name: Install WFXM dependencies
+        working-directory: wfxm
+        run: pnpm install --frozen-lockfile
+
+      - name: Framework unit tests
+        run: npm test
+
+      - name: L3 trajectory suite (deterministic fixtures)
+        env:
+          WFXM_ROOT: ${{ github.workspace }}/wfxm
+        run: node src/cli.mjs run --suite trajectory --runtime wfxm
+
+      - name: Butler fixture suite (routing/approval/memory)
+        env:
+          WFXM_ROOT: ${{ github.workspace }}/wfxm
+        run: node src/cli.mjs run --suite butler --runtime wfxm-butler
+
+      - name: L4 open tasks (real model)
+        if: ${{ secrets.MINIMAX_API_KEY != '' }}
+        env:
+          WFXM_ROOT: ${{ github.workspace }}/wfxm
+          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
+        run: node src/cli.mjs run --suite butler-open --runtime wfxm --real
+
+      - name: Upload eval runs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-runs-${{ github.run_id }}
+          path: .eval-runs
+          if-no-files-found: warn

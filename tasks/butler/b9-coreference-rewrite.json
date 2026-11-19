@@ -1,0 +1,19 @@
+{
+  "id": "butler-b9-coreference-rewrite",
+  "title": "指代追问召回失败后改写查询并命中记忆",
+  "suite": "butler",
+  "taxonomy": "memory",
+  "difficulty": "hard",
+  "source": "handwritten",
+  "split": "test",
+  "turns": ["登录限流怎么做的？", "这个怎么扩展？"],
+  "expect": {
+    "butler": {
+      "route": "agent",
+      "result": { "modelCalls": 3, "rewrites": 1, "memoryRecalled": true }
+    },
+    "containsAll": ["令牌桶"],
+    "finalReplyPattern": "白名单"
+  },
+  "runtimeHints": { "wfxm": { "scenarioId": "B9" } }
+}

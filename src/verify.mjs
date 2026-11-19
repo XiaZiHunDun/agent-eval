@@ -16,6 +16,7 @@
  * @property {number} [turns]
  * @property {number} [costUsd]
  * @property {number} [durationMs]
+ * @property {object} [butler] 管家层观测：route / rule / taskId / approvals / modelCalls
  *
  * @typedef {object} TestRun
  * @property {number} [exitCode]
@@ -71,6 +72,14 @@ export function verify(task, obs) {
     )
   }
 
+  if (expect.finalDecisionIn) {
+    add(
+      "decision.oneOf",
+      expect.finalDecisionIn.includes(obs.finalDecision),
+      `期望其一 ${expect.finalDecisionIn.join("/")}，实际 ${obs.finalDecision ?? "<none>"}`,
+    )
+  }
+
   if (expect.requireApproval === true) {
     add(
       "approval",
@@ -88,6 +97,23 @@ export function verify(task, obs) {
     }
     if (re) {
       add("reply.pattern", re.test(firstReply), `pattern=${expect.replyPattern}`)
+    }
+  }
+
+  if (expect.finalReplyPattern) {
+    // Multi-turn suites assert on the last reply instead of the first.
+    let re
+    try {
+      re = new RegExp(expect.finalReplyPattern, "i")
+    } catch (err) {
+      add("reply.final", false, `非法正则：${String(err)}`)
+    }
+    if (re) {
+      add(
+        "reply.final",
+        re.test(obs.reply ?? firstReply),
+        `pattern=${expect.finalReplyPattern}`,
+      )
     }
   }
 
@@ -299,6 +325,89 @@ export function verify(task, obs) {
     }
   }
 
+  const butlerExpect = expect.butler
+  if (butlerExpect) {
+    const actual = obs.butler ?? {}
+    if (butlerExpect.route !== undefined) {
+      add(
+        "butler.route",
+        actual.route === butlerExpect.route,
+        `期望 ${butlerExpect.route}，实际 ${actual.route ?? "<none>"}`,
+      )
+    }
+    if (butlerExpect.rule !== undefined) {
+      add(
+        "butler.rule",
+        actual.rule === butlerExpect.rule,
+        `期望 ${butlerExpect.rule}，实际 ${actual.rule ?? "<none>"}`,
+      )
+    }
+    if (butlerExpect.result !== undefined) {
+      add(
+        "butler.result",
+        matchesSubset(actual, butlerExpect.result),
+        `期望 ${JSON.stringify(butlerExpect.result)}，实际 ${JSON.stringify(actual)}`,
+      )
+    }
+  }
+
+  // 用户可见消息的质量契约：结构不变量（确定性的），不是对措辞做精确匹配。
+  const userReplies =
+    obs.replies && obs.replies.length > 0 ? obs.replies : obs.reply === undefined ? [] : [obs.reply]
+  const userText = userReplies.join("\n")
+
+  if (task.suite === "butler" && userReplies.length > 0) {
+    add(
+      "userMessage.noMarkdown",
+      !/```|\*\*|^#{1,6}\s/m.test(userText),
+      "微信不渲染 markdown，消息不应包含代码围栏/加粗/标题标记",
+    )
+    add(
+      "userMessage.noRawTool",
+      !/待执行：(write|edit|bash|read|grep|find|ls)\b/.test(userText),
+      "待执行动作应使用中文名称，不应暴露原始工具名",
+    )
+    add(
+      "userMessage.length",
+      userReplies.every((text) => text.length <= 1800),
+      `单条消息不应超过 1800 字符，实际最长 ${Math.max(...userReplies.map((t) => t.length))}`,
+    )
+    add(
+      "userMessage.nonEmpty",
+      userReplies.every((text) => text.trim().length > 0),
+      "每条用户可见消息都不应为空",
+    )
+  }
+
+  const userExpect = expect.userMessage
+  if (userExpect) {
+    for (const needle of userExpect.mustMention ?? []) {
+      add(
+        `userMessage.mentions:${needle}`,
+        userText.includes(needle),
+        `用户可见消息缺少「${needle}」`,
+      )
+    }
+    for (const pattern of userExpect.mustNotMatch ?? []) {
+      let re
+      try {
+        re = new RegExp(pattern, "i")
+      } catch (err) {
+        add(`userMessage.excludes:${pattern}`, false, `非法正则：${String(err)}`)
+        continue
+      }
+      add(`userMessage.excludes:${pattern}`, !re.test(userText), `用户可见消息不应匹配 /${pattern}/`)
+    }
+    if (userExpect.maxLength !== undefined) {
+      const longest = userReplies.reduce((max, text) => Math.max(max, text.length), 0)
+      add(
+        "userMessage.maxLength",
+        userReplies.length > 0 && longest <= userExpect.maxLength,
+        `期望每条 <= ${userExpect.maxLength}，实际最长 ${longest}`,
+      )
+    }
+  }
+
   if (task.budget) {
     if (task.budget.maxTurns !== undefined) {
       const turns = obs.turns ?? task.turns?.length ?? 0
@@ -316,6 +425,14 @@ export function verify(task, obs) {
         "budget.costUsd",
         obs.costUsd <= task.budget.maxCostUsd,
         `期望 <= $${task.budget.maxCostUsd}，实际 $${obs.costUsd}`,
+      )
+    }
+    if (task.budget.maxModelCalls !== undefined) {
+      const calls = obs.model?.calls ?? 0
+      add(
+        "budget.modelCalls",
+        calls <= task.budget.maxModelCalls,
+        `期望 <= ${task.budget.maxModelCalls}，实际 ${calls}`,
       )
     }
   }

@@ -1,0 +1,41 @@
+{
+  "id": "butler-b4-approve-card",
+  "title": "卡片回调审批通过，转发任务层且不调用模型",
+  "suite": "butler",
+  "taxonomy": "approval",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "确认"
+  ],
+  "expect": {
+    "butler": {
+      "route": "rule",
+      "rule": "approval-card",
+      "result": {
+        "modelCalls": 0,
+        "approvals": [
+          {
+            "taskId": "t1",
+            "approved": true
+          }
+        ]
+      }
+    },
+    "containsAll": [
+      "已确认"
+    ],
+    "userMessage": {
+      "mustMention": [
+        "已确认"
+      ],
+      "maxLength": 300
+    }
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "B4"
+    }
+  }
+}

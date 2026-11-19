@@ -14,6 +14,10 @@ export const DEFAULT_MIN_RAG_MRR = 0.8
  *
  * @param {{
  *   baseline: { passed: number, total: number },
+ *   butler?: { passed: number, total: number, rate?: number },
+ *   minButler?: number,
+ *   butlerOpen?: { passed: number, total: number, rate?: number },
+ *   minButlerOpen?: number,
  *   capability?: { passed: number, total: number, rate?: number, flaky?: string[] },
  *   minCapability?: number,
  *   rag?: {
@@ -31,6 +35,10 @@ export const DEFAULT_MIN_RAG_MRR = 0.8
  */
 export function evaluateGate({
   baseline,
+  butler,
+  minButler = 0.9,
+  butlerOpen,
+  minButlerOpen = 0.85,
   capability,
   minCapability = 0.8,
   rag,
@@ -48,9 +56,28 @@ export function evaluateGate({
     },
   ]
 
+  let butlerRate
+  if (butler) {
+    butlerRate = butler.rate ?? passRate(butler)
+    checks.push({
+      name: "butler.passRate",
+      ok: butlerRate >= minButler,
+      detail: `butler ${butler.passed}/${butler.total}（${percent(butlerRate)}，期望 >= ${percent(minButler)}）`,
+    })
+  }
+
+  let butlerOpenRate
+  if (butlerOpen) {
+    butlerOpenRate = butlerOpen.rate ?? passRate(butlerOpen)
+    checks.push({
+      name: "butlerOpen.passRate",
+      ok: butlerOpenRate >= minButlerOpen,
+      detail: `butler-open ${butlerOpen.passed}/${butlerOpen.total}（${percent(butlerOpenRate)}，期望 >= ${percent(minButlerOpen)}）`,
+    })
+  }
+
   let capabilityRate
-  if (capability) {
-    capabilityRate = capability.rate ?? passRate(capability)
+  if (capability) {    capabilityRate = capability.rate ?? passRate(capability)
     const flaky = capability.flaky ?? []
     const parts = [
       `capability 平均通过率 ${percent(capabilityRate)}`,
@@ -109,6 +136,8 @@ export function evaluateGate({
   return {
     ok: checks.every((check) => check.ok),
     baselineRate: round(baselineRate),
+    ...(butlerRate === undefined ? {} : { butlerRate: round(butlerRate) }),
+    ...(butlerOpenRate === undefined ? {} : { butlerOpenRate: round(butlerOpenRate) }),
     ...(capabilityRate === undefined ? {} : { capabilityRate: round(capabilityRate) }),
     ...(ragRate === undefined ? {} : { ragRate: round(ragRate) }),
     checks,

@@ -1,0 +1,41 @@
+{
+  "id": "butler-b5-reject-text",
+  "title": "文本「拒绝」走规则并驳回待执行步骤",
+  "suite": "butler",
+  "taxonomy": "approval",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "拒绝"
+  ],
+  "expect": {
+    "butler": {
+      "route": "rule",
+      "rule": "reject",
+      "result": {
+        "modelCalls": 0,
+        "approvals": [
+          {
+            "taskId": "t1",
+            "approved": false
+          }
+        ]
+      }
+    },
+    "containsAll": [
+      "已拒绝"
+    ],
+    "userMessage": {
+      "mustMention": [
+        "已拒绝"
+      ],
+      "maxLength": 300
+    }
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "B5"
+    }
+  }
+}

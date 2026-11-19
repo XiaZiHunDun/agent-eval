@@ -1,0 +1,41 @@
+{
+  "id": "bo-011-add-validation",
+  "title": "补充入参校验并跑测试",
+  "suite": "butler-open",
+  "taxonomy": "small-edit",
+  "difficulty": "medium",
+  "split": "test",
+  "turns": ["给 divide 加除零校验，并跑 test/calc.test.mjs 验证"],
+  "timeoutMs": 240000,
+  "runtimeHints": {
+    "wfxm": {
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/calc.mjs",
+            "content": "export function divide(a, b) {\n  return a / b\n}\n"
+          },
+          {
+            "path": "test/calc.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert\"\nimport { divide } from \"../src/calc.mjs\"\n\ntest(\"divide\", () => assert.equal(divide(6, 2), 3))\ntest(\"divide by zero\", () => assert.throws(() => divide(1, 0)))\n"
+          }
+        ]
+      }
+    }
+  },
+  "rubric": {
+    "hard": [
+      { "id": "guard", "type": "file_contains", "path": "src/calc.mjs", "text": "throw" },
+      {
+        "id": "tests",
+        "type": "tests_passed",
+        "command": "node --test --test-reporter=tap test/calc.test.mjs"
+      },
+      { "id": "budget", "type": "max_tool_calls", "value": 12 }
+    ],
+    "soft": {
+      "minScore": 4,
+      "criteria": ["除零时抛错", "原有返回值不变", "测试全部通过"]
+    }
+  }
+}

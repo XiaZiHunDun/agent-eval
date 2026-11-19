@@ -1,0 +1,15 @@
+{
+  "id": "butler-b1-help",
+  "title": "/help 走规则通道，不调用模型",
+  "suite": "butler",
+  "taxonomy": "routing",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "turns": ["/help"],
+  "expect": {
+    "butler": { "route": "rule", "rule": "help", "result": { "modelCalls": 0 } },
+    "containsAll": ["/new"]
+  },
+  "runtimeHints": { "wfxm": { "scenarioId": "B1" } }
+}

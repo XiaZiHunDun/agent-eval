@@ -1,0 +1,15 @@
+{
+  "id": "butler-b6-agent-fallback",
+  "title": "非命令消息落到管家 Agent",
+  "suite": "butler",
+  "taxonomy": "routing",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "turns": ["登录为什么超时？"],
+  "expect": {
+    "butler": { "route": "agent", "result": { "modelCalls": 1 } },
+    "replyPattern": "网关"
+  },
+  "runtimeHints": { "wfxm": { "scenarioId": "B6" } }
+}

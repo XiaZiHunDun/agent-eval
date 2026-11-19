@@ -1,0 +1,33 @@
+{
+  "id": "bo-004-test-coverage",
+  "title": "判断测试覆盖范围",
+  "suite": "butler-open",
+  "taxonomy": "code-understanding",
+  "difficulty": "medium",
+  "split": "test",
+  "turns": ["现有测试覆盖了哪些行为？还有哪些明显缺口？"],
+  "timeoutMs": 180000,
+  "runtimeHints": {
+    "wfxm": {
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "test/calc.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert\"\nimport { add } from \"../src/calc.mjs\"\n\ntest(\"add\", () => assert.equal(add(1, 2), 3))\n"
+          },
+          {
+            "path": "src/calc.mjs",
+            "content": "export function add(a, b) {\n  return a + b\n}\n\nexport function sub(a, b) {\n  return a - b\n}\n"
+          }
+        ]
+      }
+    }
+  },
+  "rubric": {
+    "hard": [{ "id": "budget", "type": "max_tool_calls", "value": 6 }],
+    "soft": {
+      "minScore": 4,
+      "criteria": ["指出 add 已被测试", "指出 sub 缺少测试", "不虚构不存在的测试文件"]
+    }
+  }
+}

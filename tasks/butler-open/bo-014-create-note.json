@@ -1,0 +1,24 @@
+{
+  "id": "bo-014-create-note",
+  "title": "新建说明文件",
+  "suite": "butler-open",
+  "taxonomy": "multi-step",
+  "difficulty": "medium",
+  "split": "test",
+  "turns": ["新建 docs/notes.md，写一段“快速开始”说明，包含 pnpm install 和 pnpm test 两步"],
+  "timeoutMs": 180000,
+  "runtimeHints": {
+    "wfxm": { "fixtures": { "seedFiles": [{ "path": "README.md", "content": "# demo\n" }] } }
+  },
+  "rubric": {
+    "hard": [
+      { "id": "file", "type": "file_exists", "path": "docs/notes.md" },
+      { "id": "install", "type": "file_contains", "path": "docs/notes.md", "text": "pnpm install" },
+      { "id": "budget", "type": "max_tool_calls", "value": 10 }
+    ],
+    "soft": {
+      "minScore": 4,
+      "criteria": ["包含两步命令", "标题清晰", "不写无关内容"]
+    }
+  }
+}

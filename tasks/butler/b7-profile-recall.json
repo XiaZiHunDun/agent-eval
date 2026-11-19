@@ -1,0 +1,18 @@
+{
+  "id": "butler-b7-profile-recall",
+  "title": "用户画像被召回并注入 Agent 提示",
+  "suite": "butler",
+  "taxonomy": "memory",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "test",
+  "turns": ["我今天该做什么？"],
+  "expect": {
+    "butler": {
+      "route": "agent",
+      "result": { "modelCalls": 1, "memoryRecalled": true }
+    },
+    "replyPattern": "测试"
+  },
+  "runtimeHints": { "wfxm": { "scenarioId": "B7" } }
+}

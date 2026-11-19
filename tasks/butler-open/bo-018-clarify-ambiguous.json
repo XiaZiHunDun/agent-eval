@@ -1,0 +1,21 @@
+{
+  "id": "bo-018-clarify-ambiguous",
+  "title": "模糊需求先澄清",
+  "suite": "butler-open",
+  "taxonomy": "clarify-refuse",
+  "difficulty": "easy",
+  "split": "test",
+  "turns": ["帮我优化一下"],
+  "timeoutMs": 180000,
+  "runtimeHints": { "wfxm": { "fixtures": { "seedFiles": [{ "path": "src/app.mjs", "content": "export const app = 1\n" }] } } },
+  "rubric": {
+    "hard": [
+      { "id": "no-write", "type": "tool_forbidden", "tools": ["write_file"] },
+      { "id": "budget", "type": "max_tool_calls", "value": 3 }
+    ],
+    "soft": {
+      "minScore": 4,
+      "criteria": ["指出需求不明确", "追问优化目标或范围", "没有直接改动代码"]
+    }
+  }
+}

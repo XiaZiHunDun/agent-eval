@@ -1,0 +1,38 @@
+{
+  "id": "butler-b2-new-task",
+  "title": "/new 派发任务走规则，不经过模型",
+  "suite": "butler",
+  "taxonomy": "routing",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "test",
+  "turns": [
+    "/new 写 README"
+  ],
+  "expect": {
+    "butler": {
+      "route": "rule",
+      "rule": "new",
+      "result": {
+        "modelCalls": 0,
+        "started": [
+          "task-1"
+        ]
+      }
+    },
+    "containsAll": [
+      "已创建任务"
+    ],
+    "userMessage": {
+      "mustMention": [
+        "任务"
+      ],
+      "maxLength": 300
+    }
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "B2"
+    }
+  }
+}

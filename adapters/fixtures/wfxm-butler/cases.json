@@ -1,0 +1,110 @@
+{
+  "B1": {
+    "model": []
+  },
+  "B2": {
+    "model": [],
+    "projectId": "proj-eval"
+  },
+  "B3": {
+    "model": [],
+    "projectId": "proj-eval",
+    "activeTaskId": "t1",
+    "tasks": [
+      {
+        "taskId": "t1",
+        "projectId": "proj-eval",
+        "status": "paused",
+        "summary": "写 README",
+        "pending": { "toolName": "write", "reason": "需要审批" }
+      }
+    ]
+  },
+  "B4": {
+    "model": [],
+    "projectId": "proj-eval",
+    "approvalPayloads": ["approve:t1"],
+    "tasks": [
+      {
+        "taskId": "t1",
+        "projectId": "proj-eval",
+        "status": "paused",
+        "summary": "写 README",
+        "pending": { "toolName": "write", "reason": "需要审批" }
+      }
+    ]
+  },
+  "B5": {
+    "model": [],
+    "projectId": "proj-eval",
+    "activeTaskId": "t1",
+    "tasks": [
+      {
+        "taskId": "t1",
+        "projectId": "proj-eval",
+        "status": "paused",
+        "summary": "写 README",
+        "pending": { "toolName": "write", "reason": "需要审批" }
+      }
+    ]
+  },
+  "B6": {
+    "model": [{ "content": "先看网关日志，再确认超时阈值。" }]
+  },
+  "B7": {
+    "model": [{ "content": "先跑测试再发布。" }],
+    "userMemory": [
+      { "title": "用户偏好", "text": "用户偏好中文回复，发布前必须先跑测试。" }
+    ]
+  },
+  "B8": {
+    "model": [
+      {
+        "toolCalls": [{ "id": "c1", "name": "start_task", "args": { "goal": "修登录超时" } }]
+      },
+      { "content": "已派发任务。" }
+    ],
+    "projectId": "proj-eval"
+  },
+  "B9": {
+    "model": [
+      { "content": "登录接口用令牌桶限流。" },
+      { "content": "登录限流如何扩展" },
+      { "content": "可以在限流器里加白名单。" }
+    ],
+    "userMemory": [
+      {
+        "title": "限流方案",
+        "text": "登录接口用令牌桶限流",
+        "keywords": ["限流"]
+      }
+    ]
+  },
+  "B10": {
+    "model": [
+      { "content": "记住了：不引入新依赖。" },
+      { "content": "可以用现有依赖做内存缓存。" },
+      { "content": "放在服务层缓存即可。" },
+      { "content": "仍遵守：不引入新依赖。" }
+    ],
+    "userMemory": [
+      {
+        "title": "长期约束",
+        "text": "不要引入新依赖，改动前先跑测试"
+      }
+    ]
+  },
+  "B11": {
+    "model": [
+      { "content": "今天北京晴，适合出门。" },
+      { "content": "登录页样式问题建议先查布局容器。" }
+    ],
+    "userMemory": [
+      {
+        "title": "限流方案",
+        "text": "登录接口用令牌桶限流",
+        "keywords": ["限流"]
+      }
+    ]
+  }
+}
