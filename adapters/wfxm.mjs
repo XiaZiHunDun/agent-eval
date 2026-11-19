@@ -104,11 +104,15 @@ export default {
     const rubricPaths = (task.rubric?.hard ?? [])
       .filter((rule) => typeof rule.path === "string")
       .map((rule) => rule.path)
+    const hiddenPaths = (task.hiddenChecks ?? [])
+      .filter((rule) => typeof rule.path === "string")
+      .map((rule) => rule.path)
     const workspacePaths = [
       ...new Set([
         ...(task.expect?.workspaceState ?? []).map((s) => s.path),
         ...(task.workspacePaths ?? []),
         ...rubricPaths,
+        ...hiddenPaths,
       ]),
     ]
     const repoFixture = task.repo?.fixture

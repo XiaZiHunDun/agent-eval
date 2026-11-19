@@ -27,3 +27,20 @@ test("failures: 分类去重并按固定顺序输出", () => {
   ])
   assert.deepEqual(categories, ["model", "tool", "budget"])
 })
+
+test("failures: 篡改 / 假成功 / 诚实停止 / 质量单独归因", () => {
+  assert.equal(classifyFailure("tamper.forbidden:tests/a.test.ts"), "tamper")
+  assert.equal(classifyFailure("tamper.snapshot"), "tamper")
+  assert.equal(classifyFailure("false_success"), "false_success")
+  assert.equal(classifyFailure("honest.stop"), "honesty")
+  assert.equal(classifyFailure("quality.diffLines"), "quality")
+  assert.deepEqual(
+    failureCategories([
+      { check: "tamper.forbidden:tests/a.test.ts" },
+      { check: "false_success" },
+      { check: "honest.stop" },
+      { check: "quality.files" },
+    ]),
+    ["tamper", "false_success", "honesty", "quality"],
+  )
+})

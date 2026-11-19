@@ -7,6 +7,10 @@ export const FAILURE_CATEGORIES = [
   "budget",
   "harness",
   "task",
+  "tamper",
+  "false_success",
+  "honesty",
+  "quality",
   "unknown",
 ]
 
@@ -16,6 +20,10 @@ const EXACT = {
   "http.status": "harness",
   "adapter.run": "harness",
   "task.hasExpectation": "model",
+  false_success: "false_success",
+  "honest.stop": "honesty",
+  "honest.noSideEffect": "honesty",
+  "detector.expected": "unknown",
 }
 
 /**
@@ -36,6 +44,9 @@ export function classifyFailure(check) {
   if (check.startsWith("rag.")) return "retrieval"
   if (check.startsWith("budget.")) return "budget"
   if (check.startsWith("trace.")) return "harness"
+  if (check.startsWith("tamper.")) return "tamper"
+  if (check.startsWith("quality.")) return "quality"
+  if (check.startsWith("hidden[") || check.startsWith("detector.")) return "task"
   if (check.startsWith("tool.") || check.startsWith("toolArgs") || check.startsWith("tools.")) {
     return "tool"
   }

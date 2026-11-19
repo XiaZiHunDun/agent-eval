@@ -18,10 +18,54 @@ export async function loadTasks(dir) {
     if (!("expect" in task) && !("rubric" in task)) {
       throw new Error(`${name} 缺少字段 expect 或 rubric`)
     }
+    validateAntiCheatFields(task, name)
     tasks.push(task)
   }
   tasks.sort((a, b) => a.id.localeCompare(b.id))
   return tasks
+}
+
+/** 防作弊字段的轻量结构校验（JSON Schema 不在这里执行）。 */
+function validateAntiCheatFields(task, name) {
+  if (task.hiddenChecks !== undefined) {
+    if (!Array.isArray(task.hiddenChecks)) throw new Error(`${name} hiddenChecks 必须是数组`)
+    const allowed = new Set([
+      "file_exists",
+      "file_absent",
+      "file_equals",
+      "file_contains",
+      "file_matches",
+    ])
+    for (const [i, rule] of task.hiddenChecks.entries()) {
+      if (!rule || typeof rule !== "object" || Array.isArray(rule)) {
+        throw new Error(`${name} hiddenChecks[${i}] 必须是对象`)
+      }
+      if (!allowed.has(rule.type)) throw new Error(`${name} hiddenChecks[${i}] 类型未知`)
+      if (typeof rule.path !== "string" || rule.path.length === 0) {
+        throw new Error(`${name} hiddenChecks[${i}] 缺少 path`)
+      }
+    }
+  }
+  if (task.tamperPolicy !== undefined) {
+    const policy = task.tamperPolicy
+    if (!policy || typeof policy !== "object" || Array.isArray(policy)) {
+      throw new Error(`${name} tamperPolicy 必须是对象`)
+    }
+    for (const key of ["allowed", "forbidden"]) {
+      if (policy[key] !== undefined && !Array.isArray(policy[key])) {
+        throw new Error(`${name} tamperPolicy.${key} 必须是数组`)
+      }
+    }
+  }
+  const detector = task.expect?.detector
+  if (detector !== undefined) {
+    if (!detector || typeof detector !== "object" || Array.isArray(detector)) {
+      throw new Error(`${name} expect.detector 必须是对象`)
+    }
+    if (!detector.check && !detector.prefix && !detector.category) {
+      throw new Error(`${name} expect.detector 需要 check / prefix / category 之一`)
+    }
+  }
 }
 
 /** 任务元信息，单次运行与聚合结果共用。 */
@@ -34,7 +78,18 @@ function taskMeta(task) {
   }
 }
 
-const OBSERVATION_FIELDS = ["reply", "replies", "finalDecision", "turns", "model", "tests", "costUsd"]
+const OBSERVATION_FIELDS = [
+  "reply",
+  "replies",
+  "finalDecision",
+  "turns",
+  "model",
+  "tests",
+  "costUsd",
+  "workspaceChanges",
+  "baselineHash",
+  "workspaceHash",
+]
 
 /**
  * 单次尝试的执行结果。
@@ -78,6 +133,9 @@ function buildAttempt({ task, runtime, obs, verdict, traceProblems, durationMs, 
     ...(obs?.turns !== undefined ? { turns: obs.turns } : {}),
     ...(obs?.model !== undefined ? { model: obs.model } : {}),
     ...(obs?.tests !== undefined ? { tests: obs.tests } : {}),
+    ...(obs?.workspaceChanges !== undefined ? { workspaceChanges: obs.workspaceChanges } : {}),
+    ...(obs?.baselineHash !== undefined ? { baselineHash: obs.baselineHash } : {}),
+    ...(obs?.workspaceHash !== undefined ? { workspaceHash: obs.workspaceHash } : {}),
     failures,
   }
 }

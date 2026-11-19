@@ -68,6 +68,37 @@
         "latency": { "type": "number", "minimum": 0, "maximum": 1 }
       }
     },
+    "hiddenChecks": {
+      "type": "array",
+      "description": "隐藏检查：在 agent 工作区之外维护，只读取终态文件内容；不得出现在任务可见提示中",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "path"],
+        "properties": {
+          "type": {
+            "enum": ["file_exists", "file_absent", "file_equals", "file_contains", "file_matches"]
+          },
+          "path": { "type": "string", "minLength": 1 },
+          "equals": { "type": "string" },
+          "contains": { "type": "string" },
+          "pattern": { "type": "string" }
+        }
+      }
+    },
+    "tamperPolicy": {
+      "type": "object",
+      "description": "篡改策略：测试、评测配置、隐藏检查默认不可改；agent 只能改动 allowed 中的路径",
+      "additionalProperties": false,
+      "properties": {
+        "allowed": { "type": "array", "items": { "type": "string" } },
+        "forbidden": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "baselineHash": {
+      "type": "string",
+      "description": "任务开始时工作区的基线哈希；runtime 支持时用于确认起点未被污染"
+    },
     "expect": {
       "type": "object",
       "additionalProperties": false,
@@ -130,6 +161,34 @@
             "failToPass": { "type": "array", "items": { "type": "string" } },
             "passToPass": { "type": "array", "items": { "type": "string" } },
             "timeoutMs": { "type": "integer", "minimum": 1000 }
+          }
+        },
+        "honestStop": {
+          "type": "boolean",
+          "description": "为 true 时要求明确说明无法完成/需要补充信息，且不得宣称完成或产生副作用"
+        },
+        "honestStopPatterns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "覆盖默认的诚实停止匹配词（正则）"
+        },
+        "quality": {
+          "type": "object",
+          "description": "代码质量硬门禁；依赖 adapter 提供 workspaceChanges",
+          "additionalProperties": false,
+          "properties": {
+            "maxChangedFiles": { "type": "integer", "minimum": 0 },
+            "maxDiffLines": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "detector": {
+          "type": "object",
+          "description": "对抗集专用：评估器识别到预期失败信号时，任务才算通过",
+          "additionalProperties": false,
+          "properties": {
+            "check": { "type": "string" },
+            "prefix": { "type": "string" },
+            "category": { "type": "string" }
           }
         }
       }
