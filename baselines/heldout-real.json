@@ -1,8 +1,8 @@
 {
   "suite": "heldout",
-  "recordedAt": "2026-11-19T11:19:46.310Z",
-  "observedRate": 0.833,
-  "note": "2026-11-19 用 MiniMax-M3.1-Flash 实跑 6 条 ×2：5/6 任务全过、平均任务通过率 83.3%（heldout-ambiguity-optimize 0/2）。判定阈值取 0.75，容忍一次尝试抖动；taskRates 仅用于诊断。",
+  "recordedAt": "2026-11-19T11:33:00.000Z",
+  "observedRate": 1,
+  "note": "2026-11-19 默认模型切换为 DeepSeek Flash 后重录：6 条 ×2 全过、平均任务通过率 100%。阈值取 0.90，容忍一次尝试抖动。切换到 DeepSeek 的主要依据：MiniMax-M3.1-Flash 在同一批任务上两次均为 5/6（heldout-ambiguity-optimize 0/2），P95 142s vs 28s。",
   "tasks": [
     "heldout-ambiguity-optimize",
     "heldout-approval-deploy-replicas",
@@ -11,9 +11,9 @@
     "heldout-multiturn-code",
     "heldout-plan-migration"
   ],
-  "overallRate": 0.75,
+  "overallRate": 0.9,
   "taskRates": {
-    "heldout-ambiguity-optimize": 0,
+    "heldout-ambiguity-optimize": 1,
     "heldout-approval-deploy-replicas": 1,
     "heldout-debug-cache-tenant": 1,
     "heldout-feature-flatten": 1,

@@ -1,8 +1,8 @@
 {
   "suite": "capability",
-  "recordedAt": "2026-11-19T08:24:30.037Z",
-  "observedRate": 0.95,
-  "note": "2026-11-19 用 MiniMax-M3.1-Flash 实跑 10 条 ×2：9/10 任务全过、平均任务通过率 95%（cap-code-edit-parse-duration 1/2）。判定阈值取 0.90 留一次抖动余量；taskRates 仅用于诊断，不参与判定。",
+  "recordedAt": "2026-11-19T11:42:00.000Z",
+  "observedRate": 1,
+  "note": "2026-11-19 默认模型切换为 DeepSeek Flash 后重录：10 条 ×2 全过、平均任务通过率 100%。阈值取 0.90，容忍两次尝试抖动；taskRates 仅用于诊断。上一版 MiniMax-M3.1-Flash 实测 95%。",
   "tasks": [
     "cap-code-edit-clamp",
     "cap-code-edit-parse-duration",
@@ -18,7 +18,7 @@
   "overallRate": 0.9,
   "taskRates": {
     "cap-code-edit-clamp": 1,
-    "cap-code-edit-parse-duration": 0.5,
+    "cap-code-edit-parse-duration": 1,
     "cap-code-edit-port-env": 1,
     "cap-code-edit-slugify": 1,
     "cap-debug-async-await": 1,

@@ -58,27 +58,31 @@ jobs:
       - name: L4 open tasks (real model)
         env:
           WFXM_ROOT: ${{ github.workspace }}/wfxm
-          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
-          MINIMAX_MODEL: MiniMax-M3.1-Flash
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           DEEPSEEK_MODEL: deepseek-flash
+          BUTLER_V5_MODEL_PLAN: deepseek-flash
+          BUTLER_V5_MODEL_EXEC: deepseek-flash
+          BUTLER_V5_MODEL_INTAKE: deepseek-flash
         run: |
-          if [ -z "${MINIMAX_API_KEY:-}" ]; then
-            echo "::warning::MINIMAX_API_KEY 未配置，跳过真实模型任务"
+          if [ -z "${DEEPSEEK_API_KEY:-}" ]; then
+            echo "::warning::DEEPSEEK_API_KEY 未配置，跳过真实模型任务"
             exit 0
           fi
           node src/cli.mjs run --suite butler-open --runtime wfxm --real
 
       # 真实模型开发能力子集：10 条 code-edit/debug/planning，2 次重复。
-      # 基线阈值 0.90（MiniMax-M3.1-Flash 实测 95%），低于基线则失败。
+      # 默认模型 DeepSeek Flash，基线阈值 0.90（实测 100%）。
       - name: Real-model dev subset (10 capability tasks)
         env:
           WFXM_ROOT: ${{ github.workspace }}/wfxm
-          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
-          MINIMAX_MODEL: MiniMax-M3.1-Flash
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           DEEPSEEK_MODEL: deepseek-flash
+          BUTLER_V5_MODEL_PLAN: deepseek-flash
+          BUTLER_V5_MODEL_EXEC: deepseek-flash
+          BUTLER_V5_MODEL_INTAKE: deepseek-flash
         run: |
-          if [ -z "${MINIMAX_API_KEY:-}" ]; then
-            echo "::warning::MINIMAX_API_KEY 未配置，跳过真实模型子集"
+          if [ -z "${DEEPSEEK_API_KEY:-}" ]; then
+            echo "::warning::DEEPSEEK_API_KEY 未配置，跳过真实模型子集"
             exit 0
           fi
           node src/cli.mjs run --suite capability --runtime wfxm --real --repeats 2 \
@@ -86,17 +90,20 @@ jobs:
             --out .eval-runs/capability-real \
             --baseline baselines/capability-real.json
 
-      # 真实模型 heldout 子集：6 条更难任务。capability 子集已饱和（两臂均 100%），
-      # 这里用于观察模型区分度；基线阈值 0.75（实测 83.3%）。
+      # 真实模型 heldout 子集：6 条更难任务，用于观察模型区分度。
+      # 2026-11-19 选型：DeepSeek Flash 2 轮 6/6（P95 28s）；MiniMax 5/6（P95 142s）。
+      # 基线阈值 0.90（实测 100%）。
       - name: Real-model heldout subset (6 harder tasks)
         env:
           WFXM_ROOT: ${{ github.workspace }}/wfxm
-          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
-          MINIMAX_MODEL: MiniMax-M3.1-Flash
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           DEEPSEEK_MODEL: deepseek-flash
+          BUTLER_V5_MODEL_PLAN: deepseek-flash
+          BUTLER_V5_MODEL_EXEC: deepseek-flash
+          BUTLER_V5_MODEL_INTAKE: deepseek-flash
         run: |
-          if [ -z "${MINIMAX_API_KEY:-}" ]; then
-            echo "::warning::MINIMAX_API_KEY 未配置，跳过 heldout 子集"
+          if [ -z "${DEEPSEEK_API_KEY:-}" ]; then
+            echo "::warning::DEEPSEEK_API_KEY 未配置，跳过 heldout 子集"
             exit 0
           fi
           node src/cli.mjs run --suite heldout --runtime wfxm --real --repeats 2 \
