@@ -14,6 +14,7 @@
     "eval:butler": "node src/cli.mjs run --suite butler --runtime wfxm-butler",
     "eval:trajectory": "node src/cli.mjs run --suite trajectory --runtime wfxm",
     "eval:legacy": "node src/cli.mjs run --suite legacy --runtime wfxm",
+    "eval:mutation": "node scripts/mutation-spotcheck.mjs",
     "eval:butler-open": "node src/cli.mjs run --suite butler-open --runtime wfxm --real",
     "eval:gate": "node src/cli.mjs gate",
     "eval:gate:rag": "node src/cli.mjs gate --with-rag --real --repeats 2",

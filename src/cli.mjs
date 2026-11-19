@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { mkdir, readFile, writeFile } from "node:fs/promises"
-import { dirname, join, resolve } from "node:path"
+import { basename, dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { collectRunConfig } from "./config.mjs"
 import { loadTasks, runSuite } from "./runner.mjs"
@@ -13,6 +13,7 @@ import {
 } from "./gate.mjs"
 import { evaluateRetrieval } from "./rag.mjs"
 import { buildBaseline, compareToBaseline } from "./baseline.mjs"
+import { compareRuns } from "./compare.mjs"
 import {
   DEFAULT_ANNOTATION_QUEUE,
   buildLangfuseBatch,
@@ -32,7 +33,8 @@ const ADAPTERS = {
 
 const USAGE = [
   "用法：",
-  "  node src/cli.mjs run --suite <baseline|repo|golden|legacy|capability|heldout|rag|butler|butler-open|trajectory|adversarial> [--runtime wfxm|wfxm-butler] [--task <id>] [--tasks <id1,id2>] [--out <dir>] [--repeats N] [--limit N] [--baseline <file>] [--record <file>] [--real]",
+  "  node src/cli.mjs run --suite <...> [--runtime wfxm|wfxm-butler] [--task <id>] [--tasks <id1,id2>] [--out <dir>] [--repeats N] [--limit N] [--label <name>] [--baseline <file>] [--record <file>] [--real]",
+  "  node src/cli.mjs compare --a <runDir> --b <runDir> [--label-a <name>] [--label-b <name>] [--out <dir>]",
   "  node src/cli.mjs gate [--with-capability --with-rag --real] [--repeats N] [--min-capability 0.8] [--min-rag 0.9] [--max-flaky 0.2] [--min-golden 1] [--min-adversarial 1] [--max-p95 25000] [--min-honest-stop 0.9] [--golden-limit N] [--out <dir>]",
   "环境变量：AGENT_EVAL_LANGFUSE=1 导出 Langfuse batch（无凭证时写 langfuse.json dry-run）",
 ].join("\n")
@@ -114,6 +116,11 @@ function parseArgs(argv) {
     limit: undefined,
     baseline: undefined,
     record: undefined,
+    label: undefined,
+    a: undefined,
+    b: undefined,
+    labelA: undefined,
+    labelB: undefined,
     real: false,
     withCapability: false,
     withRag: false,
@@ -136,6 +143,11 @@ function parseArgs(argv) {
     else if (arg === "--tasks") opts.tasks = parseTaskList(rest[++i])
     else if (arg === "--baseline") opts.baseline = rest[++i]
     else if (arg === "--record") opts.record = rest[++i]
+    else if (arg === "--label") opts.label = rest[++i]
+    else if (arg === "--a") opts.a = rest[++i]
+    else if (arg === "--b") opts.b = rest[++i]
+    else if (arg === "--label-a") opts.labelA = rest[++i]
+    else if (arg === "--label-b") opts.labelB = rest[++i]
     else if (arg === "--out") opts.out = rest[++i]
     else if (arg === "--limit") opts.limit = parsePositiveInt(rest[++i], "--limit")
     else if (arg === "--real") opts.real = true
@@ -228,6 +240,7 @@ async function executeSuite({
   real,
   repeats = 1,
   limit,
+  label,
   log = (msg) => console.log(msg),
 }) {
   const factory = ADAPTERS[runtime]
@@ -262,6 +275,7 @@ async function executeSuite({
   const summary = {
     ...suite,
     suite: suiteName,
+    ...(label ? { label } : {}),
     startedAt,
     finishedAt: new Date().toISOString(),
     config,
@@ -315,6 +329,7 @@ async function runCommand(opts) {
     real: opts.real,
     repeats: opts.repeats,
     limit: opts.limit,
+    label: opts.label,
   })
 
   console.log(`\n${passed}/${total} 任务全过，平均任务通过率 ${(passRate * 100).toFixed(1)}%`)
@@ -351,6 +366,57 @@ async function runCommand(opts) {
   // 声明基线时以基线为准（真实模型子集不要求全过）；否则保持“全过才通过”。
   const exitOk = opts.baseline ? baselineOk : passed === total
   process.exit(exitOk ? 0 : 1)
+}
+
+async function compareCommand(opts) {
+  if (!opts.a || !opts.b) throw new Error("compare 需要 --a <runDir> 与 --b <runDir>")
+
+  const loadSummary = async (dir) => {
+    const resolved = resolve(dir)
+    const file = join(resolved, "summary.json")
+    try {
+      return { dir: resolved, summary: JSON.parse(await readFile(file, "utf8")) }
+    } catch {
+      throw new Error(`读取 summary.json 失败：${file}`)
+    }
+  }
+
+  const left = await loadSummary(opts.a)
+  const right = await loadSummary(opts.b)
+  const labelA = opts.labelA ?? left.summary.label ?? basename(left.dir)
+  const labelB = opts.labelB ?? right.summary.label ?? basename(right.dir)
+  const result = compareRuns({ a: left.summary, b: right.summary, labelA, labelB })
+
+  const createdAt = new Date().toISOString()
+  const outDir = opts.out
+    ? resolve(opts.out)
+    : join(ROOT, ".eval-runs", `compare-${createdAt.replace(/[:.]/g, "-")}`)
+  await mkdir(outDir, { recursive: true })
+  await writeFile(
+    join(outDir, "compare.json"),
+    JSON.stringify({ ...result, aDir: left.dir, bDir: right.dir, createdAt }, null, 2) + "\n",
+    "utf8",
+  )
+
+  const pct = (value) => `${(value * 100).toFixed(1)}%`
+  console.log(`\n配对比较：${labelA} → ${labelB}（suite=${result.suite ?? "?"}）`)
+  for (const pair of result.pairs) {
+    const arrow = pair.lift > 0 ? "↑" : pair.lift < 0 ? "↓" : "="
+    console.log(
+      `  ${arrow} ${pair.taskId} ${pct(pair.aRate)} → ${pct(pair.bRate)}（${pair.lift >= 0 ? "+" : ""}${pair.lift}）`,
+    )
+  }
+
+  if (result.blocked) {
+    console.log("\nBLOCKED — 不报告 headline lift")
+    for (const issue of result.issues) console.log(`  ✗ ${issue}`)
+  } else {
+    console.log(
+      `\nheadline lift ${result.headline >= 0 ? "+" : ""}${result.headline}（改善 ${result.improved} / 回退 ${result.regressed} / 持平 ${result.unchanged}）`,
+    )
+  }
+  console.log(`compare.json：${join(outDir, "compare.json")}`)
+  process.exit(result.blocked ? 1 : 0)
 }
 
 async function gateCommand(opts) {
@@ -604,6 +670,7 @@ async function gateCommand(opts) {
 async function main() {
   const opts = parseArgs(process.argv.slice(2))
   if (opts.command === "run") return runCommand(opts)
+  if (opts.command === "compare") return compareCommand(opts)
   if (opts.command === "gate") return gateCommand(opts)
 
   console.log(USAGE)
