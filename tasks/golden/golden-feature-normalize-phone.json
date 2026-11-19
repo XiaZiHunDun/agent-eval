@@ -1,0 +1,114 @@
+{
+  "id": "golden-feature-normalize-phone",
+  "title": "新增手机号归一化",
+  "suite": "golden",
+  "taxonomy": "code-edit",
+  "difficulty": "medium",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "新增手机号归一化，改 src/phone.mjs，不要破坏现有行为。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "tests/**",
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "src/phone.mjs",
+      "contains": "export function normalizePhone"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-feature-normalize-phone",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/phone.mjs",
+            "content": "export function digits(text) {\n  return text.replace(/\\D/g, \"\")\n}\n"
+          },
+          {
+            "path": "test/phone.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { digits } from \"../src/phone.mjs\"\n\ntest(\"digits: 只留数字\", () => {\n  assert.equal(digits(\"a1b2\"), \"12\")\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "src/phone.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "src/phone.mjs",
+                  "content": "export function digits(text) {\n  return text.replace(/\\D/g, \"\")\n}\n\n/** 去掉空格/连字符与国家码前缀。 */\nexport function normalizePhone(input) {\n  const clean = input.replace(/[\\s-]/g, \"\")\n  return clean.replace(/^\\+?86/, \"\")\n}\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "src/phone.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/phone.test.mjs",
+      "passToPass": [
+        "digits: 只留数字"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 60
+    }
+  }
+}

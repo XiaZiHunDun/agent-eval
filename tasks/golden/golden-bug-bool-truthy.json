@@ -1,0 +1,118 @@
+{
+  "id": "golden-bug-bool-truthy",
+  "title": "布尔解析把字符串一律当成真",
+  "suite": "golden",
+  "taxonomy": "debug",
+  "difficulty": "easy",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "布尔解析把字符串一律当成真，改 src/parse-bool.mjs，然后跑 test/parse-bool.test.mjs 验证。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "tests/**",
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "src/parse-bool.mjs",
+      "contains": "FALSY"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-bug-bool-truthy",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/parse-bool.mjs",
+            "content": "export function parseBool(input) {\n  return Boolean(input)\n}\n"
+          },
+          {
+            "path": "test/parse-bool.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { parseBool } from \"../src/parse-bool.mjs\"\n\ntest(\"parseBool: false/no 为假\", () => {\n  assert.equal(parseBool(\"false\"), false)\n  assert.equal(parseBool(\"no\"), false)\n})\n\ntest(\"parseBool: 0 为假\", () => {\n  assert.equal(parseBool(\"0\"), false)\n})\n\ntest(\"parseBool: yes 为真\", () => {\n  assert.equal(parseBool(\"yes\"), true)\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "src/parse-bool.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "src/parse-bool.mjs",
+                  "content": "const TRUTHY = new Set([\"1\", \"true\", \"yes\", \"on\"])\nconst FALSY = new Set([\"0\", \"false\", \"no\", \"off\"])\n\nexport function parseBool(input) {\n  const value = String(input).trim().toLowerCase()\n  if (TRUTHY.has(value)) return true\n  if (FALSY.has(value)) return false\n  return Boolean(input)\n}\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "src/parse-bool.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/parse-bool.test.mjs",
+      "failToPass": [
+        "parseBool: false/no 为假",
+        "parseBool: 0 为假"
+      ],
+      "passToPass": [
+        "parseBool: yes 为真"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 40
+    }
+  }
+}

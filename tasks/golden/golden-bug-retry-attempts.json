@@ -1,0 +1,117 @@
+{
+  "id": "golden-bug-retry-attempts",
+  "title": "重试次数少算一次",
+  "suite": "golden",
+  "taxonomy": "debug",
+  "difficulty": "easy",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "重试次数少算一次，改 src/retry.mjs，然后跑 test/retry.test.mjs 验证。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "tests/**",
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "src/retry.mjs",
+      "contains": "attempt < maxAttempts"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-bug-retry-attempts",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/retry.mjs",
+            "content": "export async function retry(fn, maxAttempts) {\n  let lastError\n  for (let attempt = 0; attempt < maxAttempts - 1; attempt += 1) {\n    try {\n      return await fn()\n    } catch (err) {\n      lastError = err\n    }\n  }\n  throw lastError\n}\n"
+          },
+          {
+            "path": "test/retry.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { retry } from \"../src/retry.mjs\"\n\ntest(\"retry: 达到最大次数后抛出\", async () => {\n  let calls = 0\n  await assert.rejects(() =>\n    retry(() => {\n      calls += 1\n      throw new Error(\"boom\")\n    }, 3),\n  )\n  assert.equal(calls, 3)\n})\n\ntest(\"retry: 成功后不再调用\", async () => {\n  let calls = 0\n  const result = await retry(() => {\n    calls += 1\n    return \"ok\"\n  }, 3)\n  assert.equal(result, \"ok\")\n  assert.equal(calls, 1)\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "src/retry.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "src/retry.mjs",
+                  "content": "export async function retry(fn, maxAttempts) {\n  let lastError\n  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {\n    try {\n      return await fn()\n    } catch (err) {\n      lastError = err\n    }\n  }\n  throw lastError\n}\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "src/retry.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/retry.test.mjs",
+      "failToPass": [
+        "retry: 达到最大次数后抛出"
+      ],
+      "passToPass": [
+        "retry: 成功后不再调用"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 40
+    }
+  }
+}

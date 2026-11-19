@@ -45,10 +45,10 @@ jobs:
           WFXM_ROOT: ${{ github.workspace }}/wfxm
         run: node src/cli.mjs run --suite trajectory --runtime wfxm
 
-      - name: Butler fixture suite (routing/approval/memory)
+      - name: Multi-metric gate (baseline + butler + golden + adversarial)
         env:
           WFXM_ROOT: ${{ github.workspace }}/wfxm
-        run: node src/cli.mjs run --suite butler --runtime wfxm-butler
+        run: node src/cli.mjs gate
 
       - name: L4 open tasks (real model)
         if: ${{ secrets.MINIMAX_API_KEY != '' }}

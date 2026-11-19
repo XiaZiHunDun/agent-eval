@@ -1,0 +1,115 @@
+{
+  "id": "golden-test-add-regression",
+  "title": "给已修问题补回归用例",
+  "suite": "golden",
+  "taxonomy": "test-evolution",
+  "difficulty": "medium",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "给已修问题补回归用例，改 test/bytes.test.mjs。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**",
+      "test/**",
+      "tests/**"
+    ],
+    "forbidden": [
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "test/bytes.test.mjs",
+      "contains": "回归 1024 恰好进位"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-test-add-regression",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/bytes.mjs",
+            "content": "export function formatBytes(bytes) {\n  const units = [\"B\", \"KB\", \"MB\"]\n  let value = bytes\n  let unit = 0\n  while (value >= 1024 && unit < units.length - 1) {\n    value /= 1024\n    unit += 1\n  }\n  return value.toFixed(unit === 0 ? 0 : 1) + \" \" + units[unit]\n}\n"
+          },
+          {
+            "path": "test/bytes.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { formatBytes } from \"../src/bytes.mjs\"\n\ntest(\"formatBytes: 小文件用字节\", () => {\n  assert.equal(formatBytes(512), \"512 B\")\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "test/bytes.test.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "test/bytes.test.mjs",
+                  "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { formatBytes } from \"../src/bytes.mjs\"\n\ntest(\"formatBytes: 小文件用字节\", () => {\n  assert.equal(formatBytes(512), \"512 B\")\n})\n\ntest(\"formatBytes: 回归 1024 恰好进位\", () => {\n  assert.equal(formatBytes(1024), \"1.0 KB\")\n})\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "test/bytes.test.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/bytes.test.mjs",
+      "failToPass": [],
+      "passToPass": [
+        "formatBytes: 小文件用字节"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 60
+    }
+  }
+}

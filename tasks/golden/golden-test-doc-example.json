@@ -1,0 +1,119 @@
+{
+  "id": "golden-test-doc-example",
+  "title": "给 README 示例补测试",
+  "suite": "golden",
+  "taxonomy": "test-evolution",
+  "difficulty": "medium",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "给 README 示例补测试，改 test/word-count.test.mjs。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**",
+      "test/**",
+      "tests/**"
+    ],
+    "forbidden": [
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "test/word-count.test.mjs",
+      "contains": "README 示例"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-test-doc-example",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "README.md",
+            "content": "# word-count\n\n示例：wordCount(\"a b c\") 返回 3。\n"
+          },
+          {
+            "path": "src/word-count.mjs",
+            "content": "export function wordCount(text) {\n  return text.trim() === \"\" ? 0 : text.trim().split(/\\s+/).length\n}\n"
+          },
+          {
+            "path": "test/word-count.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { wordCount } from \"../src/word-count.mjs\"\n\ntest(\"wordCount: 空字符串\", () => {\n  assert.equal(wordCount(\"   \"), 0)\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "test/word-count.test.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "test/word-count.test.mjs",
+                  "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { wordCount } from \"../src/word-count.mjs\"\n\ntest(\"wordCount: 空字符串\", () => {\n  assert.equal(wordCount(\"   \"), 0)\n})\n\ntest(\"wordCount: README 示例\", () => {\n  assert.equal(wordCount(\"a b c\"), 3)\n})\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "test/word-count.test.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/word-count.test.mjs",
+      "failToPass": [],
+      "passToPass": [
+        "wordCount: 空字符串"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 60
+    }
+  }
+}

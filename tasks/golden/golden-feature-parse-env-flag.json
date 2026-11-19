@@ -1,0 +1,114 @@
+{
+  "id": "golden-feature-parse-env-flag",
+  "title": "新增环境变量开关解析",
+  "suite": "golden",
+  "taxonomy": "code-edit",
+  "difficulty": "medium",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "新增环境变量开关解析，改 src/env.mjs，不要破坏现有行为。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "tests/**",
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "src/env.mjs",
+      "contains": "export function parseEnvFlag"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-feature-parse-env-flag",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/env.mjs",
+            "content": "export function readEnv(env, key, fallback = \"\") {\n  return env[key] ?? fallback\n}\n"
+          },
+          {
+            "path": "test/env.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { readEnv } from \"../src/env.mjs\"\n\ntest(\"readEnv: 缺省回退\", () => {\n  assert.equal(readEnv({}, \"A\", \"x\"), \"x\")\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "src/env.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "src/env.mjs",
+                  "content": "export function readEnv(env, key, fallback = \"\") {\n  return env[key] ?? fallback\n}\n\nconst TRUTHY = new Set([\"1\", \"true\", \"yes\", \"on\"])\n\n/** 解析布尔型环境变量，未设置时返回默认值。 */\nexport function parseEnvFlag(env, key, fallback = false) {\n  const raw = env[key]\n  if (raw === undefined) return fallback\n  return TRUTHY.has(raw.trim().toLowerCase())\n}\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "src/env.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/env.test.mjs",
+      "passToPass": [
+        "readEnv: 缺省回退"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 60
+    }
+  }
+}

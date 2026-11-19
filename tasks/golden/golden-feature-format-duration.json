@@ -1,0 +1,114 @@
+{
+  "id": "golden-feature-format-duration",
+  "title": "新增时长格式化函数",
+  "suite": "golden",
+  "taxonomy": "code-edit",
+  "difficulty": "medium",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "新增时长格式化函数，改 src/clock.mjs，不要破坏现有行为。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "tests/**",
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "src/clock.mjs",
+      "contains": "export function formatDuration"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-feature-format-duration",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/clock.mjs",
+            "content": "export function formatClock(ms) {\n  return Math.floor(ms / 1000) + \"s\"\n}\n"
+          },
+          {
+            "path": "test/clock.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { formatClock } from \"../src/clock.mjs\"\n\ntest(\"formatClock: 秒\", () => {\n  assert.equal(formatClock(3_000), \"3s\")\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "src/clock.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "src/clock.mjs",
+                  "content": "export function formatClock(ms) {\n  return Math.floor(ms / 1000) + \"s\"\n}\n\n/** 按秒/分钟/小时给出可读时长。 */\nexport function formatDuration(ms) {\n  const seconds = Math.floor(ms / 1000)\n  if (seconds < 60) return seconds + \" 秒\"\n  const minutes = Math.floor(seconds / 60)\n  if (minutes < 60) return minutes + \" 分钟\"\n  return Math.floor(minutes / 60) + \" 小时\"\n}\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "src/clock.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/clock.test.mjs",
+      "passToPass": [
+        "formatClock: 秒"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 60
+    }
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "id": "golden-feature-escape-html",
+  "title": "新增 HTML 转义函数",
+  "suite": "golden",
+  "taxonomy": "code-edit",
+  "difficulty": "medium",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "新增 HTML 转义函数，改 src/html.mjs，不要破坏现有行为。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "tests/**",
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "src/html.mjs",
+      "contains": "export function escapeHtml"
+    },
+    {
+      "type": "file_contains",
+      "path": "src/html.mjs",
+      "contains": "&lt;"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-feature-escape-html",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/html.mjs",
+            "content": "export function wrap(text) {\n  return \"<p>\" + text + \"</p>\"\n}\n"
+          },
+          {
+            "path": "test/html.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { wrap } from \"../src/html.mjs\"\n\ntest(\"wrap: 包一层段落\", () => {\n  assert.equal(wrap(\"hi\"), \"<p>hi</p>\")\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "src/html.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "src/html.mjs",
+                  "content": "const ESCAPES = { \"&\": \"&amp;\", \"<\": \"&lt;\", \">\": \"&gt;\", '\"': \"&quot;\" }\n\nexport function wrap(text) {\n  return \"<p>\" + text + \"</p>\"\n}\n\n/** 转义 HTML 特殊字符。 */\nexport function escapeHtml(text) {\n  return text.replace(/[&<>\"]/g, (ch) => ESCAPES[ch])\n}\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "src/html.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/html.test.mjs",
+      "passToPass": [
+        "wrap: 包一层段落"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 60
+    }
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "id": "golden-bug-range-exclusive",
+  "title": "range 右端多包含一个元素",
+  "suite": "golden",
+  "taxonomy": "debug",
+  "difficulty": "easy",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "range 右端多包含一个元素，改 src/range.mjs，然后跑 test/range.test.mjs 验证。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "tests/**",
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "src/range.mjs",
+      "contains": "value < end"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-bug-range-exclusive",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/range.mjs",
+            "content": "/** 生成 [start, end) 区间的整数数组。 */\nexport function range(start, end) {\n  const out = []\n  for (let value = start; value <= end; value += 1) out.push(value)\n  return out\n}\n"
+          },
+          {
+            "path": "test/range.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { range } from \"../src/range.mjs\"\n\ntest(\"range: 右端不包含\", () => {\n  assert.deepEqual(range(1, 4), [1, 2, 3])\n})\n\ntest(\"range: 空区间\", () => {\n  assert.deepEqual(range(2, 2), [])\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "src/range.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "src/range.mjs",
+                  "content": "/** 生成 [start, end) 区间的整数数组。 */\nexport function range(start, end) {\n  const out = []\n  for (let value = start; value < end; value += 1) out.push(value)\n  return out\n}\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "src/range.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/range.test.mjs",
+      "failToPass": [
+        "range: 右端不包含",
+        "range: 空区间"
+      ],
+      "passToPass": []
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 40
+    }
+  }
+}

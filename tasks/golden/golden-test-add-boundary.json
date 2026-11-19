@@ -1,0 +1,120 @@
+{
+  "id": "golden-test-add-boundary",
+  "title": "给 clamp 补边界用例",
+  "suite": "golden",
+  "taxonomy": "test-evolution",
+  "difficulty": "medium",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "给 clamp 补边界用例，改 test/clamp.test.mjs。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**",
+      "test/**",
+      "tests/**"
+    ],
+    "forbidden": [
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "test/clamp.test.mjs",
+      "contains": "clamp(5, 0, 3)"
+    },
+    {
+      "type": "file_contains",
+      "path": "test/clamp.test.mjs",
+      "contains": "clamp(-1, 0, 3)"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-test-add-boundary",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/clamp.mjs",
+            "content": "export function clamp(value, min, max) {\n  if (value < min) return min\n  if (value > max) return max\n  return value\n}\n"
+          },
+          {
+            "path": "test/clamp.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { clamp } from \"../src/clamp.mjs\"\n\ntest(\"clamp: 区间内原值\", () => {\n  assert.equal(clamp(2, 0, 3), 2)\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "test/clamp.test.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "test/clamp.test.mjs",
+                  "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { clamp } from \"../src/clamp.mjs\"\n\ntest(\"clamp: 区间内原值\", () => {\n  assert.equal(clamp(2, 0, 3), 2)\n})\n\ntest(\"clamp: 下界与上界\", () => {\n  assert.equal(clamp(5, 0, 3), 3)\n  assert.equal(clamp(-1, 0, 3), 0)\n})\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "test/clamp.test.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/clamp.test.mjs",
+      "failToPass": [],
+      "passToPass": [
+        "clamp: 区间内原值"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 60
+    }
+  }
+}

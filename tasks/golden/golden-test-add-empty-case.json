@@ -1,0 +1,115 @@
+{
+  "id": "golden-test-add-empty-case",
+  "title": "给 chunk 补空数组用例",
+  "suite": "golden",
+  "taxonomy": "test-evolution",
+  "difficulty": "medium",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "给 chunk 补空数组用例，改 test/chunk.test.mjs。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**",
+      "test/**",
+      "tests/**"
+    ],
+    "forbidden": [
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "test/chunk.test.mjs",
+      "contains": "chunk([], 3)"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-test-add-empty-case",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/chunk.mjs",
+            "content": "export function chunk(items, size) {\n  const out = []\n  for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size))\n  return out\n}\n"
+          },
+          {
+            "path": "test/chunk.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { chunk } from \"../src/chunk.mjs\"\n\ntest(\"chunk: 按块切分\", () => {\n  assert.deepEqual(chunk([1, 2, 3, 4], 2), [[1, 2], [3, 4]])\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "test/chunk.test.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "test/chunk.test.mjs",
+                  "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { chunk } from \"../src/chunk.mjs\"\n\ntest(\"chunk: 按块切分\", () => {\n  assert.deepEqual(chunk([1, 2, 3, 4], 2), [[1, 2], [3, 4]])\n})\n\ntest(\"chunk: 空数组返回空\", () => {\n  assert.deepEqual(chunk([], 3), [])\n})\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "test/chunk.test.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/chunk.test.mjs",
+      "failToPass": [],
+      "passToPass": [
+        "chunk: 按块切分"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 60
+    }
+  }
+}

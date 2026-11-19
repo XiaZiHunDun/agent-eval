@@ -1,0 +1,120 @@
+{
+  "id": "golden-test-strengthen-assertion",
+  "title": "把弱断言改成等值断言",
+  "suite": "golden",
+  "taxonomy": "test-evolution",
+  "difficulty": "medium",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "把弱断言改成等值断言，改 test/slugify.test.mjs。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**",
+      "test/**",
+      "tests/**"
+    ],
+    "forbidden": [
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "test/slugify.test.mjs",
+      "contains": "assert.equal(slugify(\"  Hello   World  \"), \"hello-world\")"
+    },
+    {
+      "type": "file_matches",
+      "path": "test/slugify.test.mjs",
+      "pattern": "^(?![\\s\\S]*assert\\.ok[\\s\\S]*$)[\\s\\S]*$"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-test-strengthen-assertion",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/slugify.mjs",
+            "content": "export function slugify(input) {\n  return input.trim().toLowerCase().replace(/[\\s_-]+/g, \"-\").replace(/^-+|-+$/g, \"\")\n}\n"
+          },
+          {
+            "path": "test/slugify.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { slugify } from \"../src/slugify.mjs\"\n\ntest(\"slugify: 基本用例\", () => {\n  assert.ok(slugify(\"  Hello   World  \"))\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "test/slugify.test.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "test/slugify.test.mjs",
+                  "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { slugify } from \"../src/slugify.mjs\"\n\ntest(\"slugify: 基本用例\", () => {\n  assert.equal(slugify(\"  Hello   World  \"), \"hello-world\")\n})\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "test/slugify.test.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/slugify.test.mjs",
+      "failToPass": [],
+      "passToPass": [
+        "slugify: 基本用例"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 60
+    }
+  }
+}

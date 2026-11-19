@@ -1,0 +1,114 @@
+{
+  "id": "golden-feature-merge-defaults",
+  "title": "新增默认值合并",
+  "suite": "golden",
+  "taxonomy": "code-edit",
+  "difficulty": "medium",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "新增默认值合并，改 src/config.mjs，不要破坏现有行为。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "tests/**",
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "src/config.mjs",
+      "contains": "export function mergeDefaults"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-feature-merge-defaults",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/config.mjs",
+            "content": "export function clone(obj) {\n  return { ...obj }\n}\n"
+          },
+          {
+            "path": "test/config.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { clone } from \"../src/config.mjs\"\n\ntest(\"clone: 浅拷贝\", () => {\n  const a = { x: 1 }\n  assert.notEqual(clone(a), a)\n  assert.deepEqual(clone(a), a)\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "src/config.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "src/config.mjs",
+                  "content": "export function clone(obj) {\n  return { ...obj }\n}\n\n/** 用实际配置覆盖默认值，undefined 不覆盖。 */\nexport function mergeDefaults(defaults, actual) {\n  const out = { ...defaults }\n  for (const [key, value] of Object.entries(actual)) {\n    if (value !== undefined) out[key] = value\n  }\n  return out\n}\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "src/config.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/config.test.mjs",
+      "passToPass": [
+        "clone: 浅拷贝"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 60
+    }
+  }
+}

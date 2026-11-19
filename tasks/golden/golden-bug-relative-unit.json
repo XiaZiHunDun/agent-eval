@@ -1,0 +1,118 @@
+{
+  "id": "golden-bug-relative-unit",
+  "title": "相对时间永远显示秒",
+  "suite": "golden",
+  "taxonomy": "debug",
+  "difficulty": "easy",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "相对时间永远显示秒，改 src/relative.mjs，然后跑 test/relative.test.mjs 验证。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "tests/**",
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "src/relative.mjs",
+      "contains": "分钟前"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-bug-relative-unit",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/relative.mjs",
+            "content": "export function formatRelative(ms) {\n  return Math.round(ms / 1000) + \" 秒前\"\n}\n"
+          },
+          {
+            "path": "test/relative.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { formatRelative } from \"../src/relative.mjs\"\n\ntest(\"formatRelative: 分钟\", () => {\n  assert.equal(formatRelative(90_000), \"1 分钟前\")\n})\n\ntest(\"formatRelative: 小时\", () => {\n  assert.equal(formatRelative(3 * 3600_000 + 60_000), \"3 小时前\")\n})\n\ntest(\"formatRelative: 秒\", () => {\n  assert.equal(formatRelative(5_000), \"5 秒前\")\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "src/relative.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "src/relative.mjs",
+                  "content": "export function formatRelative(ms) {\n  const seconds = Math.floor(ms / 1000)\n  if (seconds < 60) return seconds + \" 秒前\"\n  const minutes = Math.floor(seconds / 60)\n  if (minutes < 60) return minutes + \" 分钟前\"\n  const hours = Math.floor(minutes / 60)\n  return hours + \" 小时前\"\n}\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "src/relative.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/relative.test.mjs",
+      "failToPass": [
+        "formatRelative: 分钟",
+        "formatRelative: 小时"
+      ],
+      "passToPass": [
+        "formatRelative: 秒"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 30
+    }
+  }
+}

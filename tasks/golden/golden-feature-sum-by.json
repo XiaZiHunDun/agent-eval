@@ -1,0 +1,119 @@
+{
+  "id": "golden-feature-sum-by",
+  "title": "新增按字段求和的 sumBy",
+  "suite": "golden",
+  "taxonomy": "code-edit",
+  "difficulty": "medium",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "新增按字段求和的 sumBy，改 src/aggregate.mjs，不要破坏现有行为。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "tests/**",
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "src/aggregate.mjs",
+      "contains": "export function sumBy"
+    },
+    {
+      "type": "file_contains",
+      "path": "src/aggregate.mjs",
+      "contains": "item[key]"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-feature-sum-by",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/aggregate.mjs",
+            "content": "/** 对数值数组求和。 */\nexport function total(items) {\n  return items.reduce((sum, item) => sum + item, 0)\n}\n"
+          },
+          {
+            "path": "test/aggregate.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { total } from \"../src/aggregate.mjs\"\n\ntest(\"total: 求和\", () => {\n  assert.equal(total([1, 2, 3]), 6)\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "src/aggregate.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "src/aggregate.mjs",
+                  "content": "/** 对数值数组求和。 */\nexport function total(items) {\n  return items.reduce((sum, item) => sum + item, 0)\n}\n\n/** 按字段累加。 */\nexport function sumBy(items, key) {\n  return items.reduce((sum, item) => sum + item[key], 0)\n}\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "src/aggregate.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/aggregate.test.mjs",
+      "passToPass": [
+        "total: 求和"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 60
+    }
+  }
+}

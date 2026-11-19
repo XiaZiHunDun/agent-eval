@@ -1,0 +1,118 @@
+{
+  "id": "golden-bug-money-floor",
+  "title": "金额转分应四舍五入而不是截断",
+  "suite": "golden",
+  "taxonomy": "debug",
+  "difficulty": "easy",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "金额转分应四舍五入而不是截断，改 src/money.mjs，然后跑 test/money.test.mjs 验证。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "tests/**",
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "src/money.mjs",
+      "contains": "Math.round"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-bug-money-floor",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/money.mjs",
+            "content": "/** 金额字符串转分，四舍五入到分。 */\nexport function toCents(input) {\n  return Math.floor(Number(input) * 100)\n}\n"
+          },
+          {
+            "path": "test/money.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { toCents } from \"../src/money.mjs\"\n\ntest(\"toCents: 第三位小数进位\", () => {\n  assert.equal(toCents(\"1.239\"), 124)\n})\n\ntest(\"toCents: 浮点误差也要进位\", () => {\n  assert.equal(toCents(\"19.99\"), 1999)\n})\n\ntest(\"toCents: 整角金额\", () => {\n  assert.equal(toCents(\"0.10\"), 10)\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "src/money.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "src/money.mjs",
+                  "content": "/** 金额字符串转分，四舍五入到分。 */\nexport function toCents(input) {\n  return Math.round(Number(input) * 100)\n}\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "src/money.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/money.test.mjs",
+      "failToPass": [
+        "toCents: 第三位小数进位",
+        "toCents: 浮点误差也要进位"
+      ],
+      "passToPass": [
+        "toCents: 整角金额"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 40
+    }
+  }
+}

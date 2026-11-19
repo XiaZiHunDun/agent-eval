@@ -1,0 +1,117 @@
+{
+  "id": "golden-bug-unique-case",
+  "title": "去重没有忽略大小写",
+  "suite": "golden",
+  "taxonomy": "debug",
+  "difficulty": "easy",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "去重没有忽略大小写，改 src/unique.mjs，然后跑 test/unique.test.mjs 验证。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "tests/**",
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "src/unique.mjs",
+      "contains": "toLowerCase()"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-bug-unique-case",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/unique.mjs",
+            "content": "export function unique(items) {\n  return [...new Set(items)]\n}\n"
+          },
+          {
+            "path": "test/unique.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { unique } from \"../src/unique.mjs\"\n\ntest(\"unique: 大小写不敏感去重\", () => {\n  assert.deepEqual(unique([\"A\", \"a\", \"b\"]), [\"A\", \"b\"])\n})\n\ntest(\"unique: 保持首次出现顺序\", () => {\n  assert.deepEqual(unique([3, 1, 3, 2]), [3, 1, 2])\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "src/unique.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "src/unique.mjs",
+                  "content": "export function unique(items) {\n  const seen = new Set()\n  const out = []\n  for (const item of items) {\n    const key = typeof item === \"string\" ? item.toLowerCase() : item\n    if (seen.has(key)) continue\n    seen.add(key)\n    out.push(item)\n  }\n  return out\n}\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "src/unique.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/unique.test.mjs",
+      "failToPass": [
+        "unique: 大小写不敏感去重"
+      ],
+      "passToPass": [
+        "unique: 保持首次出现顺序"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 40
+    }
+  }
+}

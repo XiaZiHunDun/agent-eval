@@ -1,0 +1,117 @@
+{
+  "id": "golden-bug-bytes-precision",
+  "title": "字节格式化小数位不对",
+  "suite": "golden",
+  "taxonomy": "debug",
+  "difficulty": "easy",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "字节格式化小数位不对，改 src/bytes.mjs，然后跑 test/bytes.test.mjs 验证。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "tests/**",
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "src/bytes.mjs",
+      "contains": "unit === 0 ? 0 : 1"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-bug-bytes-precision",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/bytes.mjs",
+            "content": "export function formatBytes(bytes) {\n  const units = [\"B\", \"KB\", \"MB\"]\n  let value = bytes\n  let unit = 0\n  while (value >= 1024 && unit < units.length - 1) {\n    value /= 1024\n    unit += 1\n  }\n  const digits = unit === 0 ? 0 : 2\n  return value.toFixed(digits) + \" \" + units[unit]\n}\n"
+          },
+          {
+            "path": "test/bytes.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { formatBytes } from \"../src/bytes.mjs\"\n\ntest(\"formatBytes: KB 保留一位小数\", () => {\n  assert.equal(formatBytes(1536), \"1.5 KB\")\n})\n\ntest(\"formatBytes: 小文件用字节\", () => {\n  assert.equal(formatBytes(512), \"512 B\")\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "src/bytes.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "src/bytes.mjs",
+                  "content": "export function formatBytes(bytes) {\n  const units = [\"B\", \"KB\", \"MB\"]\n  let value = bytes\n  let unit = 0\n  while (value >= 1024 && unit < units.length - 1) {\n    value /= 1024\n    unit += 1\n  }\n  const digits = unit === 0 ? 0 : 1\n  return value.toFixed(digits) + \" \" + units[unit]\n}\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "src/bytes.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/bytes.test.mjs",
+      "failToPass": [
+        "formatBytes: KB 保留一位小数"
+      ],
+      "passToPass": [
+        "formatBytes: 小文件用字节"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 40
+    }
+  }
+}

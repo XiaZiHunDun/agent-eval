@@ -1,0 +1,114 @@
+{
+  "id": "golden-feature-parse-command",
+  "title": "新增斜杠命令解析",
+  "suite": "golden",
+  "taxonomy": "code-edit",
+  "difficulty": "medium",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "新增斜杠命令解析，改 src/command.mjs，不要破坏现有行为。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "tests/**",
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "src/command.mjs",
+      "contains": "export function parseCommand"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-feature-parse-command",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/command.mjs",
+            "content": "export function isCommand(text) {\n  return text.startsWith(\"/\")\n}\n"
+          },
+          {
+            "path": "test/command.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { isCommand } from \"../src/command.mjs\"\n\ntest(\"isCommand: 识别斜杠\", () => {\n  assert.equal(isCommand(\"/task\"), true)\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "src/command.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "src/command.mjs",
+                  "content": "export function isCommand(text) {\n  return text.startsWith(\"/\")\n}\n\n/** 解析 /name arg1 arg2，去掉首个斜杠。 */\nexport function parseCommand(text) {\n  const [head, ...rest] = text.trim().replace(/^\\//, \"\").split(/\\s+/)\n  return { name: head ?? \"\", rest }\n}\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "src/command.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/command.test.mjs",
+      "passToPass": [
+        "isCommand: 识别斜杠"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 60
+    }
+  }
+}

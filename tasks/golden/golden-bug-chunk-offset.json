@@ -1,0 +1,117 @@
+{
+  "id": "golden-bug-chunk-offset",
+  "title": "chunk 每块切到了错误位置",
+  "suite": "golden",
+  "taxonomy": "debug",
+  "difficulty": "easy",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat-task",
+  "turns": [
+    "chunk 每块切到了错误位置，改 src/chunk.mjs，然后跑 test/chunk.test.mjs 验证。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 6
+  },
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "tests/**",
+      "package.json"
+    ]
+  },
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "src/chunk.mjs",
+      "contains": "slice(i, i + size)"
+    }
+  ],
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "golden-bug-chunk-offset",
+      "fixtures": {
+        "seedFiles": [
+          {
+            "path": "src/chunk.mjs",
+            "content": "/** 把数组按固定大小分块，最后一块保留余数。 */\nexport function chunk(items, size) {\n  const out = []\n  for (let i = 0; i < items.length; i += size) {\n    out.push(items.slice(i, size))\n  }\n  return out\n}\n"
+          },
+          {
+            "path": "test/chunk.test.mjs",
+            "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { chunk } from \"../src/chunk.mjs\"\n\ntest(\"chunk: 最后一块保留余数\", () => {\n  assert.deepEqual(chunk([1, 2, 3, 4, 5], 2), [[1, 2], [3, 4], [5]])\n})\n\ntest(\"chunk: 空数组\", () => {\n  assert.deepEqual(chunk([], 3), [])\n})\n"
+          }
+        ],
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-1",
+                "name": "read_file",
+                "args": {
+                  "path": "src/chunk.mjs"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-2",
+                "name": "write_file",
+                "args": {
+                  "path": "src/chunk.mjs",
+                  "content": "/** 把数组按固定大小分块，最后一块保留余数。 */\nexport function chunk(items, size) {\n  const out = []\n  for (let i = 0; i < items.length; i += size) {\n    out.push(items.slice(i, i + size))\n  }\n  return out\n}\n"
+                }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "已在工作区完成修改，并跑过对应测试。",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": [
+      "read_file",
+      "write_file"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "write_file",
+        "args": {
+          "path": "src/chunk.mjs"
+        }
+      }
+    ],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/chunk.test.mjs",
+      "failToPass": [
+        "chunk: 最后一块保留余数"
+      ],
+      "passToPass": [
+        "chunk: 空数组"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 40
+    }
+  }
+}
