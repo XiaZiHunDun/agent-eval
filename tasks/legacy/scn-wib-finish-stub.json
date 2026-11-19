@@ -1,0 +1,30 @@
+{
+  "id": "scn-wib-finish-stub",
+  "title": "Finish 决策回落到可用的兜底回复",
+  "suite": "legacy",
+  "taxonomy": "robustness",
+  "difficulty": "easy",
+  "source": "regression",
+  "split": "test",
+  "turns": ["hi"],
+  "timeoutMs": 60000,
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "scn-wib-finish-stub",
+      "fixtures": {
+        "plan": [
+          {
+            "content": "{\"_tag\":\"Finish\",\"reason\":\"all done\"}",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "Finish",
+    "finalReplyPattern": "已收到",
+    "maxToolCalls": 0
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "id": "scn-wib-multi-tool-one-turn",
+  "title": "单轮并发执行多个原生工具调用",
+  "suite": "legacy",
+  "taxonomy": "tool-orchestration",
+  "difficulty": "medium",
+  "source": "regression",
+  "split": "test",
+  "turns": ["time and history?"],
+  "timeoutMs": 60000,
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "scn-wib-multi-tool-one-turn",
+      "fixtures": {
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              { "id": "tc_a", "name": "get_current_time", "args": {} },
+              { "id": "tc_b", "name": "recall_history", "args": { "limit": 2 } }
+            ],
+            "stopReason": "tool_use"
+          },
+          { "content": "both done", "toolCalls": [], "stopReason": "end_turn" }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalReplyPattern": "both done",
+    "requiredTools": ["get_current_time", "recall_history"],
+    "requireToolSuccess": true,
+    "maxToolCalls": 2,
+    "minToolCalls": 2
+  }
+}

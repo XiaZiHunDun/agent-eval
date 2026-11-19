@@ -1,0 +1,36 @@
+{
+  "id": "scn-18-decoder-retry-success",
+  "title": "解码失败后自修正并给出正常回复",
+  "suite": "legacy",
+  "taxonomy": "robustness",
+  "difficulty": "medium",
+  "source": "regression",
+  "split": "test",
+  "turns": ["做点什么"],
+  "timeoutMs": 60000,
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "scn-18-decoder-retry-success",
+      "fixtures": {
+        "plan": [
+          {
+            "content": "{\"_tag\":\"CallCapability\",\"arguments\":{\"foo\":\"bar\"}}",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          },
+          {
+            "content": "{\"_tag\":\"Respond\",\"content\":\"修正后的回复\"}",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "finalReplyPattern": "修正后的回复",
+    "forbiddenTools": ["write_file", "run_command"],
+    "maxToolCalls": 0
+  }
+}

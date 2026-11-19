@@ -1,0 +1,86 @@
+{
+  "id": "scn-05-multi-turn-mix",
+  "title": "四轮异构能力对话",
+  "suite": "legacy",
+  "taxonomy": "multi-turn",
+  "difficulty": "medium",
+  "source": "regression",
+  "split": "test",
+  "turns": ["现在几点了", "昨天聊了什么", "读 README.md", "今天整体怎么样"],
+  "timeoutMs": 90000,
+  "budget": { "maxTurns": 4, "maxToolCalls": 8 },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "scn-05-multi-turn-mix",
+      "fixtures": {
+        "seedFiles": [{ "path": "README.md", "content": "# demo\n\n今天完成 3 件事。\n" }],
+        "turns": [
+          {
+            "plan": [
+              {
+                "content": "",
+                "toolCalls": [{ "id": "tc-1", "name": "get_current_time", "args": {} }],
+                "stopReason": "tool_use"
+              },
+              {
+                "content": "{\"_tag\":\"Respond\",\"content\":\"现在 14:23 Asia/Shanghai\"}",
+                "toolCalls": [],
+                "stopReason": "end_turn"
+              }
+            ]
+          },
+          {
+            "plan": [
+              {
+                "content": "",
+                "toolCalls": [{ "id": "tc-2", "name": "recall_history", "args": { "limit": 5 } }],
+                "stopReason": "tool_use"
+              },
+              {
+                "content": "{\"_tag\":\"Respond\",\"content\":\"昨天主要讨论了 Foo 项目的实现\"}",
+                "toolCalls": [],
+                "stopReason": "end_turn"
+              }
+            ]
+          },
+          {
+            "plan": [
+              {
+                "content": "",
+                "toolCalls": [{ "id": "tc-3", "name": "read_file", "args": { "path": "README.md" } }],
+                "stopReason": "tool_use"
+              },
+              {
+                "content": "{\"_tag\":\"Respond\",\"content\":\"文件内容已展示\"}",
+                "toolCalls": [],
+                "stopReason": "end_turn"
+              }
+            ]
+          },
+          {
+            "plan": [
+              {
+                "content": "",
+                "toolCalls": [{ "id": "tc-4", "name": "summarize_today", "args": {} }],
+                "stopReason": "tool_use"
+              },
+              {
+                "content": "{\"_tag\":\"Respond\",\"content\":\"今天完成 3 件事\"}",
+                "toolCalls": [],
+                "stopReason": "end_turn"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "replyPattern": "现在 14:23",
+    "followUpPatterns": ["昨天主要讨论了 Foo", "文件内容已展示", "今天完成 3 件事"],
+    "finalDecision": "Respond",
+    "requiredTools": ["get_current_time", "recall_history", "read_file", "summarize_today"],
+    "requireToolSuccess": true,
+    "maxToolCalls": 4
+  }
+}

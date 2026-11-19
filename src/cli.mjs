@@ -31,7 +31,7 @@ const ADAPTERS = {
 
 const USAGE = [
   "用法：",
-  "  node src/cli.mjs run --suite <baseline|repo|golden|capability|heldout|rag|butler|butler-open|trajectory|adversarial> [--runtime wfxm|wfxm-butler] [--task <id>] [--out <dir>] [--repeats N] [--limit N] [--real]",
+  "  node src/cli.mjs run --suite <baseline|repo|golden|legacy|capability|heldout|rag|butler|butler-open|trajectory|adversarial> [--runtime wfxm|wfxm-butler] [--task <id>] [--out <dir>] [--repeats N] [--limit N] [--real]",
   "  node src/cli.mjs gate [--with-capability --with-rag --real] [--repeats N] [--min-capability 0.8] [--min-rag 0.9] [--max-flaky 0.2] [--min-golden 1] [--min-adversarial 1] [--max-p95 25000] [--min-honest-stop 0.9] [--golden-limit N] [--out <dir>]",
   "环境变量：AGENT_EVAL_LANGFUSE=1 导出 Langfuse batch（无凭证时写 langfuse.json dry-run）",
 ].join("\n")

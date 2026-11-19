@@ -1,0 +1,30 @@
+{
+  "id": "scn-10-bad-decision-payload",
+  "title": "决策 JSON 缺字段时回落到纯文本回复",
+  "suite": "legacy",
+  "taxonomy": "robustness",
+  "difficulty": "easy",
+  "source": "regression",
+  "split": "test",
+  "turns": ["做点什么"],
+  "timeoutMs": 60000,
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "scn-10-bad-decision-payload",
+      "fixtures": {
+        "plan": [
+          {
+            "content": "{\"_tag\":\"CallCapability\",\"arguments\":{\"foo\":\"bar\"}}",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          },
+          { "content": "这是纯文本兜底回复", "toolCalls": [], "stopReason": "end_turn" }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalReplyPattern": "纯文本兜底",
+    "forbiddenTools": ["write_file", "run_command"]
+  }
+}

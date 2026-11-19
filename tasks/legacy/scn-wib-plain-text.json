@@ -1,0 +1,24 @@
+{
+  "id": "scn-wib-plain-text",
+  "title": "纯文本回复按 Respond 处理",
+  "suite": "legacy",
+  "taxonomy": "robustness",
+  "difficulty": "easy",
+  "source": "regression",
+  "split": "test",
+  "turns": ["hello"],
+  "timeoutMs": 60000,
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "scn-wib-plain-text",
+      "fixtures": {
+        "plan": [{ "content": "plain text reply", "toolCalls": [], "stopReason": "end_turn" }]
+      }
+    }
+  },
+  "expect": {
+    "finalDecision": "Respond",
+    "finalReplyPattern": "plain text reply",
+    "maxToolCalls": 0
+  }
+}

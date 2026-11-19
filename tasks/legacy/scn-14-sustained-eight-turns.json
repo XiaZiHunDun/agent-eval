@@ -1,0 +1,150 @@
+{
+  "id": "scn-14-sustained-eight-turns",
+  "title": "同会话八轮持续运行",
+  "suite": "legacy",
+  "taxonomy": "multi-turn",
+  "difficulty": "hard",
+  "source": "regression",
+  "split": "test",
+  "turns": [
+    "早上好",
+    "现在几点",
+    "今天概要",
+    "昨天聊了什么",
+    "读 README.md",
+    "再 time 一下",
+    "再次 recall",
+    "不发了"
+  ],
+  "timeoutMs": 120000,
+  "budget": { "maxTurns": 8, "maxToolCalls": 12 },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "scn-14-sustained-eight-turns",
+      "fixtures": {
+        "seedFiles": [{ "path": "README.md", "content": "# demo\n\n今天完成 3 件事。\n" }],
+        "turns": [
+          {
+            "plan": [
+              {
+                "content": "",
+                "toolCalls": [{ "id": "tc-1", "name": "greet_with_time", "args": {} }],
+                "stopReason": "tool_use"
+              },
+              {
+                "content": "{\"_tag\":\"Respond\",\"content\":\"早上好\"}",
+                "toolCalls": [],
+                "stopReason": "end_turn"
+              }
+            ]
+          },
+          {
+            "plan": [
+              {
+                "content": "",
+                "toolCalls": [{ "id": "tc-2", "name": "get_current_time", "args": {} }],
+                "stopReason": "tool_use"
+              },
+              {
+                "content": "{\"_tag\":\"Respond\",\"content\":\"14:30\"}",
+                "toolCalls": [],
+                "stopReason": "end_turn"
+              }
+            ]
+          },
+          {
+            "plan": [
+              {
+                "content": "",
+                "toolCalls": [{ "id": "tc-3", "name": "summarize_today", "args": {} }],
+                "stopReason": "tool_use"
+              },
+              {
+                "content": "{\"_tag\":\"Respond\",\"content\":\"今天 3 件完成\"}",
+                "toolCalls": [],
+                "stopReason": "end_turn"
+              }
+            ]
+          },
+          {
+            "plan": [
+              {
+                "content": "",
+                "toolCalls": [{ "id": "tc-4", "name": "recall_history", "args": { "limit": 5 } }],
+                "stopReason": "tool_use"
+              },
+              {
+                "content": "{\"_tag\":\"Respond\",\"content\":\"Foo 项目\"}",
+                "toolCalls": [],
+                "stopReason": "end_turn"
+              }
+            ]
+          },
+          {
+            "plan": [
+              {
+                "content": "",
+                "toolCalls": [{ "id": "tc-5", "name": "read_file", "args": { "path": "README.md" } }],
+                "stopReason": "tool_use"
+              },
+              {
+                "content": "{\"_tag\":\"Respond\",\"content\":\"已读\"}",
+                "toolCalls": [],
+                "stopReason": "end_turn"
+              }
+            ]
+          },
+          {
+            "plan": [
+              {
+                "content": "",
+                "toolCalls": [{ "id": "tc-6", "name": "get_current_time", "args": {} }],
+                "stopReason": "tool_use"
+              },
+              {
+                "content": "{\"_tag\":\"Respond\",\"content\":\"14:35\"}",
+                "toolCalls": [],
+                "stopReason": "end_turn"
+              }
+            ]
+          },
+          {
+            "plan": [
+              {
+                "content": "",
+                "toolCalls": [{ "id": "tc-7", "name": "recall_history", "args": { "limit": 10 } }],
+                "stopReason": "tool_use"
+              },
+              {
+                "content": "{\"_tag\":\"Respond\",\"content\":\"召回 5 条\"}",
+                "toolCalls": [],
+                "stopReason": "end_turn"
+              }
+            ]
+          },
+          {
+            "plan": [
+              {
+                "content": "{\"_tag\":\"WaitForApproval\",\"question\":\"要发文件吗？\"}",
+                "toolCalls": [],
+                "stopReason": "end_turn"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "followUpPatterns": ["14:30", "今天 3 件完成", "Foo 项目", "已读", "14:35", "召回 5 条", "要发文件吗"],
+    "requiredTools": [
+      "greet_with_time",
+      "get_current_time",
+      "summarize_today",
+      "recall_history",
+      "read_file"
+    ],
+    "requireToolSuccess": true,
+    "maxToolCalls": 7
+  }
+}

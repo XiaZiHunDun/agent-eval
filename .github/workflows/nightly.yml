@@ -45,6 +45,11 @@ jobs:
           WFXM_ROOT: ${{ github.workspace }}/wfxm
         run: node src/cli.mjs run --suite trajectory --runtime wfxm
 
+      - name: Legacy scenario suite (converted from vitest)
+        env:
+          WFXM_ROOT: ${{ github.workspace }}/wfxm
+        run: node src/cli.mjs run --suite legacy --runtime wfxm
+
       - name: Multi-metric gate (baseline + butler + golden + adversarial)
         env:
           WFXM_ROOT: ${{ github.workspace }}/wfxm

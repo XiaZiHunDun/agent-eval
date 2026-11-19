@@ -1,0 +1,44 @@
+{
+  "id": "scn-wib-stuck-loop",
+  "title": "同名同参工具连续调用触发卡死保护",
+  "suite": "legacy",
+  "taxonomy": "tool-orchestration",
+  "difficulty": "medium",
+  "source": "regression",
+  "split": "test",
+  "turns": ["loop me"],
+  "timeoutMs": 60000,
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "scn-wib-stuck-loop",
+      "fixtures": {
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [{ "id": "tc_loop1", "name": "get_current_time", "args": {} }],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [{ "id": "tc_loop2", "name": "get_current_time", "args": {} }],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [{ "id": "tc_loop3", "name": "get_current_time", "args": {} }],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "",
+            "toolCalls": [{ "id": "tc_loop4", "name": "get_current_time", "args": {} }],
+            "stopReason": "tool_use"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "finalReplyPattern": "已收到",
+    "maxToolCalls": 3
+  }
+}
