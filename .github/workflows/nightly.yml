@@ -56,28 +56,35 @@ jobs:
         run: node src/cli.mjs gate
 
       - name: L4 open tasks (real model)
-        if: ${{ secrets.MINIMAX_API_KEY != '' }}
         env:
           WFXM_ROOT: ${{ github.workspace }}/wfxm
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
           MINIMAX_MODEL: MiniMax-M3.1-Flash
           DEEPSEEK_MODEL: deepseek-flash
-        run: node src/cli.mjs run --suite butler-open --runtime wfxm --real
+        run: |
+          if [ -z "${MINIMAX_API_KEY:-}" ]; then
+            echo "::warning::MINIMAX_API_KEY 未配置，跳过真实模型任务"
+            exit 0
+          fi
+          node src/cli.mjs run --suite butler-open --runtime wfxm --real
 
       # 真实模型开发能力子集：10 条 code-edit/debug/planning，2 次重复。
-      # 首版基线是保守下限；跑出稳定数据后可用 `--record baselines/capability-real.json` 覆盖。
+      # 基线阈值 0.90（MiniMax-M3.1-Flash 实测 95%），低于基线则失败。
       - name: Real-model dev subset (10 capability tasks)
-        if: ${{ secrets.MINIMAX_API_KEY != '' }}
         env:
           WFXM_ROOT: ${{ github.workspace }}/wfxm
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
           MINIMAX_MODEL: MiniMax-M3.1-Flash
           DEEPSEEK_MODEL: deepseek-flash
-        run: >
-          node src/cli.mjs run --suite capability --runtime wfxm --real --repeats 2
-          --tasks cap-code-edit-clamp,cap-code-edit-parse-duration,cap-code-edit-port-env,cap-code-edit-slugify,cap-debug-async-await,cap-debug-loop-bound,cap-debug-null-guard,cap-debug-range-end,cap-planning-env-migration,cap-planning-release-order
-          --out .eval-runs/capability-real
-          --baseline baselines/capability-real.json
+        run: |
+          if [ -z "${MINIMAX_API_KEY:-}" ]; then
+            echo "::warning::MINIMAX_API_KEY 未配置，跳过真实模型子集"
+            exit 0
+          fi
+          node src/cli.mjs run --suite capability --runtime wfxm --real --repeats 2 \
+            --tasks cap-code-edit-clamp,cap-code-edit-parse-duration,cap-code-edit-port-env,cap-code-edit-slugify,cap-debug-async-await,cap-debug-loop-bound,cap-debug-null-guard,cap-debug-range-end,cap-planning-env-migration,cap-planning-release-order \
+            --out .eval-runs/capability-real \
+            --baseline baselines/capability-real.json
 
       - name: Upload eval runs
         if: always()
