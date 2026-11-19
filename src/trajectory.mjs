@@ -58,6 +58,9 @@ export function normalizeTrajectory(raw, filename = "<inline>") {
   if (Array.isArray(raw.expect.finalDecisionIn) && raw.expect.finalDecisionIn.length > 0) {
     expect.finalDecisionIn = raw.expect.finalDecisionIn
   }
+  if (Array.isArray(raw.expect.statusIn) && raw.expect.statusIn.length > 0) {
+    expect.statusIn = raw.expect.statusIn
+  }
   if (Array.isArray(reply.mustMatch) && reply.mustMatch.length > 0) {
     expect.containsAll = reply.mustMatch
   }

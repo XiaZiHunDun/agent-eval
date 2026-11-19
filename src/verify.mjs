@@ -54,7 +54,7 @@ export function verify(task, obs) {
   const expect = task.expect ?? {}
 
   const statuses = obs.statuses ?? (obs.status !== undefined ? [obs.status] : [])
-  if (statuses.length > 0) {
+  if (statuses.length > 0 && !expect.statusIn) {
     add(
       "http.status",
       statuses.every((s) => s >= 200 && s < 300),
@@ -77,6 +77,14 @@ export function verify(task, obs) {
       "decision.oneOf",
       expect.finalDecisionIn.includes(obs.finalDecision),
       `期望其一 ${expect.finalDecisionIn.join("/")}，实际 ${obs.finalDecision ?? "<none>"}`,
+    )
+  }
+
+  if (expect.statusIn) {
+    add(
+      "http.status",
+      expect.statusIn.includes(obs.status),
+      `期望其一 ${expect.statusIn.join("/")}，实际 ${obs.status ?? "<none>"}`,
     )
   }
 
