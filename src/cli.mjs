@@ -12,6 +12,7 @@ import {
   evaluateGate,
 } from "./gate.mjs"
 import { evaluateRetrieval } from "./rag.mjs"
+import { buildBaseline, compareToBaseline } from "./baseline.mjs"
 import {
   DEFAULT_ANNOTATION_QUEUE,
   buildLangfuseBatch,
@@ -31,7 +32,7 @@ const ADAPTERS = {
 
 const USAGE = [
   "用法：",
-  "  node src/cli.mjs run --suite <baseline|repo|golden|legacy|capability|heldout|rag|butler|butler-open|trajectory|adversarial> [--runtime wfxm|wfxm-butler] [--task <id>] [--out <dir>] [--repeats N] [--limit N] [--real]",
+  "  node src/cli.mjs run --suite <baseline|repo|golden|legacy|capability|heldout|rag|butler|butler-open|trajectory|adversarial> [--runtime wfxm|wfxm-butler] [--task <id>] [--tasks <id1,id2>] [--out <dir>] [--repeats N] [--limit N] [--baseline <file>] [--record <file>] [--real]",
   "  node src/cli.mjs gate [--with-capability --with-rag --real] [--repeats N] [--min-capability 0.8] [--min-rag 0.9] [--max-flaky 0.2] [--min-golden 1] [--min-adversarial 1] [--max-p95 25000] [--min-honest-stop 0.9] [--golden-limit N] [--out <dir>]",
   "环境变量：AGENT_EVAL_LANGFUSE=1 导出 Langfuse batch（无凭证时写 langfuse.json dry-run）",
 ].join("\n")
@@ -108,8 +109,11 @@ function parseArgs(argv) {
     suite: "baseline",
     runtime: "wfxm",
     task: undefined,
+    tasks: undefined,
     out: undefined,
     limit: undefined,
+    baseline: undefined,
+    record: undefined,
     real: false,
     withCapability: false,
     withRag: false,
@@ -129,6 +133,9 @@ function parseArgs(argv) {
     if (arg === "--suite") opts.suite = rest[++i]
     else if (arg === "--runtime") opts.runtime = rest[++i]
     else if (arg === "--task") opts.task = rest[++i]
+    else if (arg === "--tasks") opts.tasks = parseTaskList(rest[++i])
+    else if (arg === "--baseline") opts.baseline = rest[++i]
+    else if (arg === "--record") opts.record = rest[++i]
     else if (arg === "--out") opts.out = rest[++i]
     else if (arg === "--limit") opts.limit = parsePositiveInt(rest[++i], "--limit")
     else if (arg === "--real") opts.real = true
@@ -171,6 +178,15 @@ function parsePositiveInt(raw, flag) {
   return value
 }
 
+function parseTaskList(raw) {
+  const ids = String(raw ?? "")
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean)
+  if (ids.length === 0) throw new Error("--tasks 需要至少一个任务 id")
+  return ids
+}
+
 /** 任务级耗时 p95（结果已按任务聚合，取最近秩）。 */
 function p95(values) {
   if (values.length === 0) return 0
@@ -208,6 +224,7 @@ async function executeSuite({
   runDir,
   runId,
   task,
+  taskIds,
   real,
   repeats = 1,
   limit,
@@ -224,6 +241,13 @@ async function executeSuite({
   let tasks =
     suiteName === "trajectory" ? await loadTrajectoryTasks() : await loadTasks(tasksDir)
   if (task) tasks = tasks.filter((t) => t.id === task)
+  if (taskIds !== undefined) {
+    const available = new Set(tasks.map((t) => t.id))
+    const missing = taskIds.filter((id) => !available.has(id))
+    if (missing.length > 0) throw new Error(`任务不存在：${missing.join(", ")}`)
+    const wanted = new Set(taskIds)
+    tasks = tasks.filter((t) => wanted.has(t.id))
+  }
   if (limit !== undefined) tasks = tasks.slice(0, limit)
   if (tasks.length === 0) throw new Error(`没有匹配的任务：suite=${suiteName} task=${task ?? "*"}`)
 
@@ -274,12 +298,20 @@ async function runCommand(opts) {
   const startedAt = new Date().toISOString()
   const runId = `${opts.runtime}-${startedAt.replace(/[:.]/g, "-")}`
   const runDir = opts.out ? resolve(opts.out) : join(ROOT, ".eval-runs", runId)
-  const { passed, total, runDir: outDir, passRate, flaky } = await executeSuite({
+  const {
+    passed,
+    total,
+    results,
+    runDir: outDir,
+    passRate,
+    flaky,
+  } = await executeSuite({
     suiteName: opts.suite,
     runtime: opts.runtime,
     runDir,
     runId,
     task: opts.task,
+    taskIds: opts.tasks,
     real: opts.real,
     repeats: opts.repeats,
     limit: opts.limit,
@@ -290,7 +322,35 @@ async function runCommand(opts) {
     console.log(`Flaky：${flaky.map((f) => `${f.taskId} ${f.attemptsPassed}/${f.attemptsTotal}`).join("、")}`)
   }
   console.log(`报告：${join(outDir, "report.md")}`)
-  process.exit(passed === total ? 0 : 1)
+
+  let baselineOk = true
+  if (opts.record) {
+    const file = resolve(opts.record)
+    const baseline = buildBaseline({ suite: opts.suite, results, passRate })
+    await mkdir(dirname(file), { recursive: true })
+    await writeFile(file, JSON.stringify(baseline, null, 2) + "\n", "utf8")
+    console.log(`基线已写入：${file}`)
+  }
+  if (opts.baseline) {
+    const file = resolve(opts.baseline)
+    let raw
+    try {
+      raw = await readFile(file, "utf8")
+    } catch {
+      throw new Error(`基线文件不存在或不可读：${file}`)
+    }
+    const baseline = JSON.parse(raw)
+    const verdict = compareToBaseline({ suite: opts.suite, results, passRate, baseline })
+    console.log(`\n${verdict.ok ? "BASELINE PASS" : "BASELINE FAIL"} — ${file}`)
+    for (const check of verdict.checks) {
+      console.log(`  ${check.ok ? "✓" : "✗"} ${check.name} — ${check.detail}`)
+    }
+    baselineOk = verdict.ok
+  }
+
+  // 声明基线时以基线为准（真实模型子集不要求全过）；否则保持“全过才通过”。
+  const exitOk = opts.baseline ? baselineOk : passed === total
+  process.exit(exitOk ? 0 : 1)
 }
 
 async function gateCommand(opts) {

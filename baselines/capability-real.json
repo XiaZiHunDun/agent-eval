@@ -1,0 +1,20 @@
+{
+  "suite": "capability",
+  "recordedAt": "2026-11-19T00:00:00.000Z",
+  "provisional": true,
+  "note": "首版为保守下限（0.6），待第一次真实模型夜间运行后执行 --record 覆盖；taskRates 仅用于诊断，不参与判定。",
+  "tasks": [
+    "cap-code-edit-clamp",
+    "cap-code-edit-parse-duration",
+    "cap-code-edit-port-env",
+    "cap-code-edit-slugify",
+    "cap-debug-async-await",
+    "cap-debug-loop-bound",
+    "cap-debug-null-guard",
+    "cap-debug-range-end",
+    "cap-planning-env-migration",
+    "cap-planning-release-order"
+  ],
+  "overallRate": 0.6,
+  "taskRates": {}
+}
