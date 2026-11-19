@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url"
 import { collectRunConfig } from "./config.mjs"
 import { loadTasks, runSuite } from "./runner.mjs"
 import { loadTrajectoryTasks } from "./trajectory.mjs"
+import { computeProcessMetrics } from "./process-metrics.mjs"
 import { renderReport } from "./report.mjs"
 import {
   DEFAULT_MIN_RAG_HIT_AT3,
@@ -272,10 +273,13 @@ async function executeSuite({
   const suite = await runSuite({ adapter, tasks, runDir, runId, repeats, log })
   await exportLangfuse({ results: suite.results, log })
   const config = await collectRunConfig({ results: suite.results, real })
+  // 过程指标衡量“怎么做”，不参与 pass/fail；所有套件都计算，报告按有无数据展示。
+  const processMetrics = computeProcessMetrics(tasks, suite.results)
   const summary = {
     ...suite,
     suite: suiteName,
     ...(label ? { label } : {}),
+    ...(processMetrics ? { processMetrics } : {}),
     startedAt,
     finishedAt: new Date().toISOString(),
     config,
@@ -296,6 +300,7 @@ async function executeSuite({
     attemptsTotal: suite.attemptsTotal,
     attemptsPassed: suite.attemptsPassed,
     flaky: suite.flaky,
+    processMetrics,
   }
 }
 
@@ -319,6 +324,7 @@ async function runCommand(opts) {
     runDir: outDir,
     passRate,
     flaky,
+    processMetrics,
   } = await executeSuite({
     suiteName: opts.suite,
     runtime: opts.runtime,
@@ -335,6 +341,28 @@ async function runCommand(opts) {
   console.log(`\n${passed}/${total} 任务全过，平均任务通过率 ${(passRate * 100).toFixed(1)}%`)
   if (flaky.length > 0) {
     console.log(`Flaky：${flaky.map((f) => `${f.taskId} ${f.attemptsPassed}/${f.attemptsTotal}`).join("、")}`)
+  }
+  if (
+    processMetrics &&
+    (processMetrics.redundant.calls > 0 ||
+      processMetrics.toolRecall.expected > 0 ||
+      processMetrics.paramAccuracy.specs > 0)
+  ) {
+    const fmt = (metric) => (metric.rate === null ? "n/a" : `${(metric.rate * 100).toFixed(1)}%`)
+    const parts = []
+    if (processMetrics.toolRecall.expected > 0) {
+      parts.push(
+        `工具召回 ${fmt(processMetrics.toolRecall)}` +
+          `（${processMetrics.toolRecall.hit}/${processMetrics.toolRecall.expected}）`,
+      )
+    }
+    if (processMetrics.redundant.calls > 0) {
+      parts.push(`冗余调用 ${fmt(processMetrics.redundant)}`)
+    }
+    if (processMetrics.paramAccuracy.specs > 0) {
+      parts.push(`参数正确 ${fmt(processMetrics.paramAccuracy)}`)
+    }
+    if (parts.length > 0) console.log(`过程指标：${parts.join("、")}`)
   }
   console.log(`报告：${join(outDir, "report.md")}`)
 

@@ -67,6 +67,31 @@ export function renderReport(summary) {
     lines.push("")
   }
 
+  const pm = summary.processMetrics
+  const hasProcessMetrics =
+    pm &&
+    (pm.redundant.calls > 0 ||
+      pm.toolRecall.expected > 0 ||
+      pm.paramAccuracy.specs > 0 ||
+      Object.keys(pm.failureCategories ?? {}).length > 0)
+  if (hasProcessMetrics) {
+    const fmtRate = (value) => (value === null ? "n/a" : `${(value * 100).toFixed(1)}%`)
+    const categories = Object.entries(pm.failureCategories ?? {})
+    lines.push("## 过程指标")
+    lines.push("")
+    lines.push("| 指标 | 值 |")
+    lines.push("|---|---|")
+    lines.push(`| 必要工具召回 | ${fmtRate(pm.toolRecall.rate)}（${pm.toolRecall.hit}/${pm.toolRecall.expected}） |`)
+    lines.push(
+      `| 冗余调用 | ${fmtRate(pm.redundant.rate)}（${pm.redundant.calls - pm.redundant.unique}/${pm.redundant.calls}） |`,
+    )
+    lines.push(`| 参数正确率 | ${fmtRate(pm.paramAccuracy.rate)}（${pm.paramAccuracy.hit}/${pm.paramAccuracy.specs}） |`)
+    lines.push(
+      `| 失败归因 | ${categories.length === 0 ? "无" : categories.map(([name, count]) => `${name} ${count}`).join("、")} |`,
+    )
+    lines.push("")
+  }
+
   const groups = new Map()
   for (const r of results) {
     if (!r.taxonomy) continue

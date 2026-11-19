@@ -55,6 +55,9 @@ export function normalizeTrajectory(raw, filename = "<inline>") {
   if (Array.isArray(raw.expect.toolSetExcludes) && raw.expect.toolSetExcludes.length > 0) {
     expect.forbiddenTools = raw.expect.toolSetExcludes
   }
+  if (Array.isArray(raw.expect.toolArgs) && raw.expect.toolArgs.length > 0) {
+    expect.toolArgs = raw.expect.toolArgs
+  }
   if (Array.isArray(raw.expect.finalDecisionIn) && raw.expect.finalDecisionIn.length > 0) {
     expect.finalDecisionIn = raw.expect.finalDecisionIn
   }
@@ -80,7 +83,7 @@ export function normalizeTrajectory(raw, filename = "<inline>") {
 
   assert(
     Object.keys(expect).length > 0,
-    `${filename} 没有任何可验证断言（toolSet/finalDecision/reply/files/budget 至少一项）`,
+    `${filename} 没有任何可验证断言（toolSet/toolArgs/finalDecision/reply/files/budget 至少一项）`,
   )
 
   return {
