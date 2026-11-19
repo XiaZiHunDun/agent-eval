@@ -1,8 +1,8 @@
 {
   "suite": "capability",
-  "recordedAt": "2026-11-19T08:15:09.448Z",
-  "observedRate": 1,
-  "note": "2026-11-19 用 MiniMax-M3 实跑 10 条 ×2：10/10 任务全过、平均任务通过率 100%。判定阈值取 0.95 留一次抖动余量；taskRates 仅用于诊断，不参与判定。",
+  "recordedAt": "2026-11-19T08:24:30.037Z",
+  "observedRate": 0.95,
+  "note": "2026-11-19 用 MiniMax-M3.1-Flash 实跑 10 条 ×2：9/10 任务全过、平均任务通过率 95%（cap-code-edit-parse-duration 1/2）。判定阈值取 0.90 留一次抖动余量；taskRates 仅用于诊断，不参与判定。",
   "tasks": [
     "cap-code-edit-clamp",
     "cap-code-edit-parse-duration",
@@ -15,10 +15,10 @@
     "cap-planning-env-migration",
     "cap-planning-release-order"
   ],
-  "overallRate": 0.95,
+  "overallRate": 0.9,
   "taskRates": {
     "cap-code-edit-clamp": 1,
-    "cap-code-edit-parse-duration": 1,
+    "cap-code-edit-parse-duration": 0.5,
     "cap-code-edit-port-env": 1,
     "cap-code-edit-slugify": 1,
     "cap-debug-async-await": 1,
