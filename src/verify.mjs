@@ -109,6 +109,11 @@ export function verify(task, obs) {
   }
 
   const firstReply = obs.replies?.[0] ?? obs.reply ?? ""
+  // 末轮回复：多轮套件用 finalReplyPattern 断言最后一次输出，而不是首轮。
+  const lastReply =
+    obs.replies !== undefined && obs.replies.length > 0
+      ? obs.replies[obs.replies.length - 1]
+      : (obs.reply ?? "")
 
   if (expect.finalDecision) {
     add(
@@ -165,7 +170,7 @@ export function verify(task, obs) {
     if (re) {
       add(
         "reply.final",
-        re.test(obs.reply ?? firstReply),
+        re.test(lastReply),
         `pattern=${expect.finalReplyPattern}`,
       )
     }

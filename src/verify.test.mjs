@@ -379,6 +379,29 @@ test("butler: 多轮用例用 finalReplyPattern 校验末轮", () => {
   assert.equal(verify(task, { reply: "好的" }).passed, false)
 })
 
+test("finalReplyPattern 只匹配末轮，首轮命中不算通过", () => {
+  const task = {
+    id: "multi-turn-last",
+    title: "末轮断言",
+    suite: "wfxm",
+    turns: ["第一轮", "第二轮"],
+    expect: { finalReplyPattern: "白名单" },
+  }
+  // reply 取自首轮（驱动约定），但 finalReplyPattern 必须看 replies 的末轮。
+  const firstOnly = verify(task, {
+    reply: "可以在限流器里加白名单。",
+    replies: ["可以在限流器里加白名单。", "好的，继续。"],
+  })
+  assert.equal(firstOnly.passed, false)
+  assert.ok(firstOnly.failures.some((f) => f.check === "reply.final"))
+
+  const lastHit = verify(task, {
+    reply: "好的，继续。",
+    replies: ["好的，继续。", "可以在限流器里加白名单。"],
+  })
+  assert.equal(lastHit.passed, true)
+})
+
 test("trace: 合法 trace 通过不变量校验", () => {
   const t = createTrace({ runtime: "wfxm", runId: "r1" })
   t.emit("run.start", { taskId: "t1" })
