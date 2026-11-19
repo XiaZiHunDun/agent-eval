@@ -1,0 +1,21 @@
+{
+  "suite": "repo",
+  "recordedAt": "2026-11-19T12:31:01.126Z",
+  "observedRate": 1,
+  "note": "2026-11-19 默认模型 DeepSeek Flash 实跑 5 条 ×2：5/5 任务全过、平均任务通过率 100%（P95 ~21s）。阈值取 0.80，容忍一条任务抖动；taskRates 仅用于诊断。",
+  "tasks": [
+    "repo-001-slugify",
+    "repo-002-chunk",
+    "repo-003-bytes",
+    "repo-004-query",
+    "repo-005-unique"
+  ],
+  "overallRate": 0.8,
+  "taskRates": {
+    "repo-001-slugify": 1,
+    "repo-002-chunk": 1,
+    "repo-003-bytes": 1,
+    "repo-004-query": 1,
+    "repo-005-unique": 1
+  }
+}
