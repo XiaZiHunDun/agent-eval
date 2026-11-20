@@ -1,0 +1,41 @@
+{
+  "id": "scn-11-active-main-blocks-inbound",
+  "title": "活跃 Run 冲突时入站请求被优雅拒绝",
+  "suite": "legacy",
+  "taxonomy": "robustness",
+  "difficulty": "hard",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat",
+  "turns": ["再做点别的"],
+  "timeoutMs": 90000,
+  "budget": { "maxTurns": 1, "maxToolCalls": 2 },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "scn-11-active-main-blocks-inbound",
+      "conversationId": "c-eval-conflict-1",
+      "setup": [
+        {
+          "op": "createActiveRun",
+          "conversationId": "c-eval-conflict-1",
+          "subject": "owner-1",
+          "goal": "active seed"
+        }
+      ],
+      "fixtures": {
+        "plan": [
+          {
+            "content": "{\"_tag\":\"Respond\",\"content\":\"this will not be reached\"}",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "replyPattern": "进行中的 Run|未完成",
+    "finalDecision": "Finish",
+    "maxToolCalls": 0
+  }
+}

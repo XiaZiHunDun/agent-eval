@@ -1,0 +1,35 @@
+{
+  "id": "scn-16-llm-call-timeout",
+  "title": "LLM 超时后返回兜底回复而不是挂起",
+  "suite": "legacy",
+  "taxonomy": "robustness",
+  "difficulty": "medium",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat",
+  "turns": ["请回答"],
+  "timeoutMs": 60000,
+  "budget": { "maxTurns": 1, "maxToolCalls": 2 },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "scn-16-llm-call-timeout",
+      "env": { "BUTLER_V5_LLM_TIMEOUT_MS": "200" },
+      "fixtures": {
+        "plan": [
+          {
+            "content": "{\"_tag\":\"Respond\",\"content\":\"慢响应不应该出现\"}",
+            "toolCalls": [],
+            "stopReason": "end_turn",
+            "latencyMs": 5000
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "replyPattern": "已收到",
+    "containsNone": ["慢响应不应该出现"],
+    "finalDecision": "Finish",
+    "maxToolCalls": 0
+  }
+}

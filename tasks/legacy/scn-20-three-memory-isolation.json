@@ -1,0 +1,54 @@
+{
+  "id": "scn-20-three-memory-isolation",
+  "title": "durable memory 不泄漏 project knowledge 内容",
+  "suite": "legacy",
+  "taxonomy": "retrieval",
+  "difficulty": "hard",
+  "source": "regression",
+  "split": "test",
+  "kind": "chat",
+  "turns": ["我有什么偏好？"],
+  "timeoutMs": 90000,
+  "budget": { "maxTurns": 1, "maxToolCalls": 3 },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "scn-20-three-memory-isolation",
+      "setup": [
+        {
+          "op": "createProjectKnowledge",
+          "projectId": "wechat",
+          "title": "dark mode preference",
+          "kind": "manual_note",
+          "body": "owner prefers dark mode (DECOY — wrong layer)"
+        }
+      ],
+      "fixtures": {
+        "plan": [
+          {
+            "content": "",
+            "toolCalls": [
+              {
+                "id": "tc-iso-1",
+                "name": "recall_durable_memory",
+                "args": { "query": "dark mode" }
+              }
+            ],
+            "stopReason": "tool_use"
+          },
+          {
+            "content": "{\"_tag\":\"Respond\",\"content\":\"我没找到已确认的偏好记录\"}",
+            "toolCalls": [],
+            "stopReason": "end_turn"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "replyPattern": "没找到|没有",
+    "containsNone": ["DECOY", "dark mode preference"],
+    "finalDecision": "Respond",
+    "requiredTools": ["recall_durable_memory"],
+    "maxToolCalls": 2
+  }
+}
