@@ -1,14 +1,19 @@
 {
   "suite": "heldout",
-  "recordedAt": "2026-11-19T11:33:00.000Z",
-  "observedRate": 1,
-  "note": "2026-11-19 默认模型切换为 DeepSeek Flash 后重录：6 条 ×2 全过、平均任务通过率 100%。阈值取 0.90，容忍一次尝试抖动。切换到 DeepSeek 的主要依据：MiniMax-M3.1-Flash 在同一批任务上两次均为 5/6（heldout-ambiguity-optimize 0/2），P95 142s vs 28s。",
+  "recordedAt": "2026-11-19T14:13:43.304Z",
+  "observedRate": 0.955,
+  "note": "2026-11-19 扩展为 11 条并用默认模型 DeepSeek Flash 实跑 ×2：10/11 任务全过、平均 95.5%（multifile-import 1/2、multiturn-debug-verify 1/2）。阈值取 0.90，容忍一条任务整体抖动；taskRates 仅用于诊断。",
   "tasks": [
     "heldout-ambiguity-optimize",
     "heldout-approval-deploy-replicas",
     "heldout-debug-cache-tenant",
+    "heldout-debug-multifile-import",
+    "heldout-debug-retry-cap",
+    "heldout-feature-csv-quotes",
     "heldout-feature-flatten",
+    "heldout-feature-stable-dedupe",
     "heldout-multiturn-code",
+    "heldout-multiturn-debug-verify",
     "heldout-plan-migration"
   ],
   "overallRate": 0.9,
@@ -16,8 +21,13 @@
     "heldout-ambiguity-optimize": 1,
     "heldout-approval-deploy-replicas": 1,
     "heldout-debug-cache-tenant": 1,
+    "heldout-debug-multifile-import": 0.5,
+    "heldout-debug-retry-cap": 1,
+    "heldout-feature-csv-quotes": 1,
     "heldout-feature-flatten": 1,
+    "heldout-feature-stable-dedupe": 1,
     "heldout-multiturn-code": 1,
+    "heldout-multiturn-debug-verify": 1,
     "heldout-plan-migration": 1
   }
 }

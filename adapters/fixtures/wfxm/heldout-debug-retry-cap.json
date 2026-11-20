@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/retry.mjs",
+      "content": "export function delayFor(attempt) {\n  return 100 * 2 ** attempt\n}\n\nexport function retryDelays(attempts) {\n  return Array.from({ length: attempts }, (_, index) => delayFor(index))\n}\n"
+    },
+    {
+      "path": "test/retry.test.mjs",
+      "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { retryDelays } from \"../src/retry.mjs\"\n\ntest(\"前几次指数增长\", () => {\n  assert.deepEqual(retryDelays(3), [100, 200, 400])\n})\n\ntest(\"超过上限后封顶\", () => {\n  assert.deepEqual(retryDelays(6), [100, 200, 400, 800, 800, 800])\n})\n"
+    }
+  ]
+}

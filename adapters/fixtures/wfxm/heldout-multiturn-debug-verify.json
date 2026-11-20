@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/slugify.mjs",
+      "content": "export function slugify(input) {\n  return input.toLowerCase().replace(/\\s+/g, \"-\")\n}\n"
+    },
+    {
+      "path": "test/slugify.test.mjs",
+      "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { slugify } from \"../src/slugify.mjs\"\n\ntest(\"slugify 折叠空白与连字符\", () => {\n  assert.equal(slugify(\" Hello   World -- Foo \"), \"hello-world-foo\")\n})\n\ntest(\"slugify 保留中文\", () => {\n  assert.equal(slugify(\"你好 世界\"), \"你好-世界\")\n})\n"
+    }
+  ]
+}

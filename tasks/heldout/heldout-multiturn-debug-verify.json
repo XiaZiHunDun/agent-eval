@@ -1,0 +1,35 @@
+{
+  "id": "heldout-multiturn-debug-verify",
+  "title": "先读后改：多轮定位 slugify 缺陷并验证",
+  "suite": "heldout",
+  "taxonomy": "debug",
+  "difficulty": "hard",
+  "source": "handwritten",
+  "split": "held-out",
+  "kind": "chat",
+  "turns": [
+    "先读 src/slugify.mjs 和 test/slugify.test.mjs，说明失败原因，不要修改文件。",
+    "按测试要求修好 src/slugify.mjs，然后跑 test/slugify.test.mjs 验证。",
+    "确认"
+  ],
+  "timeoutMs": 240000,
+  "budget": {
+    "maxTurns": 3,
+    "maxToolCalls": 15
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "heldout-multiturn-debug-verify"
+    }
+  },
+  "expect": {
+    "replyPattern": "空白|连字符|trim|空格",
+    "followUpPatterns": ["确认|批准|修改|write_file"],
+    "requiredTools": ["read_file", "write_file"],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/slugify.test.mjs",
+      "failToPass": ["slugify 折叠空白与连字符"],
+      "passToPass": ["slugify 保留中文"]
+    }
+  }
+}

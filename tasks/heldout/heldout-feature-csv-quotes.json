@@ -1,0 +1,34 @@
+{
+  "id": "heldout-feature-csv-quotes",
+  "title": "实现支持引号转义的 CSV 行解析",
+  "suite": "heldout",
+  "taxonomy": "code-edit",
+  "difficulty": "hard",
+  "source": "handwritten",
+  "split": "held-out",
+  "kind": "chat",
+  "turns": [
+    "实现 src/csv.mjs 的 parseLine：按逗号拆分字段；双引号包裹的字段内逗号不拆分；连续两个双引号表示一个双引号。让 test/csv.test.mjs 通过。",
+    "确认"
+  ],
+  "timeoutMs": 240000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "heldout-feature-csv-quotes"
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": ["read_file", "write_file"],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/csv.test.mjs",
+      "failToPass": ["引号内逗号不拆分", "双引号转义"],
+      "passToPass": ["普通行按逗号拆分"]
+    }
+  }
+}

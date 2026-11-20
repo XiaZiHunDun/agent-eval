@@ -1,0 +1,16 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/math.mjs",
+      "content": "export function sum(numbers) {\n  return numbers.reduce((total, value) => total + value, 0)\n}\n\nexport default \"sum\"\n"
+    },
+    {
+      "path": "src/report.mjs",
+      "content": "import sum from \"./math.mjs\"\n\nexport function total(values) {\n  return sum(values)\n}\n"
+    },
+    {
+      "path": "test/report.test.mjs",
+      "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { total } from \"../src/report.mjs\"\n\ntest(\"report 汇总\", () => {\n  assert.equal(total([1, 2, 3]), 6)\n  assert.equal(total([]), 0)\n})\n"
+    }
+  ]
+}

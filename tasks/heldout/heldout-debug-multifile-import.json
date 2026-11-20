@@ -1,0 +1,33 @@
+{
+  "id": "heldout-debug-multifile-import",
+  "title": "定位跨文件导入错误并修复",
+  "suite": "heldout",
+  "taxonomy": "debug",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "held-out",
+  "kind": "chat",
+  "turns": [
+    "运行 test/report.test.mjs 会失败。请定位原因并修复，可以修改 src 下的文件，但不要改测试。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 12
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "heldout-debug-multifile-import"
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": ["read_file", "write_file"],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/report.test.mjs",
+      "failToPass": ["report 汇总"]
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/dedupe.mjs",
+      "content": "export function dedupeById(items) {\n  return items\n}\n"
+    },
+    {
+      "path": "test/dedupe.test.mjs",
+      "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { dedupeById } from \"../src/dedupe.mjs\"\n\ntest(\"按 id 去重\", () => {\n  const result = dedupeById([\n    { id: 2, v: \"b\" },\n    { id: 1, v: \"a\" },\n    { id: 2, v: \"b2\" },\n  ])\n  assert.deepEqual(\n    result.map((item) => item.id),\n    [2, 1],\n  )\n})\n\ntest(\"保留最后一次的值\", () => {\n  const result = dedupeById([\n    { id: 1, v: \"old\" },\n    { id: 1, v: \"new\" },\n  ])\n  assert.equal(result.length, 1)\n  assert.equal(result[0].v, \"new\")\n})\n\ntest(\"空数组返回空数组\", () => {\n  assert.deepEqual(dedupeById([]), [])\n})\n"
+    }
+  ]
+}

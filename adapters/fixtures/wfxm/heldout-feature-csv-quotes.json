@@ -1,0 +1,12 @@
+{
+  "seedFiles": [
+    {
+      "path": "src/csv.mjs",
+      "content": "export function parseLine(line) {\n  return line.split(\",\")\n}\n"
+    },
+    {
+      "path": "test/csv.test.mjs",
+      "content": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { parseLine } from \"../src/csv.mjs\"\n\ntest(\"普通行按逗号拆分\", () => {\n  assert.deepEqual(parseLine(\"a,b,c\"), [\"a\", \"b\", \"c\"])\n})\n\ntest(\"引号内逗号不拆分\", () => {\n  assert.deepEqual(parseLine('a,\"b,c\",d'), [\"a\", \"b,c\", \"d\"])\n})\n\ntest(\"双引号转义\", () => {\n  assert.deepEqual(parseLine('a,\"b\"\"c\",d'), [\"a\", 'b\"c', \"d\"])\n})\n"
+    }
+  ]
+}

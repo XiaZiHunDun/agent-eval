@@ -1,0 +1,34 @@
+{
+  "id": "heldout-debug-retry-cap",
+  "title": "修复重试延迟未封顶",
+  "suite": "heldout",
+  "taxonomy": "debug",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "held-out",
+  "kind": "chat",
+  "turns": [
+    "test/retry.test.mjs 里“超过上限后封顶”失败。请修复 src/retry.mjs：延迟按 100ms 指数增长，单次上限 800ms，不要改测试。",
+    "确认"
+  ],
+  "timeoutMs": 180000,
+  "budget": {
+    "maxTurns": 2,
+    "maxToolCalls": 10
+  },
+  "runtimeHints": {
+    "wfxm": {
+      "scenarioId": "heldout-debug-retry-cap"
+    }
+  },
+  "expect": {
+    "finalDecision": "WaitForApproval",
+    "requireApproval": true,
+    "requiredTools": ["read_file", "write_file"],
+    "tests": {
+      "command": "node --test --test-reporter=tap test/retry.test.mjs",
+      "failToPass": ["超过上限后封顶"],
+      "passToPass": ["前几次指数增长"]
+    }
+  }
+}
