@@ -137,7 +137,16 @@ export default {
         ...(tests ? { tests } : {}),
         ...(realModel ? { realModel: true } : {}),
         runtimeHints: {
-          wfxm: { scenarioId, ...(fixtures ? { fixtures } : {}), ...(rag ? { rag } : {}) },
+          wfxm: {
+            scenarioId,
+            ...(fixtures ? { fixtures } : {}),
+            ...(rag ? { rag } : {}),
+            ...(task.runtimeHints?.wfxm?.conversationId
+              ? { conversationId: task.runtimeHints.wfxm.conversationId }
+              : {}),
+            ...(task.runtimeHints?.wfxm?.env ? { env: task.runtimeHints.wfxm.env } : {}),
+            ...(task.runtimeHints?.wfxm?.setup ? { setup: task.runtimeHints.wfxm.setup } : {}),
+          },
         },
       },
       timeoutMs,

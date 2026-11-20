@@ -67,6 +67,21 @@ export function renderReport(summary) {
     lines.push("")
   }
 
+  const judged = results.filter((r) => r.judge && typeof r.judge.mean === "number")
+  if (judged.length > 0) {
+    const judgeMean = judged.reduce((sum, r) => sum + r.judge.mean, 0) / judged.length
+    const low = judged.filter((r) => r.judge.mean < 4)
+    lines.push("## 软性评分")
+    lines.push("")
+    lines.push(`- 已评分：${judged.length}/${results.length}；均分 ${judgeMean.toFixed(2)}（1–5）`)
+    if (low.length > 0) {
+      lines.push(
+        `- 低于 4 分：${low.map((r) => `${r.taskId} ${r.judge.mean.toFixed(2)}`).join("、")}`,
+      )
+    }
+    lines.push("")
+  }
+
   const pm = summary.processMetrics
   const hasProcessMetrics =
     pm &&

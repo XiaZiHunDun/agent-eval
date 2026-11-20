@@ -16,6 +16,16 @@
     "cap-planning-release-order"
   ],
   "overallRate": 0.9,
+  "processMetricsObserved": {
+    "toolRecall": 1,
+    "redundantRate": 0,
+    "paramAccuracy": 1
+  },
+  "processMetrics": {
+    "minToolRecall": 0.9,
+    "maxRedundantRate": 0.2,
+    "minParamAccuracy": 0.9
+  },
   "taskRates": {
     "cap-code-edit-clamp": 1,
     "cap-code-edit-parse-duration": 1,

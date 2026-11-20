@@ -17,6 +17,15 @@
     "heldout-plan-migration"
   ],
   "overallRate": 0.9,
+  "processMetricsObserved": {
+    "toolRecall": 0.969,
+    "redundantRate": 0.114,
+    "paramAccuracy": null
+  },
+  "processMetrics": {
+    "minToolRecall": 0.9,
+    "maxRedundantRate": 0.25
+  },
   "taskRates": {
     "heldout-ambiguity-optimize": 1,
     "heldout-approval-deploy-replicas": 1,

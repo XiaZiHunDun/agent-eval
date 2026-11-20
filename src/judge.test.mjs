@@ -82,6 +82,31 @@ test("open task fails when judge mean is below the threshold", async () => {
   assert.ok(verdict.failures.some((f) => f.check === "judge.score"))
 })
 
+test("observe mode records low judge scores without failing", async () => {
+  const judge = async () => ({ scores: [2, 3] })
+  const verdict = await evaluateOpenTask(
+    { title: "t", turns: ["x"], rubric },
+    observation(),
+    { judge, strict: false },
+  )
+  assert.equal(verdict.passed, true)
+  assert.equal(verdict.judge.mean, 2.5)
+  assert.ok(verdict.checks.some((c) => c.name === "judge.score" && c.detail.includes("观测")))
+})
+
+test("observe mode treats judge transport errors as non-blocking", async () => {
+  const judge = async () => {
+    throw new Error("judge HTTP 502")
+  }
+  const verdict = await evaluateOpenTask(
+    { title: "t", turns: ["x"], rubric },
+    observation(),
+    { judge, strict: false },
+  )
+  assert.equal(verdict.passed, true)
+  assert.ok(verdict.checks.some((c) => c.name === "judge.error" && c.ok))
+})
+
 test("judge prompt stays outcome-only", () => {
   const prompt = buildJudgePrompt(
     { title: "解释模块", turns: ["src/a.mjs 做什么"] },

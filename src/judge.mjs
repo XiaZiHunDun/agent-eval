@@ -153,7 +153,7 @@ export function parseJudgeScore(text) {
  *
  * @param {object} task
  * @param {object} obs
- * @param {{ judge?: (args: { task: object, obs: object, prompt: string }) => Promise<{ scores: number[] } | { text: string }> }} [opts]
+ * @param {{ judge?: (args: { task: object, obs: object, prompt: string }) => Promise<{ scores: number[] } | { text: string }>, strict?: boolean }} [opts]
  */
 export async function evaluateOpenTask(task, obs, opts = {}) {
   const rubric = task.rubric ?? {}
@@ -161,22 +161,37 @@ export async function evaluateOpenTask(task, obs, opts = {}) {
   const checks = [...hard.checks]
   const failures = [...hard.failures]
   let judge
+  const strict = opts.strict !== false
 
   const hardOk = failures.length === 0
   const soft = rubric.soft
   if (hardOk && soft && opts.judge) {
     const prompt = buildJudgePrompt(task, obs)
-    const result = await opts.judge({ task, obs, prompt })
-    const scores = result?.scores ?? (result?.text ? [parseJudgeScore(result.text)].filter(Boolean) : [])
-    if (scores.length === 0) {
-      checks.push({ name: "judge.score", ok: false, detail: "judge 未给出可解析分数" })
-      failures.push(failure("judge.score", "judge 未给出可解析分数"))
+    let scores = []
+    let error
+    try {
+      const result = await opts.judge({ task, obs, prompt })
+      scores = result?.scores ?? (result?.text ? [parseJudgeScore(result.text)].filter(Boolean) : [])
+    } catch (err) {
+      error = err instanceof Error ? err.message : String(err)
+    }
+
+    if (error !== undefined) {
+      checks.push({ name: "judge.error", ok: !strict, detail: error })
+      if (strict) failures.push(failure("judge.error", error))
+    } else if (scores.length === 0) {
+      checks.push({ name: "judge.score", ok: !strict, detail: "judge 未给出可解析分数" })
+      if (strict) failures.push(failure("judge.score", "judge 未给出可解析分数"))
     } else {
       const mean = scores.reduce((sum, value) => sum + value, 0) / scores.length
       const min = soft.minScore ?? 4
       const ok = mean >= min
-      checks.push({ name: "judge.score", ok, detail: `均值 ${mean.toFixed(2)}，期望 >= ${min}` })
-      if (!ok) failures.push(failure("judge.score", `均值 ${mean.toFixed(2)} < ${min}`))
+      checks.push({
+        name: "judge.score",
+        ok: ok || !strict,
+        detail: `均值 ${mean.toFixed(2)}，期望 >= ${min}${ok || strict ? "" : "（观测）"}`,
+      })
+      if (!ok && strict) failures.push(failure("judge.score", `均值 ${mean.toFixed(2)} < ${min}`))
       judge = { scores, mean }
     }
   } else if (hardOk && soft) {

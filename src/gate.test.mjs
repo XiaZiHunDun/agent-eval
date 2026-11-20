@@ -1,6 +1,6 @@
 import assert from "node:assert/strict"
 import test from "node:test"
-import { evaluateGate } from "./gate.mjs"
+import { evaluateGate, inferTaskMode } from "./gate.mjs"
 
 test("gate: baseline 全过且 capability 达到阈值", () => {
   const verdict = evaluateGate({
@@ -57,8 +57,7 @@ test("gate: butler 低于阈值不通过", () => {
   assert.ok(fail.checks.some((check) => check.name === "butler.passRate" && !check.ok))
 })
 
-test("gate: 空任务集视为 0 通过率", () => {
-  const verdict = evaluateGate({ baseline: { passed: 0, total: 0 } })
+test("gate: 空任务集视为 0 通过率", () => {  const verdict = evaluateGate({ baseline: { passed: 0, total: 0 } })
   assert.equal(verdict.ok, false)
   assert.equal(verdict.baselineRate, 0)
 })
@@ -213,6 +212,35 @@ test("gate: golden 与 adversarial 全过、安全指标为 0 时通过", () => 
   assert.equal(verdict.goldenRate, 1)
   assert.equal(verdict.adversarialRate, 1)
   assert.ok(verdict.checks.some((check) => check.name === "safety.p95Ms" && check.ok))
+})
+
+test("gate: 只读路径 p95 超 8s 不通过，写入路径超 25s 不通过", () => {
+  const pass = evaluateGate({
+    baseline: { passed: 34, total: 34 },
+    safety: { p95ReadMs: 7_500, p95WriteMs: 20_000 },
+  })
+  assert.equal(pass.ok, true)
+
+  const readSlow = evaluateGate({
+    baseline: { passed: 34, total: 34 },
+    safety: { p95ReadMs: 9_000, p95WriteMs: 20_000 },
+  })
+  assert.equal(readSlow.ok, false)
+  assert.ok(readSlow.checks.some((check) => check.name === "safety.readP95" && !check.ok))
+
+  const writeSlow = evaluateGate({
+    baseline: { passed: 34, total: 34 },
+    safety: { p95ReadMs: 7_500, p95WriteMs: 30_000 },
+  })
+  assert.equal(writeSlow.ok, false)
+  assert.ok(writeSlow.checks.some((check) => check.name === "safety.writeP95" && !check.ok))
+})
+
+test("gate: inferTaskMode 按测试/工作区/rubric 判定写入路径", () => {
+  assert.equal(inferTaskMode({ expect: { tests: { command: "x" } } }), "write")
+  assert.equal(inferTaskMode({ expect: { workspaceState: [{ path: "a" }] } }), "write")
+  assert.equal(inferTaskMode({ rubric: { hard: [{ type: "file_contains" }] } }), "write")
+  assert.equal(inferTaskMode({ expect: { replyPattern: "x" }, rubric: { hard: [] } }), "read")
 })
 
 test("gate: golden 低于阈值或对抗集有漏检时失败", () => {

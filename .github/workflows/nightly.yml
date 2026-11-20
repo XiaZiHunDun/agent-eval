@@ -68,11 +68,13 @@ jobs:
           fi
           node src/cli.mjs gate --with-rag --real --repeats 1
 
-      - name: L4 open tasks (real model)
+      # 先观测软性评分（judge 低分不阻断）；稳定两周后把 --judge-observe 改成 --judge。
+      - name: L4 open tasks (real model + judge observe)
         env:
           WFXM_ROOT: ${{ github.workspace }}/wfxm
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           DEEPSEEK_MODEL: deepseek-flash
+          JUDGE_MODEL: deepseek-flash
           BUTLER_V5_MODEL_PLAN: deepseek-flash
           BUTLER_V5_MODEL_EXEC: deepseek-flash
           BUTLER_V5_MODEL_INTAKE: deepseek-flash
@@ -81,7 +83,7 @@ jobs:
             echo "::warning::DEEPSEEK_API_KEY 未配置，跳过真实模型任务"
             exit 0
           fi
-          node src/cli.mjs run --suite butler-open --runtime wfxm --real
+          node src/cli.mjs run --suite butler-open --runtime wfxm --real --judge-observe
 
       # 真实模型开发能力子集：10 条 code-edit/debug/planning，2 次重复。
       # 默认模型 DeepSeek Flash，基线阈值 0.90（实测 100%）。
@@ -122,10 +124,10 @@ jobs:
             --out .eval-runs/repo-real \
             --baseline baselines/repo-real.json
 
-      # 真实模型 heldout 子集：6 条更难任务，用于观察模型区分度。
-      # 2026-11-19 选型：DeepSeek Flash 2 轮 6/6（P95 28s）；MiniMax 5/6（P95 142s）。
-      # 基线阈值 0.90（实测 100%）。
-      - name: Real-model heldout subset (6 harder tasks)
+      # 真实模型 heldout 子集：11 条更难任务，用于观察模型区分度。
+      # 2026-11-19 选型：DeepSeek Flash 原 6 条 6/6；扩到 11 条后实测 95.5%。
+      # 基线阈值 0.90（容忍一条任务抖动）。
+      - name: Real-model heldout subset (11 harder tasks)
         env:
           WFXM_ROOT: ${{ github.workspace }}/wfxm
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}

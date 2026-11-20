@@ -3,6 +3,25 @@ export const DEFAULT_MIN_RAG_HIT_AT3 = 0.9
 export const DEFAULT_MIN_RAG_MRR = 0.8
 
 /**
+ * 推断任务属于只读还是写入路径：有测试/工作区产物/文件类 rubric 即视为写入。
+ * 只读路径的延迟预算更紧（默认 8s），写入路径沿用 25s。
+ *
+ * @param {object} task
+ * @returns {"read" | "write"}
+ */
+export function inferTaskMode(task) {
+  const rules = Array.isArray(task?.rubric?.hard) ? task.rubric.hard : []
+  const writes =
+    Boolean(task?.expect?.tests) ||
+    (Array.isArray(task?.expect?.workspaceState) && task.expect.workspaceState.length > 0) ||
+    Boolean(task?.repo) ||
+    rules.some((rule) =>
+      ["file_exists", "file_contains", "file_equals", "tests_passed"].includes(rule.type),
+    )
+  return writes ? "write" : "read"
+}
+
+/**
  * Gate 判定。通过率使用 0–1 的小数，阈值同样如此。
  *
  * capability 支持 `rate`（任务级平均通过率）与 `flaky`（部分尝试失败的 taskId 列表）：
@@ -29,9 +48,12 @@ export const DEFAULT_MIN_RAG_MRR = 0.8
  *     falseSuccess?: number,
  *     honestStop?: { passed: number, total: number },
  *     p95Ms?: number,
+ *     p95ReadMs?: number,
+ *     p95WriteMs?: number,
  *     budgetViolations?: number,
  *   },
  *   maxP95Ms?: number,
+ *   maxReadP95Ms?: number,
  *   minHonestStop?: number,
  *   rag?: {
  *     passed: number,
@@ -60,6 +82,7 @@ export function evaluateGate({
   minAdversarial = 1,
   safety,
   maxP95Ms = 25_000,
+  maxReadP95Ms = 8_000,
   minHonestStop = 0.9,
   rag,
   minRagRate = 0.9,
@@ -160,6 +183,20 @@ export function evaluateGate({
         name: "safety.p95Ms",
         ok: safety.p95Ms <= maxP95Ms,
         detail: `黄金集 p95 ${safety.p95Ms}ms（期望 <= ${maxP95Ms}ms）`,
+      })
+    }
+    if (safety.p95ReadMs !== undefined) {
+      checks.push({
+        name: "safety.readP95",
+        ok: safety.p95ReadMs <= maxReadP95Ms,
+        detail: `只读路径 p95 ${safety.p95ReadMs}ms（期望 <= ${maxReadP95Ms}ms）`,
+      })
+    }
+    if (safety.p95WriteMs !== undefined) {
+      checks.push({
+        name: "safety.writeP95",
+        ok: safety.p95WriteMs <= maxP95Ms,
+        detail: `写入路径 p95 ${safety.p95WriteMs}ms（期望 <= ${maxP95Ms}ms）`,
       })
     }
     if (safety.budgetViolations !== undefined) {

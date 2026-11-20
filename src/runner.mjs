@@ -138,6 +138,7 @@ function buildAttempt({
     ...taskMeta(task),
     passed: verdict.passed && failures.length === 0,
     score: verdict.score,
+    ...(verdict.judge ? { judge: verdict.judge } : {}),
     steps: obs?.steps ?? 0,
     ...(obs?.costUsd !== undefined ? { costUsd: obs.costUsd } : {}),
     durationMs,
@@ -229,6 +230,7 @@ function aggregateAttempts({ task, runtime, attempts }) {
   const categories = [
     ...new Set(attempts.flatMap((attempt) => attempt.failureCategories ?? [])),
   ];
+  const judged = attempts.filter((attempt) => Array.isArray(attempt.judge?.scores));
 
   const result = {
     taskId: task.id,
@@ -240,6 +242,15 @@ function aggregateAttempts({ task, runtime, attempts }) {
     attemptsTotal: total,
     score: round(mean("score")),
     steps: Math.round(mean("steps")),
+    ...(judged.length > 0
+      ? {
+          judge: {
+            scores: judged.flatMap((attempt) => attempt.judge.scores),
+            mean: round(judged.reduce((sum, attempt) => sum + attempt.judge.mean, 0) / judged.length),
+            attempts: judged.length,
+          },
+        }
+      : {}),
     ...(attempts.some((a) => a.costUsd !== undefined)
       ? { costUsd: round(mean("costUsd")) }
       : {}),
@@ -294,6 +305,8 @@ function aggregateAttempts({ task, runtime, attempts }) {
  * @param {string} args.runId
  * @param {number} [args.repeats]
  * @param {(msg: string) => void} [args.log]
+ * @param {Function} [args.judge] 软性评分函数（仅 butler-open 使用）
+ * @param {boolean} [args.judgeStrict] false 时只记录评分，不阻断
  */
 export async function runSuite({
   adapter,
@@ -302,6 +315,8 @@ export async function runSuite({
   runId,
   repeats = 1,
   log = () => {},
+  judge,
+  judgeStrict = true,
 }) {
   await mkdir(runDir, { recursive: true });
   const repeatCount = Math.max(1, Math.trunc(repeats) || 1);
@@ -340,7 +355,7 @@ export async function runSuite({
       const traceProblems = obs ? validateTrace(trace) : [];
       const verdict = obs
         ? task.suite === "butler-open"
-          ? await evaluateOpenTask(task, obs)
+          ? await evaluateOpenTask(task, obs, { judge, strict: judgeStrict })
           : verify(task, obs)
         : {
             passed: false,
