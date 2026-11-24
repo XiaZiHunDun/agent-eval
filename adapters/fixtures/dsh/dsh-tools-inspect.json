@@ -1,0 +1,44 @@
+{
+  "events": [
+    {
+      "type": "session",
+      "sessionId": "dsh-dsh-tools-inspect"
+    },
+    {
+      "type": "status",
+      "phase": "step_end",
+      "usage": {
+        "inputTokens": 18,
+        "outputTokens": 6
+      }
+    },
+    {
+      "type": "tool_call",
+      "tool": "svc_inspect"
+    },
+    {
+      "type": "tool_result",
+      "name": "svc_inspect",
+      "ok": true
+    },
+    {
+      "type": "status",
+      "phase": "step_end",
+      "usage": {
+        "inputTokens": 8,
+        "outputTokens": 24
+      }
+    },
+    {
+      "type": "status",
+      "phase": "turn_end",
+      "reason": {
+        "kind": "completed"
+      }
+    },
+    {
+      "type": "final",
+      "text": "巡检完成，共 6 项检查：CPU、内存、磁盘、端口、服务、容器。"
+    }
+  ]
+}

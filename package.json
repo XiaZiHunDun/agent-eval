@@ -19,6 +19,11 @@
     "eval:butler-open": "node src/cli.mjs run --suite butler-open --runtime wfxm --real",
     "eval:gate": "node src/cli.mjs gate",
     "eval:gate:rag": "node src/cli.mjs gate --with-rag --real --repeats 2",
+    "eval:dsh-smoke": "node src/cli.mjs run --suite dsh-smoke --runtime dsh-wfxm",
+    "eval:dsh-tools": "node src/cli.mjs run --suite dsh-tools --runtime dsh-wfxm",
+    "eval:dsh-capability": "node src/cli.mjs run --suite dsh-capability --runtime dsh-wfxm --real",
+    "eval:dsh-gate": "node src/cli.mjs gate --runtime dsh-wfxm",
+    "test:contract": "node --test src/contract.test.mjs",
     "test": "node --test src/*.test.mjs"
   },
   "engines": {

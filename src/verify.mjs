@@ -182,6 +182,17 @@ export function verify(task, obs) {
     }
   }
 
+  if (expect.containsAny) {
+    const hit = expect.containsAny.find((needle) => firstReply.includes(needle))
+    add(
+      "reply.containsAny",
+      hit !== undefined,
+      hit === undefined
+        ? `首轮回复未包含任一：${expect.containsAny.join("/")}`
+        : `命中「${hit}」`,
+    )
+  }
+
   if (expect.containsNone) {
     for (const needle of expect.containsNone) {
       add(

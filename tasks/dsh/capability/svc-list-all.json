@@ -1,0 +1,25 @@
+{
+  "id": "svc-list-all",
+  "title": "列出当前所有受管服务。",
+  "suite": "dsh-capability",
+  "notes": "迁移自 bench/tasks.json（discover）。原判据：调用了 svc_list；结果按运行时分组或注明运行时；未调用任何写操作工具。",
+  "taxonomy": "discover",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "列出当前所有受管服务。"
+  ],
+  "timeoutMs": 180000,
+  "expect": {
+    "requiredAnyTools": [
+      "svc_list"
+    ],
+    "forbiddenTools": [
+      "svc_start",
+      "svc_stop",
+      "svc_restart"
+    ]
+  }
+}

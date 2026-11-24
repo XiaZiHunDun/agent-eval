@@ -144,6 +144,23 @@ jobs:
             --out .eval-runs/heldout-real \
             --baseline baselines/heldout-real.json
 
+      # dsh-wfxm 真实能力基线：需要 runner 上有 dsh 与它的 credentials 服务。
+      # 先 advisory 两周：写 gate.json 但不阻断；稳定后去掉 --advisory。
+      - name: dsh capability baseline (advisory, real model)
+        env:
+          AGENT_EVAL_REAL_MODEL: "1"
+          DSH_WFXM_ROOT: ${{ vars.DSH_WFXM_ROOT }}
+        run: |
+          if ! command -v dsh >/dev/null 2>&1; then
+            echo "::warning::dsh 不可用，跳过多端能力基线"
+            exit 0
+          fi
+          if [ ! -d "${DSH_WFXM_ROOT:-}" ]; then
+            echo "::warning::DSH_WFXM_ROOT 未配置，跳过 dsh 能力基线"
+            exit 0
+          fi
+          node src/cli.mjs gate --runtime dsh-wfxm --with-capability --real --advisory
+
       - name: Upload eval runs
         if: always()
         uses: actions/upload-artifact@v4

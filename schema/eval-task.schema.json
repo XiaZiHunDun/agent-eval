@@ -5,11 +5,12 @@
   "description": "任务只描述「用户会怎么说 + 什么算做到」，不描述实现。runtimeHints 封装单个 runtime 的私有装配信息，评估核心不读取。",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "title", "suite", "turns", "expect"],
+  "required": ["id", "title", "suite", "turns"],
   "properties": {
     "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
     "title": { "type": "string", "minLength": 1 },
     "suite": { "type": "string", "minLength": 1 },
+    "notes": { "type": "string", "description": "迁移来源或人工备注；评估器不读取" },
     "taxonomy": {
       "type": "string",
       "minLength": 1,
@@ -28,16 +29,26 @@
       "description": "数据集划分；held-out 不参与调参与提示词迭代"
     },
     "kind": {
-      "enum": ["chat-task", "repo-task"],
-      "default": "chat-task",
-      "description": "chat-task 面向对话/工具行为；repo-task 面向仓库级开发任务，以测试结果为准"
+      "enum": ["chat", "chat-task", "repo-task"],
+      "default": "chat",
+      "description": "chat 面向对话/工具行为；repo-task 面向仓库级开发任务，以测试结果为准"
     },
     "turns": {
       "type": "array",
       "minItems": 1,
       "items": { "type": "string", "minLength": 1 }
     },
+    "messageIds": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "与 turns 对齐的稳定消息 id；部分 runtime 用于回放"
+    },
     "timeoutMs": { "type": "integer", "minimum": 1000 },
+    "workspacePaths": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "需要在执行后回读的工作区相对路径（adapter 使用）"
+    },
     "repo": {
       "type": "object",
       "description": "repo-task 的仓库来源；由 runtime adapter 解析为本地夹具",
@@ -54,7 +65,8 @@
       "properties": {
         "maxTurns": { "type": "integer", "minimum": 1 },
         "maxToolCalls": { "type": "integer", "minimum": 0 },
-        "maxCostUsd": { "type": "number", "minimum": 0 }
+        "maxCostUsd": { "type": "number", "minimum": 0 },
+        "maxModelCalls": { "type": "integer", "minimum": 0 }
       }
     },
     "weights": {
@@ -66,6 +78,38 @@
         "trace": { "type": "number", "minimum": 0, "maximum": 1 },
         "cost": { "type": "number", "minimum": 0, "maximum": 1 },
         "latency": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "rubric": {
+      "type": "object",
+      "description": "开放式任务评分：hard 为确定性规则，soft 交给 judge",
+      "additionalProperties": false,
+      "properties": {
+        "hard": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+              "id": { "type": "string" },
+              "type": { "type": "string", "minLength": 1 },
+              "value": {},
+              "command": { "type": "string" },
+              "path": { "type": "string" },
+              "contains": { "type": "string" },
+              "pattern": { "type": "string" },
+              "equals": { "type": "string" },
+              "timeoutMs": { "type": "integer", "minimum": 1000 }
+            }
+          }
+        },
+        "soft": {
+          "type": "object",
+          "properties": {
+            "minScore": { "type": "number", "minimum": 0 },
+            "criteria": { "type": "array", "items": { "type": "string" } }
+          }
+        }
       }
     },
     "hiddenChecks": {
@@ -104,10 +148,18 @@
       "additionalProperties": false,
       "properties": {
         "replyPattern": { "type": "string" },
+        "finalReplyPattern": { "type": "string" },
         "containsAll": { "type": "array", "items": { "type": "string" } },
+        "containsAny": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "任一关键词出现在首轮回复即通过；用于无法确定具体措辞的场景"
+        },
         "containsNone": { "type": "array", "items": { "type": "string" } },
         "followUpPatterns": { "type": "array", "items": { "type": "string" } },
         "finalDecision": { "type": "string" },
+        "finalDecisionIn": { "type": "array", "items": { "type": "string" } },
+        "statusIn": { "type": "array", "items": { "type": "integer" } },
         "requireApproval": { "type": "boolean" },
         "minToolCalls": { "type": "integer", "minimum": 0 },
         "maxToolCalls": { "type": "integer", "minimum": 0 },
@@ -189,6 +241,26 @@
             "check": { "type": "string" },
             "prefix": { "type": "string" },
             "category": { "type": "string" }
+          }
+        },
+        "userMessage": {
+          "type": "object",
+          "description": "用户可见消息的结构契约（确定性检查，不做措辞精确匹配）",
+          "additionalProperties": false,
+          "properties": {
+            "mustMention": { "type": "array", "items": { "type": "string" } },
+            "mustNotMatch": { "type": "array", "items": { "type": "string" } },
+            "maxLength": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "butler": {
+          "type": "object",
+          "description": "管家层观测（仅 wfxm-butler）",
+          "additionalProperties": false,
+          "properties": {
+            "route": { "type": "string" },
+            "rule": { "type": "string" },
+            "result": { "type": "object" }
           }
         }
       }

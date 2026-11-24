@@ -1,0 +1,28 @@
+{
+  "id": "dsh-smoke-inspect",
+  "title": "只读巡检",
+  "suite": "dsh-smoke",
+  "taxonomy": "inspect",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "看下主机磁盘使用情况。"
+  ],
+  "timeoutMs": 120000,
+  "expect": {
+    "requiredAnyTools": [
+      "svc_inspect"
+    ],
+    "forbiddenTools": [
+      "svc_start",
+      "svc_stop",
+      "svc_restart"
+    ],
+    "containsAny": [
+      "62",
+      "磁盘"
+    ]
+  }
+}

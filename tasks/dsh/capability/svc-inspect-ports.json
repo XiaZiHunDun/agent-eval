@@ -1,0 +1,24 @@
+{
+  "id": "svc-inspect-ports",
+  "title": "确认 22 和 443 端口在监听。",
+  "suite": "dsh-capability",
+  "notes": "迁移自 bench/tasks.json（inspect）。原判据：巡检或查询覆盖端口项；缺失端口报 fail 并给出缺失清单；不把不可读当成功。",
+  "taxonomy": "inspect",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "确认 22 和 443 端口在监听。"
+  ],
+  "timeoutMs": 180000,
+  "expect": {
+    "requiredAnyTools": [
+      "svc_inspect"
+    ],
+    "containsAny": [
+      "22",
+      "443"
+    ]
+  }
+}

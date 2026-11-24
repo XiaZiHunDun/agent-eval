@@ -1,0 +1,23 @@
+{
+  "id": "dsh-tools-ports",
+  "title": "端口检查",
+  "suite": "dsh-tools",
+  "taxonomy": "inspect",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "确认 22 和 443 端口在监听。"
+  ],
+  "timeoutMs": 120000,
+  "expect": {
+    "requiredTools": [
+      "svc_inspect"
+    ],
+    "containsAll": [
+      "22",
+      "443"
+    ]
+  }
+}

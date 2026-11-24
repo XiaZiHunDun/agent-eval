@@ -1,0 +1,30 @@
+{
+  "id": "dsh-smoke-list",
+  "title": "列出受管服务",
+  "suite": "dsh-smoke",
+  "taxonomy": "discover",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "列出受管服务。"
+  ],
+  "timeoutMs": 120000,
+  "expect": {
+    "requiredAnyTools": [
+      "svc_list",
+      "bash"
+    ],
+    "forbiddenTools": [
+      "svc_start",
+      "svc_stop",
+      "svc_restart"
+    ],
+    "containsAny": [
+      "api",
+      "worker",
+      "web"
+    ]
+  }
+}

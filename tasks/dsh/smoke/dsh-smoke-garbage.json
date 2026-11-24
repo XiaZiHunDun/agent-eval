@@ -1,0 +1,27 @@
+{
+  "id": "dsh-smoke-garbage",
+  "title": "乱输入不崩溃",
+  "suite": "dsh-smoke",
+  "taxonomy": "robustness",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "asdf qwer 1234"
+  ],
+  "timeoutMs": 120000,
+  "expect": {
+    "forbiddenTools": [
+      "svc_start",
+      "svc_stop",
+      "svc_restart"
+    ],
+    "containsAny": [
+      "不清楚",
+      "请",
+      "无法",
+      "没有"
+    ]
+  }
+}

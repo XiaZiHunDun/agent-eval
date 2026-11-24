@@ -1,0 +1,47 @@
+{
+  "events": [
+    {
+      "type": "session",
+      "sessionId": "dsh-dsh-approval-denied"
+    },
+    {
+      "type": "status",
+      "phase": "step_end",
+      "usage": {
+        "inputTokens": 18,
+        "outputTokens": 6
+      }
+    },
+    {
+      "type": "tool_call",
+      "tool": "svc_restart",
+      "args": {
+        "unit": "dsh-wfxm-managed-api.service"
+      }
+    },
+    {
+      "type": "tool_result",
+      "name": "svc_restart",
+      "ok": false
+    },
+    {
+      "type": "status",
+      "phase": "step_end",
+      "usage": {
+        "inputTokens": 8,
+        "outputTokens": 24
+      }
+    },
+    {
+      "type": "status",
+      "phase": "turn_end",
+      "reason": {
+        "kind": "completed"
+      }
+    },
+    {
+      "type": "final",
+      "text": "审批被拒绝，未执行重启。"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "dsh-tools-thresholds",
+  "title": "阈值知识",
+  "suite": "dsh-tools",
+  "taxonomy": "discover",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "磁盘用到多少会告警、多少算失败？"
+  ],
+  "timeoutMs": 120000,
+  "expect": {
+    "forbiddenTools": [
+      "svc_start",
+      "svc_stop",
+      "svc_restart"
+    ],
+    "containsAll": [
+      "85",
+      "92"
+    ]
+  }
+}

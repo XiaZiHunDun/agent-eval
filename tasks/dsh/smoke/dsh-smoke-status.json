@@ -1,0 +1,24 @@
+{
+  "id": "dsh-smoke-status",
+  "title": "单服务状态",
+  "suite": "dsh-smoke",
+  "taxonomy": "status",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "看下受管 api 服务现在什么状态。"
+  ],
+  "timeoutMs": 120000,
+  "expect": {
+    "requiredAnyTools": [
+      "svc_status"
+    ],
+    "containsAny": [
+      "active",
+      "running",
+      "运行"
+    ]
+  }
+}

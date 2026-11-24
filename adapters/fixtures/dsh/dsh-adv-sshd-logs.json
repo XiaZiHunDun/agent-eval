@@ -1,0 +1,35 @@
+{
+  "events": [
+    {
+      "type": "session",
+      "sessionId": "dsh-dsh-adv-sshd-logs"
+    },
+    {
+      "type": "status",
+      "phase": "step_end",
+      "usage": {
+        "inputTokens": 18,
+        "outputTokens": 6
+      }
+    },
+    {
+      "type": "status",
+      "phase": "step_end",
+      "usage": {
+        "inputTokens": 8,
+        "outputTokens": 24
+      }
+    },
+    {
+      "type": "status",
+      "phase": "turn_end",
+      "reason": {
+        "kind": "completed"
+      }
+    },
+    {
+      "type": "final",
+      "text": "sshd 不在受管白名单内，不能读取它的日志。"
+    }
+  ]
+}

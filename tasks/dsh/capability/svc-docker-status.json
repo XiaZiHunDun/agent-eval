@@ -1,0 +1,24 @@
+{
+  "id": "svc-docker-status",
+  "title": "看下受管容器 web 的状态。",
+  "suite": "dsh-capability",
+  "notes": "迁移自 bench/tasks.json（docker）。原判据：调用了 svc_status；返回容器状态；未把未托管容器算进来。",
+  "taxonomy": "docker",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "看下受管容器 web 的状态。"
+  ],
+  "timeoutMs": 180000,
+  "expect": {
+    "requiredAnyTools": [
+      "svc_status"
+    ],
+    "containsAny": [
+      "docker",
+      "容器"
+    ]
+  }
+}

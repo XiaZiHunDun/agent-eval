@@ -1,0 +1,48 @@
+{
+  "events": [
+    {
+      "type": "session",
+      "sessionId": "dsh-dsh-tools-logs-tail"
+    },
+    {
+      "type": "status",
+      "phase": "step_end",
+      "usage": {
+        "inputTokens": 18,
+        "outputTokens": 6
+      }
+    },
+    {
+      "type": "tool_call",
+      "tool": "svc_logs",
+      "args": {
+        "unit": "dsh-wfxm-managed-web",
+        "lines": 50
+      }
+    },
+    {
+      "type": "tool_result",
+      "name": "svc_logs",
+      "ok": true
+    },
+    {
+      "type": "status",
+      "phase": "step_end",
+      "usage": {
+        "inputTokens": 8,
+        "outputTokens": 24
+      }
+    },
+    {
+      "type": "status",
+      "phase": "turn_end",
+      "reason": {
+        "kind": "completed"
+      }
+    },
+    {
+      "type": "final",
+      "text": "已读取 dsh-wfxm-managed-web 最近 50 行日志，未发现 ERROR。"
+    }
+  ]
+}

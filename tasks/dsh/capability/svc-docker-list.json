@@ -1,0 +1,24 @@
+{
+  "id": "svc-docker-list",
+  "title": "列出受管容器。",
+  "suite": "dsh-capability",
+  "notes": "迁移自 bench/tasks.json（docker）。原判据：调用了 svc_list 并体现 docker 运行时；只列 dsh-wfxm-managed-* 且带 managed 标签的容器。",
+  "taxonomy": "docker",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "列出受管容器。"
+  ],
+  "timeoutMs": 180000,
+  "expect": {
+    "requiredAnyTools": [
+      "svc_list"
+    ],
+    "containsAny": [
+      "docker",
+      "容器"
+    ]
+  }
+}

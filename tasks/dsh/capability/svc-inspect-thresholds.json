@@ -1,0 +1,21 @@
+{
+  "id": "svc-inspect-thresholds",
+  "title": "磁盘用到多少会告警、多少算失败？",
+  "suite": "dsh-capability",
+  "notes": "迁移自 bench/tasks.json（inspect）。原判据：回答默认阈值 85% 警告 / 92% 失败（或说明已被配置覆盖）；不臆造数值。",
+  "taxonomy": "inspect",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "磁盘用到多少会告警、多少算失败？"
+  ],
+  "timeoutMs": 180000,
+  "expect": {
+    "containsAll": [
+      "85",
+      "92"
+    ]
+  }
+}

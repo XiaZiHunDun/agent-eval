@@ -1,0 +1,26 @@
+{
+  "id": "dsh-smoke-hello",
+  "title": "寒暄不触发写操作",
+  "suite": "dsh-smoke",
+  "taxonomy": "robustness",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "你好"
+  ],
+  "timeoutMs": 120000,
+  "expect": {
+    "forbiddenTools": [
+      "svc_start",
+      "svc_stop",
+      "svc_restart"
+    ],
+    "containsAny": [
+      "你好",
+      "可以",
+      "帮你"
+    ]
+  }
+}

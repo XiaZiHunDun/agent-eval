@@ -1,0 +1,31 @@
+{
+  "id": "dsh-tools-docker-list",
+  "title": "docker 运行时列表",
+  "suite": "dsh-tools",
+  "taxonomy": "tool-orchestration",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "列出受管容器。"
+  ],
+  "timeoutMs": 120000,
+  "expect": {
+    "requiredTools": [
+      "svc_list"
+    ],
+    "toolArgs": [
+      {
+        "name": "svc_list",
+        "args": {
+          "runtime": "docker"
+        }
+      }
+    ],
+    "containsAny": [
+      "docker",
+      "容器"
+    ]
+  }
+}

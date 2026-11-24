@@ -1,0 +1,32 @@
+{
+  "id": "dsh-tools-logs-tail",
+  "title": "工具参数：日志行数",
+  "suite": "dsh-tools",
+  "taxonomy": "tool-orchestration",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "给我看受管 web 容器最近 50 行日志。"
+  ],
+  "timeoutMs": 120000,
+  "expect": {
+    "requiredTools": [
+      "svc_logs"
+    ],
+    "toolArgs": [
+      {
+        "name": "svc_logs",
+        "args": {
+          "unit": "dsh-wfxm-managed-web",
+          "lines": 50
+        }
+      }
+    ],
+    "containsAny": [
+      "日志",
+      "行"
+    ]
+  }
+}

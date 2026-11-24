@@ -1,0 +1,25 @@
+{
+  "id": "dsh-tools-inspect",
+  "title": "巡检六项",
+  "suite": "dsh-tools",
+  "taxonomy": "inspect",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "跑一次主机巡检。"
+  ],
+  "timeoutMs": 120000,
+  "expect": {
+    "requiredTools": [
+      "svc_inspect"
+    ],
+    "requireToolSuccess": true,
+    "containsAny": [
+      "巡检",
+      "6",
+      "六"
+    ]
+  }
+}

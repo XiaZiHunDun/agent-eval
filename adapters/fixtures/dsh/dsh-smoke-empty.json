@@ -1,0 +1,35 @@
+{
+  "events": [
+    {
+      "type": "session",
+      "sessionId": "dsh-dsh-smoke-empty"
+    },
+    {
+      "type": "status",
+      "phase": "step_end",
+      "usage": {
+        "inputTokens": 18,
+        "outputTokens": 6
+      }
+    },
+    {
+      "type": "status",
+      "phase": "step_end",
+      "usage": {
+        "inputTokens": 8,
+        "outputTokens": 24
+      }
+    },
+    {
+      "type": "status",
+      "phase": "turn_end",
+      "reason": {
+        "kind": "completed"
+      }
+    },
+    {
+      "type": "final",
+      "text": "请告诉我具体要查看哪个受管服务或哪类信息。"
+    }
+  ]
+}

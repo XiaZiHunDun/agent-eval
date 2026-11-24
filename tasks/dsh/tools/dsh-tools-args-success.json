@@ -1,0 +1,28 @@
+{
+  "id": "dsh-tools-args-success",
+  "title": "参数匹配且执行成功",
+  "suite": "dsh-tools",
+  "taxonomy": "tool-orchestration",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "列出受管服务，并确认命令执行成功。"
+  ],
+  "timeoutMs": 120000,
+  "expect": {
+    "requiredTools": [
+      "svc_list"
+    ],
+    "requireToolSuccess": true,
+    "toolArgs": [
+      {
+        "name": "svc_list",
+        "args": {
+          "runtime": "all"
+        }
+      }
+    ]
+  }
+}

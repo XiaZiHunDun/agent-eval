@@ -1,9 +1,10 @@
 import assert from "node:assert/strict"
+import { execFileSync } from "node:child_process"
 import { mkdir, writeFile } from "node:fs/promises"
 import { join } from "node:path"
 import { tmpdir } from "node:os"
 import test from "node:test"
-import { collectRunConfig, modelsFromEvents } from "./config.mjs"
+import { collectRunConfig, modelsFromEvents, runtimeGitCwd } from "./config.mjs"
 
 test("config: 从 model.request 提取模型名并去重", () => {
   const models = modelsFromEvents([
@@ -67,5 +68,37 @@ test("config: 记录评测固定温度", async () => {
   } finally {
     if (previous === undefined) delete process.env.BUTLER_MODEL_TEMPERATURE
     else process.env.BUTLER_MODEL_TEMPERATURE = previous
+  }
+})
+
+test("config: runtimeGitCwd 区分 WFXM 与 dsh-wfxm", () => {
+  assert.equal(runtimeGitCwd("wfxm", { WFXM_ROOT: "/tmp/w" }), "/tmp/w/butler-v5")
+  assert.equal(
+    runtimeGitCwd("wfxm-butler", { WFXM_ROOT: "/tmp/w" }),
+    "/tmp/w/butler-v5",
+  )
+  assert.equal(runtimeGitCwd("dsh-wfxm", { DSH_WFXM_ROOT: "/tmp/d" }), "/tmp/d")
+})
+
+test("config: dsh-wfxm 记录自己的 git 版本", async () => {
+  const dir = join(tmpdir(), `eval-dsh-config-${Date.now()}`)
+  await mkdir(dir, { recursive: true })
+  execFileSync("git", ["-C", dir, "init"], { stdio: "ignore" })
+  execFileSync(
+    "git",
+    ["-C", dir, "-c", "user.email=e@e", "-c", "user.name=e", "commit", "--allow-empty", "-m", "init"],
+    { stdio: "ignore" },
+  )
+  const sha = execFileSync("git", ["-C", dir, "rev-parse", "HEAD"], { encoding: "utf8" }).trim()
+  const previous = process.env.DSH_WFXM_ROOT
+  process.env.DSH_WFXM_ROOT = dir
+  try {
+    const config = await collectRunConfig({ results: [], real: false, runtime: "dsh-wfxm" })
+    assert.equal(config.runtime, "dsh-wfxm")
+    assert.equal(config.runtimeGitSha, sha)
+    assert.equal(config.runtimeGitDirty, false)
+  } finally {
+    if (previous === undefined) delete process.env.DSH_WFXM_ROOT
+    else process.env.DSH_WFXM_ROOT = previous
   }
 })

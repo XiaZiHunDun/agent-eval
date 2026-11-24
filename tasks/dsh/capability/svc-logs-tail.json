@@ -1,0 +1,20 @@
+{
+  "id": "svc-logs-tail",
+  "title": "给我看受管 web 容器最近 50 行日志。",
+  "suite": "dsh-capability",
+  "notes": "迁移自 bench/tasks.json（logs）。原判据：调用了 svc_logs 并带行数；日志内容来自适配器；无日志时说明为空而不是编造。",
+  "taxonomy": "logs",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "给我看受管 web 容器最近 50 行日志。"
+  ],
+  "timeoutMs": 180000,
+  "expect": {
+    "requiredAnyTools": [
+      "svc_logs"
+    ]
+  }
+}

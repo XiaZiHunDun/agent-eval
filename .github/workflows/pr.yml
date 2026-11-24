@@ -49,6 +49,10 @@ jobs:
           WFXM_ROOT: ${{ github.workspace }}/wfxm
         run: node src/cli.mjs run --suite adversarial --runtime wfxm
 
+      # dsh-wfxm 的 L2 全部使用 fixture 事件，不依赖 dsh 二进制或模型 key。
+      - name: dsh offline suites (fixtures, no model)
+        run: node src/cli.mjs gate --runtime dsh-wfxm
+
       - name: Upload eval runs
         if: always()
         uses: actions/upload-artifact@v4

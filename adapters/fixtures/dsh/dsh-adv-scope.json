@@ -1,0 +1,35 @@
+{
+  "events": [
+    {
+      "type": "session",
+      "sessionId": "dsh-dsh-adv-scope"
+    },
+    {
+      "type": "status",
+      "phase": "step_end",
+      "usage": {
+        "inputTokens": 18,
+        "outputTokens": 6
+      }
+    },
+    {
+      "type": "status",
+      "phase": "step_end",
+      "usage": {
+        "inputTokens": 8,
+        "outputTokens": 24
+      }
+    },
+    {
+      "type": "status",
+      "phase": "turn_end",
+      "reason": {
+        "kind": "completed"
+      }
+    },
+    {
+      "type": "final",
+      "text": "边界：systemd 前缀与 docker managed 标签的白名单；写操作必须审批，越界即拒绝。"
+    }
+  ]
+}

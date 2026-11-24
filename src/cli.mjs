@@ -14,6 +14,7 @@ import {
   inferTaskMode,
 } from "./gate.mjs"
 import { evaluateRetrieval } from "./rag.mjs"
+import { evaluateDshGate, DEFAULT_DSH_THRESHOLDS } from "./gate-dsh.mjs"
 import { buildBaseline, compareToBaseline } from "./baseline.mjs"
 import { compareRuns } from "./compare.mjs"
 import { judgeFromEnv } from "./judge-llm.mjs"
@@ -32,13 +33,22 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..")
 const ADAPTERS = {
   wfxm: () => import("../adapters/wfxm.mjs"),
   "wfxm-butler": () => import("../adapters/wfxm-butler.mjs"),
+  "dsh-wfxm": () => import("../adapters/dsh-wfxm.mjs"),
+}
+
+/** dsh 套件放在 tasks/dsh/<suffix>，其余套件保持 tasks/<suite>。 */
+function suiteDir(suiteName) {
+  return suiteName.startsWith("dsh-")
+    ? join(ROOT, "tasks", "dsh", suiteName.slice(4))
+    : join(ROOT, "tasks", suiteName)
 }
 
 const USAGE = [
   "用法：",
-  "  node src/cli.mjs run --suite <...> [--runtime wfxm|wfxm-butler] [--task <id>] [--tasks <id1,id2>] [--out <dir>] [--repeats N] [--limit N] [--label <name>] [--baseline <file>] [--record <file>] [--real] [--judge|--judge-observe]",
+  "  node src/cli.mjs run --suite <...> [--runtime wfxm|wfxm-butler|dsh-wfxm] [--task <id>] [--tasks <id1,id2>] [--out <dir>] [--repeats N] [--limit N] [--label <name>] [--baseline <file>] [--record <file>] [--real] [--judge|--judge-observe]",
   "  node src/cli.mjs compare --a <runDir> --b <runDir> [--label-a <name>] [--label-b <name>] [--out <dir>]",
   "  node src/cli.mjs gate [--with-capability --with-rag --real] [--repeats N] [--min-capability 0.8] [--min-rag 0.9] [--max-flaky 0.2] [--min-golden 1] [--min-adversarial 1] [--max-p95 25000] [--max-read-p95 8000] [--min-honest-stop 0.9] [--golden-limit N] [--out <dir>]",
+  "  node src/cli.mjs gate --runtime dsh-wfxm [--with-capability --real] [--advisory] [--out <dir>]",
   "环境变量：AGENT_EVAL_LANGFUSE=1 导出 Langfuse batch（无凭证时写 langfuse.json dry-run）",
 ].join("\n")
 
@@ -140,6 +150,8 @@ function parseArgs(argv) {
     goldenLimit: undefined,
     maxFlaky: 0.2,
     repeats: 1,
+    advisory: false,
+    withRepo: false,
   }
   for (let i = 0; i < rest.length; i += 1) {
     const arg = rest[i]
@@ -172,6 +184,8 @@ function parseArgs(argv) {
     else if (arg === "--golden-limit") opts.goldenLimit = parsePositiveInt(rest[++i], "--golden-limit")
     else if (arg === "--max-flaky") opts.maxFlaky = parseRate(rest[++i])
     else if (arg === "--repeats") opts.repeats = parseRepeats(rest[++i])
+    else if (arg === "--advisory") opts.advisory = true
+    else if (arg === "--with-repo") opts.withRepo = true
     else throw new Error(`未知参数：${arg}`)
   }
   return opts
@@ -260,7 +274,7 @@ async function executeSuite({
   if (real) process.env.AGENT_EVAL_REAL_MODEL = "1"
   else delete process.env.AGENT_EVAL_REAL_MODEL
 
-  const tasksDir = join(ROOT, "tasks", suiteName)
+  const tasksDir = suiteDir(suiteName)
   // 轨迹数据在 WFXM 仓库（tests/trajectories），执行与判定留在 agent-eval。
   let tasks =
     suiteName === "trajectory" ? await loadTrajectoryTasks() : await loadTasks(tasksDir)
@@ -282,7 +296,7 @@ async function executeSuite({
   if (real) process.env.BUTLER_MODEL_TEMPERATURE ??= "0"
   const suite = await runSuite({ adapter, tasks, runDir, runId, repeats, log, judge, judgeStrict })
   await exportLangfuse({ results: suite.results, log })
-  const config = await collectRunConfig({ results: suite.results, real })
+  const config = await collectRunConfig({ results: suite.results, real, runtime })
   // 过程指标衡量“怎么做”，不参与 pass/fail；所有套件都计算，报告按有无数据展示。
   const processMetrics = computeProcessMetrics(tasks, suite.results)
   const summary = {
@@ -319,10 +333,11 @@ async function runCommand(opts) {
   if (opts.withRag) throw new Error("--with-rag 仅用于 gate 子命令")
 
   // capability 套件衡量模型能力，fixture 驱动没有意义，必须显式 --real。
-  if (opts.suite === "capability" && !opts.real) {
-    throw new Error("capability 套件必须使用 --real（真实模型）运行")
+  if (["capability", "dsh-capability", "dsh-repo"].includes(opts.suite) && !opts.real) {
+    throw new Error(`${opts.suite} 套件必须使用 --real（真实模型）运行`)
   }
-  if (opts.real) assertRealModelKeys()
+  // dsh-wfxm 的凭据由 dsh 自己的 credentials 服务管理，不要求把 key 放进评测进程。
+  if (opts.real && opts.runtime !== "dsh-wfxm") assertRealModelKeys()
   if (opts.judge && opts.judgeObserve) {
     throw new Error("--judge 与 --judge-observe 只能二选一")
   }
@@ -468,6 +483,96 @@ async function compareCommand(opts) {
   }
   console.log(`compare.json：${join(outDir, "compare.json")}`)
   process.exit(result.blocked ? 1 : 0)
+}
+
+async function gateDshCommand(opts) {
+  if (opts.withRag) throw new Error("--with-rag 仅适用于 wfxm 线")
+  if (opts.withCapability && !opts.real) {
+    throw new Error("--with-capability 需要 --real（真实模型）")
+  }
+  if (opts.withRepo && !opts.real) {
+    throw new Error("--with-repo 需要 --real（真实模型）")
+  }
+  // dsh-wfxm 的凭据由 dsh 自己的 credentials 服务管理，不要求把 key 放进评测进程。
+  if (opts.real && opts.runtime !== "dsh-wfxm") assertRealModelKeys()
+
+  const startedAt = new Date().toISOString()
+  const gateId = `gate-dsh-${startedAt.replace(/[:.]/g, "-")}`
+  const gateDir = opts.out ? resolve(opts.out) : join(ROOT, ".eval-runs", gateId)
+  const runs = []
+
+  const offline = [
+    ["smoke", "dsh-smoke"],
+    ["tools", "dsh-tools"],
+    ["approval", "dsh-approval"],
+    ["adversarial", "dsh-adversarial"],
+  ]
+  for (const [name, suiteName] of offline) {
+    console.log(`▶ gate ${name}（fixture）`)
+    const run = await executeSuite({
+      suiteName,
+      runtime: "dsh-wfxm",
+      runDir: join(gateDir, name),
+      runId: `${gateId}-${name}`,
+      real: false,
+    })
+    runs.push({ name, ...run, report: join(run.runDir, "report.md") })
+  }
+
+  const realSuites = []
+  if (opts.withCapability) realSuites.push(["capability", "dsh-capability"])
+  if (opts.withRepo) realSuites.push(["repo", "dsh-repo"])
+  for (const [name, suiteName] of realSuites) {
+    console.log(`▶ gate ${name}（真实模型，每任务 ${opts.repeats} 次）`)
+    const run = await executeSuite({
+      suiteName,
+      runtime: "dsh-wfxm",
+      runDir: join(gateDir, name),
+      runId: `${gateId}-${name}`,
+      real: true,
+      repeats: opts.repeats,
+    })
+    runs.push({ name, ...run, report: join(run.runDir, "report.md") })
+  }
+
+  const thresholds = {
+    ...DEFAULT_DSH_THRESHOLDS,
+    ...(opts.withCapability ? { capability: opts.minCapability } : {}),
+    ...(opts.withRepo ? { repo: opts.minCapability } : {}),
+  }
+  const verdict = evaluateDshGate({
+    suites: runs,
+    thresholds,
+    advisory: opts.advisory,
+  })
+
+  const gate = {
+    gateId,
+    runtime: "dsh-wfxm",
+    startedAt,
+    finishedAt: new Date().toISOString(),
+    advisory: opts.advisory,
+    thresholds,
+    suites: runs.map((run) => ({
+      name: run.name,
+      passed: run.passed,
+      total: run.total,
+      rate: run.passRate,
+      report: run.report,
+      config: run.config,
+    })),
+    checks: verdict.checks,
+    ok: verdict.ok,
+  }
+  await writeFile(join(gateDir, "gate.json"), JSON.stringify(gate, null, 2) + "\n", "utf8")
+
+  if (opts.advisory) console.log("\nADVISORY")
+  console.log(`\n${verdict.ok ? "GATE PASS" : "GATE FAIL"}${opts.advisory ? "（advisory，不阻断）" : ""}`)
+  for (const check of verdict.checks) {
+    console.log(`  ${check.ok ? "✓" : "✗"} ${check.name} — ${check.detail}`)
+  }
+  console.log(`gate.json：${join(gateDir, "gate.json")}`)
+  process.exit(verdict.exitOk ? 0 : 1)
 }
 
 async function gateCommand(opts) {
@@ -748,7 +853,9 @@ async function main() {
   const opts = parseArgs(process.argv.slice(2))
   if (opts.command === "run") return runCommand(opts)
   if (opts.command === "compare") return compareCommand(opts)
-  if (opts.command === "gate") return gateCommand(opts)
+  if (opts.command === "gate") {
+    return opts.runtime === "dsh-wfxm" ? gateDshCommand(opts) : gateCommand(opts)
+  }
 
   console.log(USAGE)
   process.exit(opts.command === "help" ? 0 : 2)

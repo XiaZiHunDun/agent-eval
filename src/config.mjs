@@ -5,6 +5,25 @@ import { join } from "node:path"
 /** 任务契约版本；任务 JSON 结构变化时递增。 */
 export const SUITE_CONTRACT_VERSION = "eval-task/v0"
 
+const DEFAULT_ROOTS = {
+  wfxm: "/home/ailearn/projects/WFXM",
+  "wfxm-butler": "/home/ailearn/projects/WFXM",
+  "dsh-wfxm": "/home/ailearn/projects/dsh-wfxm",
+}
+
+/**
+ * 每个 runtime 的代码仓库根：summary 用它记录被测版本。
+ * - WFXM 两条线在 `<WFXM_ROOT>/butler-v5`；
+ * - dsh-wfxm 就是仓库根。
+ */
+export function runtimeGitCwd(runtime, env = process.env) {
+  if (runtime === "dsh-wfxm") {
+    return env.DSH_WFXM_ROOT ?? DEFAULT_ROOTS["dsh-wfxm"]
+  }
+  const root = env.WFXM_ROOT ?? DEFAULT_ROOTS.wfxm
+  return join(root, "butler-v5")
+}
+
 /** 从 trace 事件里取实际调用过的模型名（去重、排序）。 */
 export function modelsFromEvents(events) {
   const models = new Set()
@@ -36,9 +55,8 @@ async function readTraceModels(tracePath) {
   }
 }
 
-function gitState() {
-  const root = process.env.WFXM_ROOT ?? "/home/ailearn/projects/WFXM"
-  const cwd = join(root, "butler-v5")
+function gitState(runtime) {
+  const cwd = runtimeGitCwd(runtime)
   try {
     const sha = execFileSync("git", ["-C", cwd, "rev-parse", "HEAD"], {
       encoding: "utf8",
@@ -61,7 +79,7 @@ function gitState() {
  * temperature 为 null 表示 runtime 未显式设置（当前生产 wiring 确实没设），
  * 不是“没记录”；用 temperatureNote 把语义写清楚，避免读者误判。
  */
-export async function collectRunConfig({ results, real }) {
+export async function collectRunConfig({ results, real, runtime = "wfxm" }) {
   const models = new Set()
   for (const result of results) {
     const paths = result.tracePaths ?? (result.tracePath ? [result.tracePath] : [])
@@ -72,12 +90,13 @@ export async function collectRunConfig({ results, real }) {
   }
 
   const embeddingKey = (process.env.DASHSCOPE_API_KEY ?? "").trim()
-  const git = gitState()
+  const git = gitState(runtime)
   const rawTemperature = (process.env.BUTLER_MODEL_TEMPERATURE ?? "").trim()
   const parsedTemperature = rawTemperature ? Number(rawTemperature) : null
   const temperature = Number.isFinite(parsedTemperature) ? parsedTemperature : null
   return {
     contractVersion: SUITE_CONTRACT_VERSION,
+    runtime,
     fixtureMode: !real,
     models: [...models].sort(),
     temperature,

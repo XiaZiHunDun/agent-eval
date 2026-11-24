@@ -1,0 +1,20 @@
+{
+  "id": "svc-report-empty",
+  "title": "最近一小时巡检有什么问题吗？",
+  "suite": "dsh-capability",
+  "notes": "迁移自 bench/tasks.json（report）。原判据：窗口内无记录时回答 0 次运行；不编造异常；不制造无意义告警。",
+  "taxonomy": "report",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "最近一小时巡检有什么问题吗？"
+  ],
+  "timeoutMs": 180000,
+  "expect": {
+    "requiredAnyTools": [
+      "svc_report"
+    ]
+  }
+}

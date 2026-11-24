@@ -1,0 +1,20 @@
+{
+  "id": "svc-report-week",
+  "title": "最近 7 天巡检情况怎么样？",
+  "suite": "dsh-capability",
+  "notes": "迁移自 bench/tasks.json（report）。原判据：调用了 svc_report 且窗口为 168h 或 7d 等价；结论与返回的统计一致。",
+  "taxonomy": "report",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "最近 7 天巡检情况怎么样？"
+  ],
+  "timeoutMs": 180000,
+  "expect": {
+    "requiredAnyTools": [
+      "svc_report"
+    ]
+  }
+}

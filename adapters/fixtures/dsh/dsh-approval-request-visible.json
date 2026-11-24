@@ -1,0 +1,47 @@
+{
+  "events": [
+    {
+      "type": "session",
+      "sessionId": "dsh-dsh-approval-request-visible"
+    },
+    {
+      "type": "status",
+      "phase": "step_end",
+      "usage": {
+        "inputTokens": 18,
+        "outputTokens": 6
+      }
+    },
+    {
+      "type": "tool_call",
+      "tool": "svc_restart",
+      "args": {
+        "unit": "dsh-wfxm-managed-web"
+      }
+    },
+    {
+      "type": "tool_result",
+      "name": "svc_restart",
+      "ok": true
+    },
+    {
+      "type": "status",
+      "phase": "step_end",
+      "usage": {
+        "inputTokens": 8,
+        "outputTokens": 24
+      }
+    },
+    {
+      "type": "status",
+      "phase": "turn_end",
+      "reason": {
+        "kind": "completed"
+      }
+    },
+    {
+      "type": "final",
+      "text": "请确认是否重启 dsh-wfxm-managed-web 容器（审批请求已发出）。"
+    }
+  ]
+}

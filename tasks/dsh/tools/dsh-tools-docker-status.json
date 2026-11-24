@@ -1,0 +1,24 @@
+{
+  "id": "dsh-tools-docker-status",
+  "title": "docker 容器状态",
+  "suite": "dsh-tools",
+  "taxonomy": "status",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "看下受管容器 web 的状态。"
+  ],
+  "timeoutMs": 120000,
+  "expect": {
+    "requiredTools": [
+      "svc_status"
+    ],
+    "containsAny": [
+      "docker",
+      "容器",
+      "running"
+    ]
+  }
+}

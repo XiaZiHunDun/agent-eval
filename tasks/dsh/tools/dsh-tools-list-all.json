@@ -1,0 +1,30 @@
+{
+  "id": "dsh-tools-list-all",
+  "title": "工具选择：全量列表",
+  "suite": "dsh-tools",
+  "taxonomy": "tool-orchestration",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "列出当前所有受管服务。"
+  ],
+  "timeoutMs": 120000,
+  "expect": {
+    "requiredAnyTools": [
+      "svc_list"
+    ],
+    "forbiddenTools": [
+      "svc_start",
+      "svc_stop",
+      "svc_restart"
+    ],
+    "containsAny": [
+      "systemd",
+      "docker",
+      "容器",
+      "服务"
+    ]
+  }
+}

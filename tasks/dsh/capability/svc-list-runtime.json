@@ -1,0 +1,27 @@
+{
+  "id": "svc-list-runtime",
+  "title": "你现在能管哪几种服务运行时？",
+  "suite": "dsh-capability",
+  "notes": "迁移自 bench/tasks.json（discover）。原判据：说明可管运行时（systemd / docker，按探测结果）；不虚构未探测到的运行时。",
+  "taxonomy": "discover",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "你现在能管哪几种服务运行时？"
+  ],
+  "timeoutMs": 180000,
+  "expect": {
+    "forbiddenTools": [
+      "svc_start",
+      "svc_stop",
+      "svc_restart"
+    ],
+    "containsAny": [
+      "systemd",
+      "docker",
+      "运行时"
+    ]
+  }
+}

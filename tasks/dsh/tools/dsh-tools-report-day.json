@@ -1,0 +1,27 @@
+{
+  "id": "dsh-tools-report-day",
+  "title": "日报窗口 24h",
+  "suite": "dsh-tools",
+  "taxonomy": "report",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "出一份最近 24 小时的巡检日报。"
+  ],
+  "timeoutMs": 120000,
+  "expect": {
+    "requiredTools": [
+      "svc_report"
+    ],
+    "toolArgs": [
+      {
+        "name": "svc_report",
+        "args": {
+          "window": "24h"
+        }
+      }
+    ]
+  }
+}

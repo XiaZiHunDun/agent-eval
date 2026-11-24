@@ -1,0 +1,20 @@
+{
+  "id": "svc-report-day",
+  "title": "出一份最近 24 小时的巡检日报。",
+  "suite": "dsh-capability",
+  "notes": "迁移自 bench/tasks.json（report）。原判据：调用了 svc_report 且窗口为 24h；给出运行次数与状态分布；无数据时说明 0 次而非编造。",
+  "taxonomy": "report",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "出一份最近 24 小时的巡检日报。"
+  ],
+  "timeoutMs": 180000,
+  "expect": {
+    "requiredAnyTools": [
+      "svc_report"
+    ]
+  }
+}

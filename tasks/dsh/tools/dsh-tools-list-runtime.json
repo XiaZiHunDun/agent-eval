@@ -1,0 +1,26 @@
+{
+  "id": "dsh-tools-list-runtime",
+  "title": "运行时能力说明",
+  "suite": "dsh-tools",
+  "taxonomy": "discover",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "你现在能管哪几种服务运行时？"
+  ],
+  "timeoutMs": 120000,
+  "expect": {
+    "forbiddenTools": [
+      "svc_start",
+      "svc_stop",
+      "svc_restart"
+    ],
+    "containsAny": [
+      "systemd",
+      "docker",
+      "运行时"
+    ]
+  }
+}

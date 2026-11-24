@@ -1,0 +1,35 @@
+{
+  "events": [
+    {
+      "type": "session",
+      "sessionId": "dsh-dsh-smoke-garbage"
+    },
+    {
+      "type": "status",
+      "phase": "step_end",
+      "usage": {
+        "inputTokens": 18,
+        "outputTokens": 6
+      }
+    },
+    {
+      "type": "status",
+      "phase": "step_end",
+      "usage": {
+        "inputTokens": 8,
+        "outputTokens": 24
+      }
+    },
+    {
+      "type": "status",
+      "phase": "turn_end",
+      "reason": {
+        "kind": "completed"
+      }
+    },
+    {
+      "type": "final",
+      "text": "我没有理解这个请求，请说明要查看的服务或操作。"
+    }
+  ]
+}
