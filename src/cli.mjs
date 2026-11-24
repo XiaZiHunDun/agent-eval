@@ -48,7 +48,7 @@ const USAGE = [
   "  node src/cli.mjs run --suite <...> [--runtime wfxm|wfxm-butler|dsh-wfxm] [--task <id>] [--tasks <id1,id2>] [--out <dir>] [--repeats N] [--limit N] [--label <name>] [--baseline <file>] [--record <file>] [--real] [--judge|--judge-observe]",
   "  node src/cli.mjs compare --a <runDir> --b <runDir> [--label-a <name>] [--label-b <name>] [--out <dir>]",
   "  node src/cli.mjs gate [--with-capability --with-rag --real] [--repeats N] [--min-capability 0.8] [--min-rag 0.9] [--max-flaky 0.2] [--min-golden 1] [--min-adversarial 1] [--max-p95 25000] [--max-read-p95 8000] [--min-honest-stop 0.9] [--golden-limit N] [--out <dir>]",
-  "  node src/cli.mjs gate --runtime dsh-wfxm [--with-capability --real] [--advisory] [--out <dir>]",
+  "  node src/cli.mjs gate --runtime dsh-wfxm [--with-capability --with-repo --with-conversation --real] [--advisory] [--out <dir>]",
   "环境变量：AGENT_EVAL_LANGFUSE=1 导出 Langfuse batch（无凭证时写 langfuse.json dry-run）",
 ].join("\n")
 
@@ -152,6 +152,7 @@ function parseArgs(argv) {
     repeats: 1,
     advisory: false,
     withRepo: false,
+    withConversation: false,
   }
   for (let i = 0; i < rest.length; i += 1) {
     const arg = rest[i]
@@ -186,6 +187,7 @@ function parseArgs(argv) {
     else if (arg === "--repeats") opts.repeats = parseRepeats(rest[++i])
     else if (arg === "--advisory") opts.advisory = true
     else if (arg === "--with-repo") opts.withRepo = true
+    else if (arg === "--with-conversation") opts.withConversation = true
     else throw new Error(`未知参数：${arg}`)
   }
   return opts
@@ -333,7 +335,10 @@ async function runCommand(opts) {
   if (opts.withRag) throw new Error("--with-rag 仅用于 gate 子命令")
 
   // capability 套件衡量模型能力，fixture 驱动没有意义，必须显式 --real。
-  if (["capability", "dsh-capability", "dsh-repo"].includes(opts.suite) && !opts.real) {
+  if (
+    ["capability", "dsh-capability", "dsh-repo", "dsh-conversation"].includes(opts.suite) &&
+    !opts.real
+  ) {
     throw new Error(`${opts.suite} 套件必须使用 --real（真实模型）运行`)
   }
   // dsh-wfxm 的凭据由 dsh 自己的 credentials 服务管理，不要求把 key 放进评测进程。
@@ -493,6 +498,9 @@ async function gateDshCommand(opts) {
   if (opts.withRepo && !opts.real) {
     throw new Error("--with-repo 需要 --real（真实模型）")
   }
+  if (opts.withConversation && !opts.real) {
+    throw new Error("--with-conversation 需要 --real（真实模型）")
+  }
   // dsh-wfxm 的凭据由 dsh 自己的 credentials 服务管理，不要求把 key 放进评测进程。
   if (opts.real && opts.runtime !== "dsh-wfxm") assertRealModelKeys()
 
@@ -506,6 +514,7 @@ async function gateDshCommand(opts) {
     ["tools", "dsh-tools"],
     ["approval", "dsh-approval"],
     ["adversarial", "dsh-adversarial"],
+    ["trajectory", "dsh-trajectory"],
   ]
   for (const [name, suiteName] of offline) {
     console.log(`▶ gate ${name}（fixture）`)
@@ -522,6 +531,7 @@ async function gateDshCommand(opts) {
   const realSuites = []
   if (opts.withCapability) realSuites.push(["capability", "dsh-capability"])
   if (opts.withRepo) realSuites.push(["repo", "dsh-repo"])
+  if (opts.withConversation) realSuites.push(["conversation", "dsh-conversation"])
   for (const [name, suiteName] of realSuites) {
     console.log(`▶ gate ${name}（真实模型，每任务 ${opts.repeats} 次）`)
     const run = await executeSuite({
@@ -539,6 +549,7 @@ async function gateDshCommand(opts) {
     ...DEFAULT_DSH_THRESHOLDS,
     ...(opts.withCapability ? { capability: opts.minCapability } : {}),
     ...(opts.withRepo ? { repo: opts.minCapability } : {}),
+    ...(opts.withConversation ? { conversation: opts.minCapability } : {}),
   }
   const verdict = evaluateDshGate({
     suites: runs,

@@ -1,0 +1,4 @@
+{"type":"session","sessionId":"trace-deny"}
+{"type":"status","phase":"step_end","usage":{"inputTokens":30,"outputTokens":10}}
+{"type":"status","phase":"turn_end","reason":{"kind":"completed"}}
+{"type":"final","text":"sshd 不在受管白名单内，拒绝执行。"}

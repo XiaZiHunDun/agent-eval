@@ -159,7 +159,7 @@ jobs:
             echo "::warning::DSH_WFXM_ROOT 未配置，跳过 dsh 能力基线"
             exit 0
           fi
-          node src/cli.mjs gate --runtime dsh-wfxm --with-capability --real --advisory
+          node src/cli.mjs gate --runtime dsh-wfxm --with-capability --with-repo --with-conversation --real --advisory
 
       - name: Upload eval runs
         if: always()

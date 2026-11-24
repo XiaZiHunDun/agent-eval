@@ -22,6 +22,9 @@
     "eval:dsh-smoke": "node src/cli.mjs run --suite dsh-smoke --runtime dsh-wfxm",
     "eval:dsh-tools": "node src/cli.mjs run --suite dsh-tools --runtime dsh-wfxm",
     "eval:dsh-capability": "node src/cli.mjs run --suite dsh-capability --runtime dsh-wfxm --real",
+    "eval:dsh-repo": "node src/cli.mjs run --suite dsh-repo --runtime dsh-wfxm --real",
+    "eval:dsh-conversation": "node src/cli.mjs run --suite dsh-conversation --runtime dsh-wfxm --real",
+    "eval:dsh-trajectory": "node src/cli.mjs run --suite dsh-trajectory --runtime dsh-wfxm",
     "eval:dsh-gate": "node src/cli.mjs gate --runtime dsh-wfxm",
     "test:contract": "node --test src/contract.test.mjs",
     "test": "node --test src/*.test.mjs"

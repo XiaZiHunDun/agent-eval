@@ -1,0 +1,24 @@
+{
+  "suite": "dsh-repo",
+  "recordedAt": "2026-11-24T10:49:47.659Z",
+  "tasks": [
+    "dsh-repo-add",
+    "dsh-repo-clamp",
+    "dsh-repo-constant",
+    "dsh-repo-first",
+    "dsh-repo-parse"
+  ],
+  "overallRate": 1,
+  "taskRates": {
+    "dsh-repo-add": 1,
+    "dsh-repo-clamp": 1,
+    "dsh-repo-constant": 1,
+    "dsh-repo-first": 1,
+    "dsh-repo-parse": 1
+  },
+  "processMetricsObserved": {
+    "toolRecall": null,
+    "redundantRate": 0,
+    "paramAccuracy": null
+  }
+}

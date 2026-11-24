@@ -1,0 +1,53 @@
+{
+  "id": "dsh-repo-parse",
+  "title": "非法 JSON 返回 null",
+  "suite": "dsh-repo",
+  "notes": "P1 仓库任务：测试为 oracle，隐藏检查只读终态文件。",
+  "taxonomy": "code-edit",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "repo-task",
+  "turns": [
+    "src/parse.mjs 的 parseConfig 遇到非法 JSON 不应抛错，而应返回 null；合法 JSON 行为不变。只改 src/parse.mjs。"
+  ],
+  "timeoutMs": 180000,
+  "repo": {
+    "fixture": "dsh-repo-parse"
+  },
+  "workspacePaths": [
+    "src/parse.mjs"
+  ],
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "src/parse.mjs",
+      "contains": "catch"
+    }
+  ],
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "package.json"
+    ]
+  },
+  "expect": {
+    "tests": {
+      "command": "node --test --test-reporter=tap",
+      "timeoutMs": 120000,
+      "failToPass": [
+        "parseConfig returns null for invalid json"
+      ],
+      "passToPass": [
+        "parseConfig parses valid json"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 10
+    }
+  }
+}

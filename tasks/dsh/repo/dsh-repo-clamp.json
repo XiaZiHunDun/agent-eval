@@ -1,0 +1,54 @@
+{
+  "id": "dsh-repo-clamp",
+  "title": "新增 clamp 函数",
+  "suite": "dsh-repo",
+  "notes": "P1 仓库任务：测试为 oracle，隐藏检查只读终态文件。",
+  "taxonomy": "code-edit",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "repo-task",
+  "turns": [
+    "请在 src/math.mjs 里新增并导出 clamp(value, min, max)：低于 min 返回 min，高于 max 返回 max，否则原样返回。不要改测试，运行测试确认通过。"
+  ],
+  "timeoutMs": 180000,
+  "repo": {
+    "fixture": "dsh-repo-clamp"
+  },
+  "workspacePaths": [
+    "src/math.mjs"
+  ],
+  "hiddenChecks": [
+    {
+      "type": "file_matches",
+      "path": "src/math.mjs",
+      "pattern": "clamp"
+    }
+  ],
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "package.json"
+    ]
+  },
+  "expect": {
+    "tests": {
+      "command": "node --test --test-reporter=tap",
+      "timeoutMs": 120000,
+      "failToPass": [
+        "clamp keeps value inside range"
+      ],
+      "passToPass": [
+        "add returns sum",
+        "sub returns difference"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 14
+    }
+  }
+}

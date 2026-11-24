@@ -1,0 +1,23 @@
+{
+  "id": "dsh-conv-repeat-logs",
+  "title": "连续查看日志",
+  "suite": "dsh-conversation",
+  "notes": "P1 多轮：同一 session 续接；判定看末轮与工具行为。",
+  "taxonomy": "multi-turn",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "看受管 web 最近 10 行日志。",
+    "再看 50 行。"
+  ],
+  "timeoutMs": 180000,
+  "expect": {
+    "requiredTools": [
+      "svc_logs"
+    ],
+    "minToolCalls": 2,
+    "finalReplyPattern": "(50|日志)"
+  }
+}

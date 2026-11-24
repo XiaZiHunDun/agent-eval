@@ -1,0 +1,23 @@
+{
+  "id": "dsh-conv-clarify",
+  "title": "追问目标",
+  "suite": "dsh-conversation",
+  "notes": "P1 多轮：同一 session 续接；判定看末轮与工具行为。",
+  "taxonomy": "multi-turn",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "看下服务。",
+    "api。"
+  ],
+  "timeoutMs": 180000,
+  "expect": {
+    "requiredAnyTools": [
+      "svc_status",
+      "svc_list"
+    ],
+    "finalReplyPattern": "(api|服务)"
+  }
+}

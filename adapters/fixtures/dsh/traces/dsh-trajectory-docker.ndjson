@@ -1,0 +1,6 @@
+{"type":"session","sessionId":"trace-docker"}
+{"type":"tool_call","tool":"svc_list","args":{"runtime":"docker"}}
+{"type":"tool_result","name":"svc_list","ok":true}
+{"type":"status","phase":"step_end","usage":{"inputTokens":25,"outputTokens":9}}
+{"type":"status","phase":"turn_end","reason":{"kind":"completed"}}
+{"type":"final","text":"受管容器：dsh-wfxm-managed-web。"}

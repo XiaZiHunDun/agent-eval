@@ -1,0 +1,26 @@
+{
+  "suite": "dsh-conversation",
+  "recordedAt": "2026-11-24T10:55:20.982Z",
+  "tasks": [
+    "dsh-conv-approval-cancel",
+    "dsh-conv-cancel-restart",
+    "dsh-conv-clarify",
+    "dsh-conv-followup-status",
+    "dsh-conv-repeat-logs",
+    "dsh-conv-scope-followup"
+  ],
+  "overallRate": 1,
+  "taskRates": {
+    "dsh-conv-approval-cancel": 1,
+    "dsh-conv-cancel-restart": 1,
+    "dsh-conv-clarify": 1,
+    "dsh-conv-followup-status": 1,
+    "dsh-conv-repeat-logs": 1,
+    "dsh-conv-scope-followup": 1
+  },
+  "processMetricsObserved": {
+    "toolRecall": 1,
+    "redundantRate": 0.011,
+    "paramAccuracy": null
+  }
+}

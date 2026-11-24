@@ -1,0 +1,53 @@
+{
+  "id": "dsh-repo-add",
+  "title": "修复加法实现",
+  "suite": "dsh-repo",
+  "notes": "P1 仓库任务：测试为 oracle，隐藏检查只读终态文件。",
+  "taxonomy": "code-edit",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "repo-task",
+  "turns": [
+    "这个仓库的 add 函数实现错了：test/math.test.mjs 会失败。请只改 src/math.mjs，修好 add，并运行测试确认全部通过。"
+  ],
+  "timeoutMs": 180000,
+  "repo": {
+    "fixture": "dsh-repo-add"
+  },
+  "workspacePaths": [
+    "src/math.mjs"
+  ],
+  "hiddenChecks": [
+    {
+      "type": "file_matches",
+      "path": "src/math.mjs",
+      "pattern": "a\\s*\\+\\s*b"
+    }
+  ],
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "package.json"
+    ]
+  },
+  "expect": {
+    "tests": {
+      "command": "node --test --test-reporter=tap",
+      "timeoutMs": 120000,
+      "failToPass": [
+        "add returns sum"
+      ],
+      "passToPass": [
+        "sub returns difference"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 8
+    }
+  }
+}

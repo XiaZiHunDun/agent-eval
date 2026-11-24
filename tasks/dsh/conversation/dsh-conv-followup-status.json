@@ -1,0 +1,23 @@
+{
+  "id": "dsh-conv-followup-status",
+  "title": "追问另一个服务",
+  "suite": "dsh-conversation",
+  "notes": "P1 多轮：同一 session 续接；判定看末轮与工具行为。",
+  "taxonomy": "multi-turn",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "看下受管 api 服务状态。",
+    "那 worker 呢？"
+  ],
+  "timeoutMs": 180000,
+  "expect": {
+    "requiredTools": [
+      "svc_status"
+    ],
+    "minToolCalls": 2,
+    "finalReplyPattern": "worker"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "id": "dsh-repo-first",
+  "title": "空列表返回 null",
+  "suite": "dsh-repo",
+  "notes": "P1 仓库任务：测试为 oracle，隐藏检查只读终态文件。",
+  "taxonomy": "code-edit",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "repo-task",
+  "turns": [
+    "src/list.mjs 的 first 在空列表上应返回 null，现在返回 undefined 导致测试失败。只改 src/list.mjs。"
+  ],
+  "timeoutMs": 180000,
+  "repo": {
+    "fixture": "dsh-repo-first"
+  },
+  "workspacePaths": [
+    "src/list.mjs"
+  ],
+  "hiddenChecks": [
+    {
+      "type": "file_contains",
+      "path": "src/list.mjs",
+      "contains": "null"
+    }
+  ],
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "package.json"
+    ]
+  },
+  "expect": {
+    "tests": {
+      "command": "node --test --test-reporter=tap",
+      "timeoutMs": 120000,
+      "failToPass": [
+        "first returns null for empty list"
+      ],
+      "passToPass": [
+        "first returns first item"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 6
+    }
+  }
+}

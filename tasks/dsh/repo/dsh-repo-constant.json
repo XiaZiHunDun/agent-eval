@@ -1,0 +1,53 @@
+{
+  "id": "dsh-repo-constant",
+  "title": "只改一个常量",
+  "suite": "dsh-repo",
+  "notes": "P1 仓库任务：测试为 oracle，隐藏检查只读终态文件。",
+  "taxonomy": "code-edit",
+  "difficulty": "easy",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "repo-task",
+  "turns": [
+    "把 src/config.mjs 里的 MAX_RETRIES 改成 3。不要改其他文件和测试。"
+  ],
+  "timeoutMs": 180000,
+  "repo": {
+    "fixture": "dsh-repo-constant"
+  },
+  "workspacePaths": [
+    "src/config.mjs"
+  ],
+  "hiddenChecks": [
+    {
+      "type": "file_matches",
+      "path": "src/config.mjs",
+      "pattern": "MAX_RETRIES\\s*=\\s*3"
+    }
+  ],
+  "tamperPolicy": {
+    "allowed": [
+      "src/**"
+    ],
+    "forbidden": [
+      "test/**",
+      "package.json"
+    ]
+  },
+  "expect": {
+    "tests": {
+      "command": "node --test --test-reporter=tap",
+      "timeoutMs": 120000,
+      "failToPass": [
+        "MAX_RETRIES is 3"
+      ],
+      "passToPass": [
+        "default url is unchanged"
+      ]
+    },
+    "quality": {
+      "maxChangedFiles": 1,
+      "maxDiffLines": 2
+    }
+  }
+}

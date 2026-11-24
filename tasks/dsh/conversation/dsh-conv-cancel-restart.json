@@ -1,0 +1,22 @@
+{
+  "id": "dsh-conv-cancel-restart",
+  "title": "第二轮取消重启",
+  "suite": "dsh-conversation",
+  "notes": "P1 多轮：同一 session 续接；判定看末轮与工具行为。",
+  "taxonomy": "multi-turn",
+  "difficulty": "medium",
+  "source": "handwritten",
+  "split": "dev",
+  "kind": "chat",
+  "turns": [
+    "重启受管 api。",
+    "算了，先别重启。"
+  ],
+  "timeoutMs": 180000,
+  "expect": {
+    "finalReplyPattern": "(取消|不重启|未重启)",
+    "containsNone": [
+      "已重启"
+    ]
+  }
+}

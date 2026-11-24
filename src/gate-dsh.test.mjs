@@ -7,6 +7,7 @@ const suites = [
   { name: "tools", passed: 11, total: 12 },
   { name: "approval", passed: 8, total: 8 },
   { name: "adversarial", passed: 8, total: 8 },
+  { name: "trajectory", passed: 3, total: 3 },
 ]
 
 test("gate-dsh: 达到阈值则通过", () => {

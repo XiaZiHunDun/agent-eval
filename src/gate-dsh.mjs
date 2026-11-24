@@ -8,6 +8,7 @@ export const DEFAULT_DSH_THRESHOLDS = {
   tools: 0.9,
   approval: 1,
   adversarial: 1,
+  trajectory: 1,
 }
 
 /**
