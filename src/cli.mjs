@@ -4,7 +4,7 @@ import { basename, dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { collectRunConfig } from "./config.mjs"
 import { loadTasks, runSuite } from "./runner.mjs"
-import { loadTrajectoryTasks } from "./trajectory.mjs"
+import { loadTrajectoryTasks, loadDshTrajectoryTasks } from "./trajectory.mjs"
 import { computeProcessMetrics } from "./process-metrics.mjs"
 import { renderReport } from "./report.mjs"
 import {
@@ -278,8 +278,16 @@ async function executeSuite({
 
   const tasksDir = suiteDir(suiteName)
   // 轨迹数据在 WFXM 仓库（tests/trajectories），执行与判定留在 agent-eval。
-  let tasks =
-    suiteName === "trajectory" ? await loadTrajectoryTasks() : await loadTasks(tasksDir)
+  // P2-5：本机导出了生产脱敏轨迹时，dsh-trajectory 用它们替换内置种子。
+  const privateTrajectory =
+    suiteName === "dsh-trajectory" ? await loadDshTrajectoryTasks() : null
+  let tasks
+  if (privateTrajectory !== null) {
+    tasks = privateTrajectory
+    log(`dsh-trajectory: 使用生产脱敏轨迹 ${privateTrajectory.length} 条（替换内置种子）`)
+  } else {
+    tasks = suiteName === "trajectory" ? await loadTrajectoryTasks() : await loadTasks(tasksDir)
+  }
   if (task) tasks = tasks.filter((t) => t.id === task)
   if (taskIds !== undefined) {
     const available = new Set(tasks.map((t) => t.id))

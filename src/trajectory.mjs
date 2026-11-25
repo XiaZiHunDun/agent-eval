@@ -7,6 +7,7 @@
  */
 import { readdir, readFile } from "node:fs/promises"
 import { join } from "node:path"
+import { loadTasks } from "./runner.mjs"
 
 const DEFAULT_WFXM_ROOT = "/home/ailearn/projects/WFXM"
 
@@ -109,6 +110,25 @@ export function normalizeTrajectory(raw, filename = "<inline>") {
       },
     },
   }
+}
+
+/**
+ * P2-5：生产脱敏轨迹任务目录。
+ *
+ * `DSH_EVAL_TRAJECTORY_DIR` 指向的目录里只要有任务，dsh-trajectory 就**整体替换**
+ * 内置种子；未设置、目录不存在或为空时返回 null，PR CI 继续跑仓库内种子。
+ * 轨迹文件由 `scripts/eval/export-traces.mjs` 生成，只留在 dsh-wfxm 本机。
+ */
+export async function loadDshTrajectoryTasks(dir = process.env.DSH_EVAL_TRAJECTORY_DIR) {
+  if (typeof dir !== "string" || dir === "") return null
+  try {
+    const names = (await readdir(dir)).filter((name) => name.endsWith(".json"))
+    if (names.length === 0) return null
+  } catch {
+    return null
+  }
+  const tasks = await loadTasks(dir)
+  return tasks.length === 0 ? null : tasks
 }
 
 /** 读取目录下所有轨迹（按 id 排序）。 */
