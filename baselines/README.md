@@ -85,7 +85,8 @@ env -u LD_LIBRARY_PATH HOME=/home/ailearn AGENT_EVAL_REAL_MODEL=1 \
 - 范围：3 条脱敏轨迹回放（`adapters/fixtures/dsh/traces/*.ndjson`）：未托管目标拒绝、`docker` 列表参数、重启前查状态并走审批。
 - 运行：离线 fixture 回放，进 PR 硬门禁（`trajectory >= 1`）；夹具随 agent-eval 仓库，不依赖 dsh-wfxm、dsh 与模型。
 - 结果：**3 / 3（100%）**。
-- 说明：当前是种子轨迹，生产脱敏轨迹替换在后续阶段进行；**不上传生产轨迹**。
+- 说明：仓库内是 3 条种子轨迹（PR CI 默认）；P2-5（2026-11-25）起，本机把生产脱敏轨迹导出到
+  `dsh-wfxm/eval/trajectory/` 后，设置 `DSH_EVAL_TRAJECTORY_DIR` 即整体替换本套件任务；**不上传生产轨迹**。
 
 ```bash
 cd /home/ailearn/projects/agent-eval
